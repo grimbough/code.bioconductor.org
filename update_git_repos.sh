@@ -16,6 +16,7 @@ cd ${DIR}
 while read PACK; do
 
     echo "Package: ${PACK}"
+    echo "  `date`"
 
     ## check if we've added this package to our ignore list
     if [[ " ${ignored[@]} " =~ " ${PACK} " ]]; then
