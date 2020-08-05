@@ -94,4 +94,5 @@ while read PACK; do
 	fi
 done </tmp/packages.txt
 
+$HOME/bioc-code-tools/create_hound_config.sh
 
