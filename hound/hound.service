@@ -1,0 +1,12 @@
+[Unit]
+Description=Launch Hound code search
+
+[Service]
+ExecStart=/home/mike/go/bin/houndd -conf /home/mike/bioc-code-tools/hound/config.json
+User=mike
+Restart=on-failure
+Type=simple
+
+[Install]
+WantedBy=multi-user.target
+

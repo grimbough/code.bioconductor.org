@@ -36,7 +36,6 @@ done
 
 echo "done"
 
-exit
-
 echo -e "\t\t}\n\t}\n}" >> "${OUTPUT}"
 
+exit
