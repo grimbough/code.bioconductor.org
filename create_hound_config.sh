@@ -7,9 +7,9 @@ OUTPUT="$HOME/bioc-code-tools/hound/config.json"
 REPOS="$HOME/repositories"
 
 echo -e "{
-\t\"max-concurrent-indexers\" : 2,
+\t\"max-concurrent-indexers\" : 4,
 \t\"dbpath\" : \"data\",
-\t\"title\" : \"Hound\",
+\t\"title\" : \"BioC Code Search\",
 \t\"health-check-uri\" : \"/healthz\",
 \t\"repos\" : {" > "${TMPFILE}"
 
