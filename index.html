@@ -1,39 +1,75 @@
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-<link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/pure-min.css" integrity="sha384-cg6SkqEOCV1NbJoCu11+bm0NvBRc8IYLRGXkmNrqUBfTjmMYwNKPWBTIKyw9mHNJ" crossorigin="anonymous">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A layout example that shows off a responsive product landing page.">
+    <title>Landing Page &ndash; Layout Examples &ndash; Pure</title>
+    <link rel="stylesheet" href="https://purecss.io/css/pure/pure-min.css">
+    <link rel="stylesheet" href="https://purecss.io/css/pure/grids-responsive-min.css">
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 
 <body>
 
-<div class="content-wrapper">
-    <div class="content">
-<h1>Bioconductor Code Tools</h1>
+<div class="content">
+<div class="wrapper">
+<h1>Unofficial Bioconductor Code Tools</h1>
+
+<p>
+This site provides some experimental tools for exploring the code hosted in the Bioconductor git repository.
+</p>
 
 <h3>Excluded Packages</h3>
 
-In the interest of saving space on this web hosting a small number of package have been excluded from the service. 
+<p>
+In the interest of saving space on this web hosting a small number of large packages have been excluded from the service. 
 Any package where the directory size is greater than 150MB has been excluded.  
-Click <a href="ignored_packages.txt">here</a> for a full list of these packages.
+If a packe you're interested in is missing, click <a href="ignored_packages.txt">here</a> to see if it is on the list of excluded packages.
+</p>
 
-<h3>Updates</h3>
+<h3>Update frequency</h3>
+
+<p>
+The primary Bioconductor git repository is checked for new commits once an hour, on the hour.  You can view a log of this process, with a time stamp for each package <a href="update_log.txt">here</a>.
+</p>
+
+
 
 <div class="ribbon l-box-lrg pure-g">
         <div class="l-box-lrg is-center pure-u-1 pure-u-md-1-2 pure-u-lg-2-5">
-            <img width="300" alt="File Icons" class="pure-img-responsive" src="/img/common/file-icons.png">
+            <a href="/gitlist/">
+            <img width="350" alt="File Icons" class="pure-img-responsive" src="/img/gitlist.png">
+            </a>
         </div>
         <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-3-5">
 
-            <h2 class="content-head content-head-ribbon">Browse package source.</h2>
+            <h2 class="content-head content-head-ribbon"><a href="/gitlist/">Browse package sources</a></h2>
 
             <p>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                consequat. Duis aute irure dolor.
+                Gitlist lets us browse the master and release branches of the packages in the Bioconductor project.
             </p>
         </div>
-    </div>
-    </div>
+</div>
+
+<br/>
+
+<div class="ribbon l-box-lrg pure-g">
+        <div class="l-box-lrg is-center pure-u-1 pure-u-md-1-2 pure-u-lg-2-5">
+            <a href="/hound/">
+            <img width="350" alt="File Icons" class="pure-img-responsive" src="/img/hound.png">
+            </a>
+        </div>
+        <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-3-5">
+
+            <h2 class="content-head content-head-ribbon"><a href="/hound/">Search codebase</a></h2>
+
+            <p>
+                It's sometimes useful to be able to examples of how other packages have used specific function.  We use <a href="https://github.com/hound-search/hound">Hound</a> to index and allow searching of the master branch for all Bioconductor packages.
+            </p>
+        </div>
+</div>
 </div>
 </body>
 </html>
