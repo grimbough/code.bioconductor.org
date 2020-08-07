@@ -3,6 +3,14 @@
 BRANCHES=("RELEASE_3_11" "master")
 #DIR=/tmp/repositories/
 DIR=/home/mike/repositories/
+TMPDB=/tmp/packages.db
+
+## create sqlite database for packages and latest commits
+if [[ -f "$TMPDB" ]]; then
+    rm "$TMPDB"
+fi
+sqlite3 "$TMPDB" "CREATE TABLE packages (pkg_name TEXT PRIMARY KEY, author TEXT NOT NULL, last_commit TEXT NOT NULL);"
+
 
 touch "$DIR/ignored_packages.txt"
 readarray -t ignored < "$DIR/ignored_packages.txt"
@@ -42,6 +50,8 @@ while read PACK; do
 		## find the number of lines in the git log
 		## we will remove empty repos with 0 commits
 		ncommits=`git log | wc -l`
+        author=`git log --date=iso -n 1 --pretty="%an"`
+        date=`git log --date=iso -n 1 --pretty="%ad"`
 		cd ../
 
 		## find the size of the downloaded repo
@@ -66,6 +76,9 @@ while read PACK; do
 		    echo "removed"
             continue
 		fi
+		
+        ## add commit info to package db
+        sqlite3 "$TMPDB" "insert into packages (pkg_name, author, last_commit) values (\"$PACK\", \"${author}\", \"$date\");"
 
 	else
         cd $PACK
@@ -89,6 +102,13 @@ while read PACK; do
         if [[ "$curbranch" != "master" ]]; then
             git checkout master
         fi
+        
+        ## currently only recording this info for the master branch
+        echo -n "  Updating commit database... "
+        author=`git log --date=iso -n 1 --pretty="%an"`
+        date=`git log --date=iso -n 1 --pretty="%ad"`
+        sqlite3 "$TMPDB" "insert into packages (pkg_name, author, last_commit) values (\"$PACK\", \"${author}\", \"$date\");"
+        echo "done"
         
 		cd ../
 	fi
