@@ -1,5 +1,10 @@
 <html>
-<head></head>
+<head>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
+    <link src="/css/styles.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
+</head>
 <body>
 
 <?php
@@ -11,14 +16,15 @@ try {
 }
 ?>
 
-<table>
+<table id="table_id">
 
+<thead>
 <tr>
-<td>Package Name</td><td>Latest Commit</td><td></td>
-</tr><tr>
-<td></td><td>Author</td><td>Date</td>
+<td>Package Name</td><td>Author</td><td>Date</td>
 </tr>
+</thead>
 
+<tbody>
 <?php
 
 $stm = $myPDO->query("SELECT * FROM packages");
@@ -30,8 +36,16 @@ foreach($rows as $row) {
     printf("<td>$row[1]</td><td>$row[2]</td></tr>\n");
 }
 ?>
-
+</tbody>
 </table>
+
+<script>
+$(document).ready( function () {
+    $('#table_id').DataTable( {
+        "pageLength": 25
+    });
+} );
+</script>
 
 </body>
 </html>
