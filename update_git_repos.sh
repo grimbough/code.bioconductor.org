@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source $HOME/bioc-code-tools/helper_functions.sh
+
 BRANCHES=("RELEASE_3_11" "master")
 #DIR=/tmp/repositories/
 DIR=/home/mike/repositories/
@@ -85,6 +87,10 @@ while read PACK; do
         echo "  Repository already exists"
         for BRANCH in ${BRANCHES[@]}
         do
+            if [[ `is_in_local "$BRANCH"` -eq 0 ]]; then
+                echo "  Branch $BRANCH not present"
+                continue;
+            fi
             remote=`git ls-remote origin $BRANCH | cut -f 1`
             local=`git rev-parse $BRANCH`
 
