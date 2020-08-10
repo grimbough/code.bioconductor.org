@@ -11,7 +11,7 @@ TMPDB=/tmp/packages.db
 if [[ -f "$TMPDB" ]]; then
     rm "$TMPDB"
 fi
-sqlite3 "$TMPDB" "CREATE TABLE packages (pkg_name TEXT PRIMARY KEY, author TEXT NOT NULL, last_commit TEXT NOT NULL);"
+sqlite3 "$TMPDB" "CREATE TABLE packages (pkg_name TEXT PRIMARY KEY, author TEXT NOT NULL, date TEXT NOT NULL, branch TEXT NOT NULL);"
 
 
 touch "$DIR/ignored_packages.txt"
@@ -85,12 +85,16 @@ while read PACK; do
 	else
         cd $PACK
         echo "  Repository already exists"
-        for BRANCH in ${BRANCHES[@]}
-        do
+        recent_date=""
+        for BRANCH in ${BRANCHES[@]}; do
+        
+        
+            ## skip branches that don't exist
             if [[ `is_in_local "$BRANCH"` -eq 0 ]]; then
                 echo "  Branch $BRANCH not present"
                 continue;
-            fi
+            fi           
+            
             remote=`git ls-remote origin $BRANCH | cut -f 1`
             local=`git rev-parse $BRANCH`
 
@@ -101,6 +105,15 @@ while read PACK; do
 	            git pull origin $BRANCH
 	            echo "done"
             fi
+            
+            author=`git log --date=iso-local -n 1 --pretty="%an"`
+            date=`git log --date=iso-local -n 1 --pretty="%ad" | cut -f1,2 -d' '`
+            if [[ "$date" > "$commit_date" ]]; then
+                recent_date="$date"
+                recent_branch="$BRANCH"
+                recent_author="$author"
+            fi
+            
         done
         
         ## finish on the master branch
@@ -111,9 +124,9 @@ while read PACK; do
         
         ## currently only recording this info for the master branch
         echo -n "  Updating commit database... "
-        author=`git log --date=iso -n 1 --pretty="%an"`
-        date=`git log --date=iso -n 1 --pretty="%ad"`
-        sqlite3 "$TMPDB" "insert into packages (pkg_name, author, last_commit) values (\"$PACK\", \"${author}\", \"$date\");"
+        #author=`git log --date=iso-local -n 1 --pretty="%an"`
+        #date=`git log --date=iso-local -n 1 --pretty="%ad" | cut -f1,2 -d' '`
+        sqlite3 "$TMPDB" "insert into packages (pkg_name, author, date, branch) values (\"$PACK\", \"${recent_author}\", \"$recent_date\", \"$recent_branch\");"
         echo "done"
         
 		cd ../

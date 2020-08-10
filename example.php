@@ -16,13 +16,13 @@ try {
 }
 ?>
 
-<div id="wrapper">
+<div class="wrapper">
 
 <table id="table_id" class="display">
 
 <thead>
 <tr>
-<td>Package Name</td><td>Author</td><td>Date</td>
+<td>Package Name</td><td>Latest Commit</td>
 </tr>
 </thead>
 
@@ -35,7 +35,7 @@ $rows = $stm->fetchAll(PDO::FETCH_NUM);
 foreach($rows as $row) {
 
     printf("<tr><td><a href=\"/gitlist/$row[0]\">$row[0]</a></td>");
-    printf("<td>$row[1]</td><td>$row[2]</td></tr>\n");
+    printf("<td>$row[2] by $row[1] to $row[3]</td></tr>\n");
 }
 ?>
 </tbody>
