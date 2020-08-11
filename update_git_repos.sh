@@ -3,9 +3,10 @@
 source $HOME/bioc-code-tools/helper_functions.sh
 
 BRANCHES=("RELEASE_3_11" "master")
-#DIR=/tmp/repositories/
+#DIR=/home/ubuntu/repositories/
 DIR=/home/mike/repositories/
-TMPDB=/tmp/packages.db
+TMPDB=/tmp/packages_tmp.db
+FINALDB=/tmp/packages.db
 
 ## create sqlite database for packages and latest commits
 if [[ -f "$TMPDB" ]]; then
@@ -19,6 +20,7 @@ readarray -t ignored < "$DIR/ignored_packages.txt"
 
 echo -n "Acquiring list of packages... "
 ssh -i "$HOME/.ssh/xps_key" git@git.bioconductor.org info | grep -e "packages" | cut -f 2 | tail -n +3 | cut -f 2 -d "/" | head -n 57 > /tmp/packages.txt
+#ssh -i "$HOME/.ssh/xps_key" git@git.bioconductor.org info | grep -e "packages" | cut -f 2 | tail -n +3 | cut -f 2 -d "/" | head -n 2100 > /tmp/packages.txt
 echo "done"
 
 mkdir -p ${DIR}
@@ -108,7 +110,7 @@ while read PACK; do
             
             author=`git log --date=iso-local -n 1 --pretty="%an"`
             date=`git log --date=iso-local -n 1 --pretty="%ad" | cut -f1,2 -d' '`
-            if [[ "$date" > "$commit_date" ]]; then
+            if [[ "$date" > "$recent_date" ]]; then
                 recent_date="$date"
                 recent_branch="$BRANCH"
                 recent_author="$author"
@@ -132,6 +134,10 @@ while read PACK; do
 		cd ../
 	fi
 done </tmp/packages.txt
+
+echo -n "Moving database..."
+mv "$TMPDB" "$FINALDB"
+echo "done"
 
 $HOME/bioc-code-tools/create_hound_config.sh
 
