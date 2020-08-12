@@ -5,7 +5,7 @@ Description=Launch Hound code search
 ExecStart=/home/mike/go/bin/houndd -conf /home/mike/bioc-code-tools/hound/config.json
 User=mike
 Restart=on-failure
-RuntimeMaxSec=300
+RuntimeMaxSec=86400
 Type=simple
 
 [Install]
