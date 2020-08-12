@@ -9,7 +9,7 @@ TMPDB=/tmp/packages_tmp.db
 FINALDB=/tmp/packages.db
 
 TMPJSON=/tmp/packages_tmp.json
-FINALJSON=/tmp/packages.json
+FINALJSON="$DIR/packages.json"
 
 ## create sqlite database for packages and latest commits
 if [[ -f "$TMPDB" ]]; then
