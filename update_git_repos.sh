@@ -4,7 +4,7 @@ source $HOME/bioc-code-tools/helper_functions.sh
 
 BRANCHES=("RELEASE_3_11" "master")
 #DIR=/home/ubuntu/repositories/
-DIR=/home/mike/repositories/
+DIR="$HOME/repositories/"
 TMPDB=/tmp/packages_tmp.db
 FINALDB=/tmp/packages.db
 
@@ -28,8 +28,9 @@ touch "$DIR/ignored_packages.txt"
 readarray -t ignored < "$DIR/ignored_packages.txt"
 
 echo -n "Acquiring list of packages... "
-ssh -i "$HOME/.ssh/xps_key" git@git.bioconductor.org info | grep -e "packages" | cut -f 2 | tail -n +3 | cut -f 2 -d "/" | head -n 25 > /tmp/packages.txt
+ssh -i "$HOME/.ssh/xps_key" git@git.bioconductor.org info | grep -e "packages" | cut -f 2 | tail -n +3 | cut -f 2 -d "/" | head -n 10 > /tmp/packages.txt
 #ssh -i "$HOME/.ssh/xps_key" git@git.bioconductor.org info | grep -e "packages" | cut -f 2 | tail -n +3 | cut -f 2 -d "/" > /tmp/packages.txt
+echo "SummarizedExperiment" >> /tmp/packages.txt
 echo "done"
 
 mkdir -p ${DIR}
@@ -127,6 +128,8 @@ while read PACK; do
                     subject=`echo "$subject" | cut -c 1-80`
                     subject=${subject}...
                 fi
+                ## santitize
+                subject=$(echo "$subject" | sed  -r "s/\\\"/\\\\\"/g")
                 recent_subject="$subject"
             fi
             
