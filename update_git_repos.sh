@@ -36,8 +36,7 @@ while read PACK; do
 	    continue
     fi
 
-	if [[ ! -d "${PACK}" ]]
-	then
+	if [[ ! -d "${PACK}" ]]; then
 	    
 	    echo -n "  Cloning repository... "
 		git clone --quiet "https://git.bioconductor.org/packages/${PACK}" > /dev/null
@@ -82,7 +81,7 @@ while read PACK; do
 		fi
 		
         ## add commit info to package db
-        sqlite3 "$TMPDB" "insert into packages (pkg_name, author, last_commit) values (\"$PACK\", \"${author}\", \"$date\");"
+        sqlite3 "$TMPDB" "insert into packages (pkg_name, author, date, branch) values (\"$PACK\", \"${author}\", \"$date\", \"master\");"
 
 	else
         cd $PACK
@@ -95,15 +94,15 @@ while read PACK; do
             if [[ `is_in_local "$BRANCH"` -eq 0 ]]; then
                 echo "  Branch $BRANCH not present"
                 continue;
-            fi           
+            fi
             
+            git checkout --quiet "$BRANCH"      
             remote=`git ls-remote origin $BRANCH | cut -f 1`
             local=`git rev-parse $BRANCH`
 
             if [[ "$remote" != "$local" ]]
             then
-                echo -n "  Updating $BRANCH branch... "
-                git checkout $BRANCH 
+                echo -n "  Updating $BRANCH branch... " 
 	            git pull origin $BRANCH
 	            echo "done"
             fi
