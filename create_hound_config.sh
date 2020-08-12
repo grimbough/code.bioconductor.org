@@ -7,7 +7,7 @@ OUTPUT="$HOME/bioc-code-tools/hound/config.json"
 REPOS="$HOME/repositories"
 
 echo -e "{
-\t\"max-concurrent-indexers\" : 4,
+\t\"max-concurrent-indexers\" : 2,
 \t\"dbpath\" : \"data\",
 \t\"title\" : \"BioC Code Search\",
 \t\"health-check-uri\" : \"/healthz\",
@@ -17,7 +17,8 @@ for dir in "$REPOS"/*/     # list directories in the form "/tmp/dirname/"
 do
     dir=${dir%*/}      # remove the trailing "/"
     echo -e "\t\t\"${dir##*/}\" : {" >> "${TMPFILE}" 
-    echo -e "\t\t\t\"url\" : \"file:///${dir}\"" >> "${TMPFILE}"
+    echo -e "\t\t\t\"url\" : \"file:///${dir}\"," >> "${TMPFILE}"
+    echo -e "\t\t\t\"ms-between-poll\" : 3600000" >> "${TMPFILE}"
     echo -e "\t\t}," >> "${TMPFILE}"
 done
 
