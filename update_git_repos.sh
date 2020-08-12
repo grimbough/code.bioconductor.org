@@ -8,11 +8,20 @@ DIR=/home/mike/repositories/
 TMPDB=/tmp/packages_tmp.db
 FINALDB=/tmp/packages.db
 
+TMPJSON=/tmp/packages_tmp.json
+FINALJSON=/tmp/packages.json
+
 ## create sqlite database for packages and latest commits
 if [[ -f "$TMPDB" ]]; then
     rm "$TMPDB"
 fi
 sqlite3 "$TMPDB" "CREATE TABLE packages (pkg_name TEXT PRIMARY KEY, author TEXT NOT NULL, date TEXT NOT NULL, branch TEXT NOT NULL);"
+
+## create sqlite database for packages and latest commits
+if [[ -f "$TMPJSON" ]]; then
+    rm "$TMPJSON"
+fi
+echo -e "{\n\t\"data\": [" > "$TMPJSON"
 
 
 touch "$DIR/ignored_packages.txt"
@@ -123,9 +132,12 @@ while read PACK; do
             git checkout master
         fi
         
-        ## currently only recording this info for the master branch
         echo -n "  Updating commit database... "
         sqlite3 "$TMPDB" "insert into packages (pkg_name, author, date, branch) values (\"$PACK\", \"${recent_author}\", \"$recent_date\", \"$recent_branch\");"
+        echo -e "\t\t[" >> "$TMPJSON"
+        echo -e "\t\t\t\"<i class='fas fa-folder'></i>&nbsp;<a href=\\\"/gitlist/$PACK\\\">$PACK</a>\"," >> "$TMPJSON"
+        echo -e "\t\t\t\"$recent_date by $recent_author to $recent_branch\"" >> "$TMPJSON"
+        echo -e "\t\t], " >> "$TMPJSON"
         echo "done"
         
         cd ../
@@ -134,6 +146,18 @@ done </tmp/packages.txt
 
 echo -n "Moving database..."
 mv "$TMPDB" "$FINALDB"
+echo "done"
+
+echo -n "Moving JSON..."
+readarray -t a < "${TMPJSON}"
+if [[ -f "$FINALJSON" ]]; then
+    rm "$FINALJSON"
+fi
+## write all but last line due to issues with commas
+for ((i=0; i<${#a[@]}-1; i++)); do
+    echo "${a[$i]}" >> "$FINALJSON"
+done
+echo -e "\t\t]\n\t]\n}" >> "$FINALJSON"
 echo "done"
 
 $HOME/bioc-code-tools/create_hound_config.sh

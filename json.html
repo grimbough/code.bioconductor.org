@@ -1,0 +1,39 @@
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="/css/styles.css">
+    <link rel="stylesheet" type="text/css" href="/css/gitlist.css">
+    <link rel="stylesheet" href="/gitlist/prod/css/bootstrap-cosmo.198b7680e107dcbb25cc3cda8618580c9cf1d07ecc6e4d4747522e834d851d0c.css" id="bootstrap-theme">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
+    
+</head>
+<body>
+
+
+<table id="example" class="display" style="width:100%">
+        <thead>
+            <tr>
+                <th>Package</th>
+                <th>Latest Commit</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th>Package</th>
+                <th>Latest Commit</th>
+            </tr>
+        </tfoot>
+    </table>
+
+<script>
+$(document).ready( function () {
+    $('#example').DataTable( {
+        "ajax": '/packages.json'
+    });
+} );
+</script>
+
+</body>
+</html>
