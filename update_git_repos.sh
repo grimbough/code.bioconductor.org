@@ -19,8 +19,8 @@ touch "$DIR/ignored_packages.txt"
 readarray -t ignored < "$DIR/ignored_packages.txt"
 
 echo -n "Acquiring list of packages... "
-ssh -i "$HOME/.ssh/xps_key" git@git.bioconductor.org info | grep -e "packages" | cut -f 2 | tail -n +3 | cut -f 2 -d "/" | head -n 57 > /tmp/packages.txt
-#ssh -i "$HOME/.ssh/xps_key" git@git.bioconductor.org info | grep -e "packages" | cut -f 2 | tail -n +3 | cut -f 2 -d "/" | head -n 2100 > /tmp/packages.txt
+ssh -i "$HOME/.ssh/xps_key" git@git.bioconductor.org info | grep -e "packages" | cut -f 2 | tail -n +3 | cut -f 2 -d "/" | head -n 25 > /tmp/packages.txt
+#ssh -i "$HOME/.ssh/xps_key" git@git.bioconductor.org info | grep -e "packages" | cut -f 2 | tail -n +3 | cut -f 2 -d "/" > /tmp/packages.txt
 echo "done"
 
 mkdir -p ${DIR}
@@ -33,57 +33,57 @@ while read PACK; do
     ## check if we've added this package to our ignore list
     if [[ " ${ignored[@]} " =~ " ${PACK} " ]]; then
         echo "  Found in ignore list... skipped"
-	    continue
+        continue
     fi
 
-	if [[ ! -d "${PACK}" ]]; then
-	    
-	    echo -n "  Cloning repository... "
-		git clone --quiet "https://git.bioconductor.org/packages/${PACK}" > /dev/null
-		echo "done"
-		
-		echo -n "  Checking out branches... "
-		cd "${PACK}"
-		for BRANCH in ${BRANCHES[@]}
-		do
-		    git checkout --quiet "$BRANCH" > /dev/null
-		done
-		echo "done"
+    if [[ ! -d "${PACK}" ]]; then
+    
+        echo -n "  Cloning repository... "
+        git clone --quiet "https://git.bioconductor.org/packages/${PACK}" > /dev/null
+        echo "done"
+        
+        echo -n "  Checking out branches... "
+        cd "${PACK}"
+        for BRANCH in ${BRANCHES[@]}
+        do
+            git checkout --quiet "$BRANCH" > /dev/null
+        done
+        echo "done"
 
-		## find the number of lines in the git log
-		## we will remove empty repos with 0 commits
-		ncommits=`git log | wc -l`
+        ## find the number of lines in the git log
+        ## we will remove empty repos with 0 commits
+        ncommits=`git log | wc -l`
         author=`git log --date=iso -n 1 --pretty="%an"`
         date=`git log --date=iso -n 1 --pretty="%ad"`
-		cd ../
+        cd ../
 
-		## find the size of the downloaded repo
-		## we will remove any that are too large
-		dirsize=`du -s "${PACK}" | cut -f1`
+        ## find the size of the downloaded repo
+        ## we will remove any that are too large
+        dirsize=`du -s "${PACK}" | cut -f1`
 
-		## some repos are empty, just delete them
-		if [ "$ncommits" -eq 0 ] 
-		then
-		    echo -n "  Empty repository... "
-		    rm -r "${PACK}"
-		    echo "${PACK}" >> ignored_packages.txt
-		    echo "removed"
+        ## some repos are empty, just delete them
+        if [ "$ncommits" -eq 0 ] 
+        then
+            echo -n "  Empty repository... "
+            rm -r "${PACK}"
+            echo "${PACK}" >> ignored_packages.txt
+            echo "removed"
             continue
-		fi
+        fi
 
-		if [[ "$dirsize" -gt 150000 ]]
-		then
-		    echo -n "  Repository too large... "
-		    echo "${PACK}" >> ignored_packages.txt
-		    rm -r "${PACK}"
-		    echo "removed"
+        if [[ "$dirsize" -gt 150000 ]]
+        then
+            echo -n "  Repository too large... "
+            echo "${PACK}" >> ignored_packages.txt
+            rm -r "${PACK}"
+            echo "removed"
             continue
-		fi
-		
+        fi
+        
         ## add commit info to package db
         sqlite3 "$TMPDB" "insert into packages (pkg_name, author, date, branch) values (\"$PACK\", \"${author}\", \"$date\", \"master\");"
 
-	else
+    else
         cd $PACK
         echo "  Repository already exists"
         recent_date=""
@@ -103,15 +103,15 @@ while read PACK; do
             if [[ "$remote" != "$local" ]]
             then
                 echo -n "  Updating $BRANCH branch... " 
-	            git pull origin $BRANCH
-	            echo "done"
+                git pull origin $BRANCH
+                echo "done"
             fi
             
             author=`git log --date=iso-local -n 1 --pretty="%an"`
             date=`git log --date=iso-local -n 1 --pretty="%ad" | cut -f1,2 -d' '`
-            if [[ "$date" > "$recent_date" ]]; then
+            if [[ "$recent_date" == "" ]] || [[ ! "$recent_date" > "$date" ]]; then
                 recent_date="$date"
-                recent_branch="$BRANCH"
+                recent_branch="$BRANCH" 
                 recent_author="$author"
             fi
             
@@ -125,13 +125,11 @@ while read PACK; do
         
         ## currently only recording this info for the master branch
         echo -n "  Updating commit database... "
-        #author=`git log --date=iso-local -n 1 --pretty="%an"`
-        #date=`git log --date=iso-local -n 1 --pretty="%ad" | cut -f1,2 -d' '`
         sqlite3 "$TMPDB" "insert into packages (pkg_name, author, date, branch) values (\"$PACK\", \"${recent_author}\", \"$recent_date\", \"$recent_branch\");"
         echo "done"
         
-		cd ../
-	fi
+        cd ../
+    fi
 done </tmp/packages.txt
 
 echo -n "Moving database..."

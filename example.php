@@ -45,7 +45,7 @@ try {
 
 <div class="p3x-gitlist-header-height"></div>
 
-<div class="wrapper">
+<div class="container">
 
 <table id="table_id" class="display">
 
