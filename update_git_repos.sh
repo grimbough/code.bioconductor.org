@@ -98,7 +98,6 @@ while read PACK; do
         recent_date=""
         for BRANCH in ${BRANCHES[@]}; do
         
-        
             ## skip branches that don't exist
             if [[ `is_in_local "$BRANCH"` -eq 0 ]]; then
                 echo "  Branch $BRANCH not present"
@@ -118,10 +117,17 @@ while read PACK; do
             
             author=`git log --date=iso-local -n 1 --pretty="%an"`
             date=`git log --date=iso-local -n 1 --pretty="%ad" | cut -f1,2 -d' '`
+            subject=`git log --date=iso-local -n 1 --pretty="%s"`
             if [[ "$recent_date" == "" ]] || [[ ! "$recent_date" > "$date" ]]; then
                 recent_date="$date"
                 recent_branch="$BRANCH" 
                 recent_author="$author"
+                ## trim commit messages to 80 characters
+                if [[ "${#subject}" > 80 ]]; then
+                    subject=`echo "$subject" | cut -c 1-80`
+                    subject=${subject}...
+                fi
+                recent_subject="$subject"
             fi
             
         done
@@ -136,7 +142,7 @@ while read PACK; do
         sqlite3 "$TMPDB" "insert into packages (pkg_name, author, date, branch) values (\"$PACK\", \"${recent_author}\", \"$recent_date\", \"$recent_branch\");"
         echo -e "\t\t[" >> "$TMPJSON"
         echo -e "\t\t\t\"<i class='fas fa-folder'></i>&nbsp;<a href=\\\"/gitlist/$PACK\\\">$PACK</a>\"," >> "$TMPJSON"
-        echo -e "\t\t\t\"$recent_date by $recent_author to $recent_branch\"" >> "$TMPJSON"
+        echo -e "\t\t\t\"$recent_date by $recent_author to $recent_branch&nbsp;<span class=\\\"subject\\\">'$subject'</span>\"" >> "$TMPJSON"
         echo -e "\t\t], " >> "$TMPJSON"
         echo "done"
         
