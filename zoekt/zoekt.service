@@ -1,0 +1,12 @@
+[Unit]
+Description=Launch Zoekt code search
+
+[Service]
+ExecStart=$HOME/go/bin/zoekt-webserver -listen :6070 -index /home/ubuntu/zoekt
+User=ubuntu
+Restart=on-failure
+Type=simple
+
+[Install]
+WantedBy=multi-user.target
+
