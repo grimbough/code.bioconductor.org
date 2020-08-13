@@ -2,7 +2,7 @@
 Description=Launch Hound code search
 
 [Service]
-ExecStart=/home/mike/go/bin/houndd -conf /home/mike/bioc-code-tools/hound/config.json
+ExecStart=/home/mike/go/bin/houndd -conf /home/mike/bioc-code-tools/hound/config-itpp.json
 User=mike
 Restart=on-failure
 RuntimeMaxSec=86400

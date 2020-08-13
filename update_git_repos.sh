@@ -170,4 +170,5 @@ echo -e "\t\t]\n\t]\n}" >> "$FINALJSON"
 echo "done"
 
 $HOME/bioc-code-tools/create_hound_config.sh
+$HOME/bioc-code-tools/create_hound_config_itpp.sh
 
