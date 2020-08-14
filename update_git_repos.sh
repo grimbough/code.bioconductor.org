@@ -28,7 +28,7 @@ touch "$DIR/ignored_packages.txt"
 readarray -t ignored < "$DIR/ignored_packages.txt"
 
 echo -n "Acquiring list of packages... "
-ssh -i "$HOME/.ssh/xps_key" git@git.bioconductor.org info | grep -e "packages" | cut -f 2 | tail -n +3 | cut -f 2 -d "/" | head -n 10 > /tmp/packages.txt
+ssh -i "$HOME/.ssh/xps_key" git@git.bioconductor.org info | grep -e "packages" | cut -f 2 | tail -n +3 | cut -f 2 -d "/" | head -n 50 > /tmp/packages.txt
 #ssh -i "$HOME/.ssh/xps_key" git@git.bioconductor.org info | grep -e "packages" | cut -f 2 | tail -n +3 | cut -f 2 -d "/" > /tmp/packages.txt
 echo "SummarizedExperiment" >> /tmp/packages.txt
 echo "done"
@@ -81,7 +81,7 @@ while read PACK; do
             continue
         fi
 
-        if [[ "$dirsize" -gt 150000 ]]
+        if [[ "$dirsize" -gt 200000 ]]
         then
             echo -n "  Repository too large... "
             echo "${PACK}" >> ignored_packages.txt
