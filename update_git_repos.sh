@@ -5,17 +5,11 @@ source $HOME/bioc-code-tools/helper_functions.sh
 BRANCHES=("RELEASE_3_11" "master")
 #DIR=/home/ubuntu/repositories/
 DIR="$HOME/repositories/"
-TMPDB=/tmp/packages_tmp.db
-FINALDB=/tmp/packages.db
 
 TMPJSON=/tmp/packages_tmp.json
 FINALJSON="$DIR/packages.json"
 
-## create sqlite database for packages and latest commits
-if [[ -f "$TMPDB" ]]; then
-    rm "$TMPDB"
-fi
-sqlite3 "$TMPDB" "CREATE TABLE packages (pkg_name TEXT PRIMARY KEY, author TEXT NOT NULL, date TEXT NOT NULL, branch TEXT NOT NULL);"
+UPDATEDPKGS=/tmp/updated.txt
 
 ## create sqlite database for packages and latest commits
 if [[ -f "$TMPJSON" ]]; then
@@ -23,14 +17,13 @@ if [[ -f "$TMPJSON" ]]; then
 fi
 echo -e "{\n\t\"data\": [" > "$TMPJSON"
 
-
 touch "$DIR/ignored_packages.txt"
 readarray -t ignored < "$DIR/ignored_packages.txt"
 
 echo -n "Acquiring list of packages... "
 ssh -i "$HOME/.ssh/xps_key" git@git.bioconductor.org info | grep -e "packages" | cut -f 2 | tail -n +3 | cut -f 2 -d "/" | head -n 50 > /tmp/packages.txt
-#ssh -i "$HOME/.ssh/xps_key" git@git.bioconductor.org info | grep -e "packages" | cut -f 2 | tail -n +3 | cut -f 2 -d "/" > /tmp/packages.txt
 echo "SummarizedExperiment" >> /tmp/packages.txt
+#ssh -i "$HOME/.ssh/xps_key" git@git.bioconductor.org info | grep -e "packages" | cut -f 2 | tail -n +3 | cut -f 2 -d "/" > /tmp/packages.txt
 echo "done"
 
 mkdir -p ${DIR}
@@ -90,8 +83,7 @@ while read PACK; do
             continue
         fi
         
-        ## add commit info to package db
-        sqlite3 "$TMPDB" "insert into packages (pkg_name, author, date, branch) values (\"$PACK\", \"${author}\", \"$date\", \"master\");"
+        ## TODO: add new package to json - will be done on next cycle anyway
 
     else
         cd $PACK
@@ -142,7 +134,6 @@ while read PACK; do
         fi
         
         echo -n "  Updating commit database... "
-        sqlite3 "$TMPDB" "insert into packages (pkg_name, author, date, branch) values (\"$PACK\", \"${recent_author}\", \"$recent_date\", \"$recent_branch\");"
         echo -e "\t\t[" >> "$TMPJSON"
         echo -e "\t\t\t\"<i class='fas fa-folder'></i>&nbsp;<a href=\\\"/gitlist/$PACK\\\">$PACK</a>\"," >> "$TMPJSON"
         echo -e "\t\t\t\"$recent_date by $recent_author to $recent_branch&nbsp;<span class=\\\"subject\\\">'$subject'</span>\"" >> "$TMPJSON"
@@ -152,10 +143,6 @@ while read PACK; do
         cd ../
     fi
 done </tmp/packages.txt
-
-echo -n "Moving database..."
-mv "$TMPDB" "$FINALDB"
-echo "done"
 
 echo -n "Moving JSON..."
 readarray -t a < "${TMPJSON}"
@@ -169,6 +156,5 @@ done
 echo -e "\t\t]\n\t]\n}" >> "$FINALJSON"
 echo "done"
 
-$HOME/bioc-code-tools/create_hound_config.sh
-$HOME/bioc-code-tools/create_hound_config_itpp.sh
+$HOME/bioc-code-tools/create_zoekt_index.sh
 
