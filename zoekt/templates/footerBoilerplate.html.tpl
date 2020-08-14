@@ -1,0 +1,1 @@
+<a class="navbar-text" href="about">Powered by Zoekt</a>
