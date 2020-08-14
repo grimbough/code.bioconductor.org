@@ -1,1 +1,2 @@
 <a class="navbar-text" href="about">Powered by Zoekt</a>
+<p class="navbar-text">Hosted by the <a href="https://cloud.denbi.de/">de.NBI Cloud </a><img src="/gitlist/img/denbi-icon.png" style="vertical-align: text-top;height: 16px"></p>
