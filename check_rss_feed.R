@@ -1,7 +1,8 @@
 pkgsNeeded <- c(
 	"lubridate",
 	"dplyr",
-	"tidyRSS"
+	"tidyRSS",
+	"gert"
 )
 output_file <- "/tmp/packages_to_update.txt"
 
@@ -24,3 +25,16 @@ feed %>%
 	magrittr::extract2("item_title") %>% 
 	unique() %>% 
 	writeLines(output_file)
+
+getManifest <- function(repo_dir = "/tmp/manifest", n_pkgs) {
+  message("Aquiring list of packages... ", appendLF = FALSE)
+  gert::git_clone("https://git.bioconductor.org/admin/manifest", path = repo_dir)
+  manifest <- scan(file.path(repo_dir, "software.txt"), what = character(), 
+       blank.lines.skip=TRUE, sep = "\n", skip = 1)
+  manifest <- gsub("Package: ", "", x = manifest, fixed = TRUE)
+  if(!missing(n_pkgs)) {
+    manifest <- manifest[seq_len(n_pkgs)]
+  }
+  message("done")
+  return(manifest)
+}
