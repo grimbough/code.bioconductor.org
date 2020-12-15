@@ -1,44 +1,21 @@
 #!/bin/bash
 
-source $HOME/bioc-code-tools/helper_functions.sh
-
 BRANCHES=("RELEASE_3_11" "master")
-DIR="$HOME/repositories/"
+REPO_DIR="$HOME/repositories/"
+MANIFEST="/tmp/packages.txt"
 
-TMPJSON=/tmp/packages_tmp.json
-FINALJSON="$DIR/packages.json"
-
-UPDATEDPKGS=/tmp/updated.txt
-
-## create sqlite database for packages and latest commits
-if [[ -f "$TMPJSON" ]]; then
-    rm "$TMPJSON"
-fi
-echo -e "{\n\t\"data\": [" > "$TMPJSON"
-
-touch "$DIR/ignored_packages.txt"
-readarray -t ignored < "$DIR/ignored_packages.txt"
-
-echo -n "Acquiring list of packages... "
-ssh -i "$HOME/.ssh/xps_key" git@git.bioconductor.org info | grep -e "packages" | cut -f 2 | tail -n +3 | cut -f 2 -d "/" | head -n 50 > /tmp/packages.txt
-echo "SummarizedExperiment" >> /tmp/packages.txt
-#ssh -i "$HOME/.ssh/xps_key" git@git.bioconductor.org info | grep -e "packages" | cut -f 2 | tail -n +3 | cut -f 2 -d "/" > /tmp/packages.txt
+## checkout manifest
+echo -n "Updating list of packages... "
+cd "$HOME/manifest"
+git pull origin master
+cat manifest/software.txt | cut -d' ' -f2 | sed -r '/^[[:space:]]*$/d' | head -n 25 > "$MANIFEST"
 echo "done"
 
-mkdir -p ${DIR}
-cd ${DIR}
+Rscript check_rss_feed.R
+
 while read PACK; do
 
-    echo "Package: ${PACK}"
-    echo "  `date`"
-
-    ## check if we've added this package to our ignore list
-    if [[ " ${ignored[@]} " =~ " ${PACK} " ]]; then
-        echo "  Found in ignore list... skipped"
-        continue
-    fi
-
-    if [[ ! -d "${PACK}" ]]; then
+	if [[ ! -d "${PACK}" ]]; then
     
         echo -n "  Cloning repository... "
         git clone --quiet "https://git.bioconductor.org/packages/${PACK}" > /dev/null
@@ -52,26 +29,10 @@ while read PACK; do
         done
         echo "done"
 
-        ## find the number of lines in the git log
-        ## we will remove empty repos with 0 commits
-        ncommits=`git log | wc -l`
-        author=`git log --date=iso -n 1 --pretty="%an"`
-        date=`git log --date=iso -n 1 --pretty="%ad"`
         cd ../
-
         ## find the size of the downloaded repo
         ## we will remove any that are too large
         dirsize=`du -s "${PACK}" | cut -f1`
-
-        ## some repos are empty, just delete them
-        if [ "$ncommits" -eq 0 ] 
-        then
-            echo -n "  Empty repository... "
-            rm -r "${PACK}"
-            echo "${PACK}" >> ignored_packages.txt
-            echo "removed"
-            continue
-        fi
 
         if [[ "$dirsize" -gt 200000 ]]
         then
@@ -134,14 +95,15 @@ while read PACK; do
         
         echo -n "  Updating commit database... "
         echo -e "\t\t[" >> "$TMPJSON"
-        echo -e "\t\t\t\"<i class='fas fa-folder'></i>&nbsp;<a href=\\\"/gitlist/$PACK\\\">$PACK</a>\"," >> "$TMPJSON"
+        echo -e "\t\t\t\"<i class='fas fa-folder'></i>&nbsp;<a href=\\\"/$PACK\\\">$PACK</a>\"," >> "$TMPJSON"
         echo -e "\t\t\t\"$recent_date by $recent_author to $recent_branch&nbsp;<span class=\\\"subject\\\">'$subject'</span>\"" >> "$TMPJSON"
         echo -e "\t\t], " >> "$TMPJSON"
         echo "done"
         
         cd ../
     fi
-done </tmp/packages.txt
+
+done </tmp/packages_to_update.txt
 
 echo -n "Moving JSON..."
 readarray -t a < "${TMPJSON}"
@@ -154,6 +116,3 @@ for ((i=0; i<${#a[@]}-1; i++)); do
 done
 echo -e "\t\t]\n\t]\n}" >> "$FINALJSON"
 echo "done"
-
-$HOME/bioc-code-tools/create_zoekt_index.sh
-
