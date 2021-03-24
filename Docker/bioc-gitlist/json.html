@@ -3,7 +3,7 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
     <link rel="stylesheet" type="text/css" href="/css/styles.css">
     <link rel="stylesheet" type="text/css" href="/css/gitlist.css">
-    <link rel="stylesheet" href="/gitlist/prod/css/bootstrap-cosmo.198b7680e107dcbb25cc3cda8618580c9cf1d07ecc6e4d4747522e834d851d0c.css" id="bootstrap-theme">
+    <link rel="stylesheet" href="/prod/css/bootstrap-cosmo.198b7680e107dcbb25cc3cda8618580c9cf1d07ecc6e4d4747522e834d851d0c.css" id="bootstrap-theme">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
@@ -21,11 +21,11 @@
                 <span class="icon-bar"></span>
             </button>
 
-            <a href="/gitlist/">
-                <img src="/gitlist/img/gitlist.svg" class="hidden-xs" id="p3x-gitlist-navigation-brand-icon">
-                <img src="/gitlist/img/gitlist.svg" class="visible-xs p3x-gitlist-navigation-brand-icon-small" id="p3x-gitlist-navigation-brand-icon" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Unofficial Bioconductor Git Browser">
+            <a href="/">
+                <img src="/img/gitlist.svg" class="hidden-xs" id="p3x-gitlist-navigation-brand-icon">
+                <img src="/img/gitlist.svg" class="visible-xs p3x-gitlist-navigation-brand-icon-small" id="p3x-gitlist-navigation-brand-icon" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Unofficial Bioconductor Git Browser">
             </a>
-            <a class="navbar-brand hidden-xs" href="/gitlist/">
+            <a class="navbar-brand hidden-xs" href="/">
                 Unofficial Bioconductor Git Browser
             </a>
 
@@ -56,14 +56,15 @@
 $(document).ready( function () {
     $('#example').DataTable( {
     	"pageLength": 25,
-        "ajax": 'packages_new.json'
+        "ajax": 'packages.json',
+        "order": [[ 1, "desc" ]]
     });
 } );
 </script>
 
 <footer id="p3x-gitlist-footer" class="container">
     <p>Powered by <a target="_blank" href="https://github.com/patrikx3/gitlist">P3X GitList</a></p>
-    <p>Hosted by the <a href="https://cloud.denbi.de/">de.NBI Cloud </a><img src="/gitlist/img/denbi-icon.png" style="vertical-align: text-top;height: 16px"></p>
+    <p>Hosted by the <a href="https://cloud.denbi.de/">de.NBI Cloud </a><img src="/img/denbi-icon.png" style="vertical-align: text-top;height: 16px"></p>
 </footer>
 
 </div>
