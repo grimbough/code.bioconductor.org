@@ -1,0 +1,55 @@
+FROM ubuntu:latest
+LABEL maintainer "Mike Smith <mike.smith@embl.de>"
+ENV COMPOSER_PROCESS_TIMEOUT=3600
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ="Europe/Berlin"
+
+RUN apt-get -y update
+RUN apt-get -y install apt-utils
+RUN apt-get -y install git
+RUN apt-get -y install php --allow-unauthenticated
+RUN apt-get -y install php-fpm --allow-unauthenticated
+RUN apt-get -y install php-xml
+RUN apt-get -y install curl
+RUN apt-get -y install git
+RUN apt-get -y install composer
+RUN apt-get -y install apache2
+RUN apt-get -y install nano
+
+# node
+RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
+RUN apt-get -y install nodejs
+RUN node -v
+
+RUN git clone https://github.com/grimbough/gitlist.git 
+WORKDIR ./gitlist
+RUN ./scripts/build.sh
+
+RUN ln -s ./build/p3x-gitlist /var/www/gitlist
+RUN mkdir -p /var/git
+
+RUN mkdir -p /run/php
+RUN echo "cgi.fix_pathinfo = 0;" >> /etc/php/7.4/fpm/php.ini
+RUN echo "max_input_vars = 10000;" >> /etc/php/7.4/fpm/php.ini
+RUN echo "max_execution_time = 10000;" >> /etc/php/7.4/fpm/php.ini
+RUN echo "date.timezone = Europe/Berlin;" >> /etc/php/7.4/fpm/php.ini
+RUN sed -i 's/;daemonize = yes/daemonize = no/g' /etc/php/7.4/fpm/php-fpm.conf
+
+## configure apache2
+RUN sed -i 's=/var/www/html=/var/www/gitlist/public=g' /etc/apache2/sites-available/000-default.conf 
+ADD gitlist.conf /etc/apache2/conf-available/
+RUN a2enconf gitlist
+RUN a2enconf php7.4-fpm
+RUN a2enmod rewrite
+
+## custom home page
+ADD json.html /var/www/gitlist/public/index.html
+ADD css /var/www/gitlist/public/css
+RUN ln -s /var/git/packages.json /var/www/gitlist/public
+
+RUN chown -R www-data:www-data /var/www/gitlist
+RUN chown -R www-data:www-data /var/git
+
+EXPOSE 80
+
+CMD ["apachectl", "-D", "FOREGROUND"]
