@@ -15,7 +15,7 @@ RUN go get github.com/google/zoekt/
 
 RUN go install github.com/google/zoekt/cmd/zoekt-webserver
 
-RUN mkdir $HOME/zoekt $HOME/repositories
+RUN mkdir /var/zoekt
 
 WORKDIR /root
 
@@ -23,7 +23,7 @@ ADD ./templates /root/templates
 
 EXPOSE 6070
 
-ENTRYPOINT ["/root/go/bin/zoekt-webserver", "-listen", ":6070", "-index", "/root/zoekt", "-template_dir", "/root/templates"]
+ENTRYPOINT ["/root/go/bin/zoekt-webserver", "-listen", ":6070", "-index", "/var/zoekt", "-template_dir", "/root/templates"]
 
 #RUN bash
 
