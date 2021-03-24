@@ -4,20 +4,20 @@ if(!nzchar(REPO_DIR)) {
     "Please set the GIT_REPOS_DIR environment variable.")
 }
 
-getPackagesToUpdate <- function() {
+getPackagesToUpdate <- function(manifest, n_minutes = 20) {
 
     feed <- suppressMessages(
         tidyfeed('https://bioconductor.org/developers/rss-feeds/gitlog.xml')
     )
 
     feed %>% 
-	    filter(item_pub_date > lubridate::now() - minutes(20)) %>% 
+	    filter(item_pub_date > (lubridate::now() - minutes(n_minutes)), item_title %in% manifest) %>% 
 	    magrittr::extract2("item_title") %>% 
 	    unique() 
 }
 
 getManifest <- function(repo_dir = tempdir(), n_pkgs) {
-    message("Aquiring list of packages... ", appendLF = FALSE)
+    printMessage("Aquiring list of packages... ", 0, appendLF = FALSE)
     output_dir <- file.path(repo_dir, "manifest")
     if(!dir.exists(output_dir)) {
         gert::git_clone("https://git.bioconductor.org/admin/manifest", 
@@ -60,7 +60,12 @@ checkoutBranches <- function(pkg_name, repo_dir) {
     if(!dir.exists(repo)) {
     } else {
         printMessage("Checking out branches... ", 2)
-        branches <- gert::git_branch_list(local = FALSE, repo = repo)
+        
+        ## only interested in RELEASE and master branches
+        branches <- gert::git_branch_list(local = FALSE, repo = repo) %>%
+            filter(grepl("(RELEASE_[1-9]_[1-9]{1,3}$|master)", name)) %>%
+            arrange(desc(name))
+        
         for(b in branches$name) {
             printMessage(basename(b), 4)
             suppressMessages(
@@ -77,15 +82,16 @@ updateBranches <- function(pkg_name, repo_dir) {
     repo <- gsub("//", "/", repo)
     
     printMessage("Updating branches... ", 2, appendLF = FALSE)
-    
-    branches <- gert::git_branch_list(local = TRUE, repo = repo)
+
+    ## update any branch changed in the last 30 minutes    
+    branches <- gert::git_branch_list(local = TRUE, repo = repo) %>%
+        filter(updated > (lubridate::now() - minutes(30)))
     for(b in branches$name) {
-        ## update any branch changed in the last 30 minutes
-        if(branches$updated > (lubridate::now() - minutes(30))) {
-            gert::git_branch_checkout(branch = b, repo = repo)
-            gert::git_pull(repo = repo)
-        }
+        gert::git_branch_checkout(branch = b, repo = repo)
+        gert::git_pull(repo = repo)
     }
+    ## finsh with the master branch checkout
+    gert::git_branch_checkout(branch = "master", repo = repo)
     message("done")
 }
 
@@ -97,23 +103,25 @@ processMostRecentCommit <- function(pkg_name, repo_dir) {
         stop("directory doesn't exist")
     }
     
-    recent_commits <- lapply(BRANCHES, gert::git_log, max = 1, repo = repo)
-    ## determine whether the master or release branch was most recent
-    idx <- ifelse(recent_commits[[2]]$time >= recent_commits[[2]]$time, 2, 1)
+    ## sort branches by commit time and then by name
+    ## sorting by name puts master first when release bumps have the same timestamp
+    most_recent_commit <- gert::git_branch_list(local = TRUE, repo = repo) %>% 
+        arrange(desc(updated), name) %>% 
+        slice(1)
     
-    branch <- BRANCHES[idx]
-    commit <- recent_commits[[idx]]
-    author <- commit$author
-    date <- commit$time
+    branch <- most_recent_commit$name[1]
+    commit_log <- git_log(ref = branch, max = 1, repo = repo)
+    author <- gsub(pattern = "( <.*>)", replacement = "", x = commit_log$author)
+    date <- commit_log$time
     
-    msg <- commit$message
+    msg <- commit_log$message
     if(nchar(msg) > 80) { 
         msg <- paste0(strtrim(msg, 80), "...")
     }
     
     json_content <- c(
-        paste0("<i class='fas fa-folder'></i>&nbsp;<a href=\\\"/", pkg_name, "\\\">", pkg_name, "</a>"),
-        paste0(date, " by ", author, " to ", branch, "&nbsp;<span class=\\\"subject\\\">", msg, "</span>")
+        paste0("<i class='fas fa-folder'></i>&nbsp;<a href='/", pkg_name, "'>", pkg_name, "</a>"),
+        paste0(with_tz(date, "UTC"), "UTC by ", author, " to ", branch, "&nbsp;<span class='subject'>", msg, "</span>")
     )
     return(json_content)
 }
@@ -126,15 +134,28 @@ initialiseRepositories <- function(repo_dir) {
     commit_messages <- list()
     
     for(pkg in pkgs) {
-        message(pkg)
+        printMessage(paste0("Package: ", pkg), 0)
         clonePackage(pkg, repo_dir = repo_dir)
         checkoutBranches(pkg, repo_dir = repo_dir)
-        commit_messages[[pkg]] <- processMostRecentCommit(pkg, repo_dir = repo_dir)
     }
     
+    updateCommitMessages(repo_dir = repo_dir, manifest = pkgs)
+}
+
+updateCommitMessages <- function(repo_dir, manifest) {
+    
+    pkgs <- list.dirs(repo_dir, recursive = FALSE, full.names = FALSE)
+    if(any(!pkgs %in% manifest)) {
+        pkgs <- pkgs[pkgs %in% manifest]
+    }
+    
+    commit_messages <- lapply(pkgs, processMostRecentCommit, repo_dir = repo_dir)
+    
     ## munging to get json in the format for DataTable HTML
+    printMessage("Writing packages.json... ", 0, appendLF = FALSE)
     json_pkg_list <- toJSON(list(data = do.call(rbind, commit_messages)), pretty = TRUE)
     writeLines(json_pkg_list, con = file.path(repo_dir, "packages.json"))
+    message("done")
     
 }
 
@@ -142,11 +163,11 @@ printMessage <- function(msg, n, appendLF = TRUE) {
     message("[ ", Sys.time(), " ] ", rep(" ", n), msg, appendLF = appendLF)
 }
 
-updateRepositories <- function(repo_dir) {
+updateRepositories <- function(repo_dir, manifest) {
 
     printMessage("Updating repositories", 0)
     
-    pkgs <- getPackagesToUpdate()
+    pkgs <- getPackagesToUpdate(manifest = manifest)
     if(length(pkgs) == 0) {
         printMessage("None found", 2)
         return(FALSE)
@@ -162,8 +183,9 @@ updateRepositories <- function(repo_dir) {
             }
             
         }
+        printMessage("Finished updating repositories", 0)
+        return(TRUE)
     }
-    printMessage("Finished updating repositories", 0)
 }
 
 suppressPackageStartupMessages(library(lubridate))
@@ -175,5 +197,9 @@ suppressPackageStartupMessages(library(jsonlite))
 if(length(list.files(REPO_DIR, "")) == 0) {
     initialiseRepositories(repo_dir = REPO_DIR)
 } else {
-    updateRepositories(repo_dir = REPO_DIR)
+    manifest <- getManifest()
+    update <- updateRepositories(repo_dir = REPO_DIR, manifest = manifest)
+    if(update) {
+        updateCommitMessages(repo_dir = REPO_DIR, manifest = manifest)
+    }
 }
