@@ -1,20 +1,13 @@
-FROM ubuntu:latest
+FROM ubuntu:20.04
 LABEL maintainer "Mike Smith <mike.smith@embl.de>"
+
 ENV COMPOSER_PROCESS_TIMEOUT=3600
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ="Europe/Berlin"
 
-RUN apt-get -y update
-RUN apt-get -y install apt-utils
-RUN apt-get -y install git
-RUN apt-get -y install php --allow-unauthenticated
-RUN apt-get -y install php-fpm --allow-unauthenticated
-RUN apt-get -y install php-xml
-RUN apt-get -y install curl
-RUN apt-get -y install git
-RUN apt-get -y install composer
-RUN apt-get -y install apache2
-RUN apt-get -y install nano
+RUN apt-get -y update && \
+    apt-get -y install apt-utils git curl composer apache2 nano php php-xml php-fpm && \
+    rm -rf /var/lib/apt/lists/*
 
 # node
 RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
@@ -47,6 +40,7 @@ ADD css /var/www/gitlist/public/css
 ADD json.html /var/www/gitlist/public/index.html
 RUN ln -s /var/git/packages.json /var/www/gitlist/public
 
+## set permissions
 RUN chown -R www-data:www-data /var/www/gitlist
 RUN chown -R www-data:www-data /var/git
 RUN chown -R www-data:www-data /gitlist/build/p3x-gitlist/cache
