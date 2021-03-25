@@ -9,9 +9,9 @@ RUN apt-get update -y && \
 ## install required R packages
 RUN Rscript -e "install.packages(c('dplyr', 'lubridate', 'tidyRSS', 'gert', 'jsonlite'), quiet = TRUE)"
 
-ADD check_rss_feed.R /root/
+ADD *.R /root/
 
-RUN mkdir $HOME/repositories
+RUN mkdir /var/git
 
 WORKDIR /root
 
