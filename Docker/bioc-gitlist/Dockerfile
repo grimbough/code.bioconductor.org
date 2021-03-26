@@ -39,6 +39,7 @@ RUN a2enmod rewrite
 
 ## custom home page
 ADD css /var/www/gitlist/public/css
+ADD img /var/www/gitlist/public/img
 ADD json.html /var/www/gitlist/public/index.html
 RUN ln -s /var/git/packages.json /var/www/gitlist/public
 
