@@ -19,8 +19,6 @@ WORKDIR /root
 
 ADD ./templates /root/templates
 
-EXPOSE 6070
+EXPOSE 8080
 
-ENTRYPOINT ["/root/go/bin/zoekt-webserver", "-listen", ":6070", "-index", "/var/zoekt", "-template_dir", "/root/templates"]
-
-
+ENTRYPOINT ["/root/go/bin/zoekt-webserver", "-listen", ":8080", "-index", "/var/zoekt", "-template_dir", "/root/templates"]
