@@ -14,7 +14,9 @@ cleanDir <- function(repo_dir) {
 getPackagesToUpdate <- function(manifest, n_minutes = 20) {
     
     feed <- suppressMessages(
-        tidyfeed('https://bioconductor.org/developers/rss-feeds/gitlog.xml')
+        tidyfeed('https://bioconductor.org/developers/rss-feeds/gitlog.xml', 
+                 parse_dates = FALSE) %>%
+            mutate(item_date = as.POSIXct(item_pub_date, format = "%F %T %z"))
     )
     
     feed %>% 
