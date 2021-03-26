@@ -37,7 +37,7 @@ getManifest <- function(repo_dir = tempdir(), n_pkgs) {
                      what = character(), quiet = TRUE,
                      blank.lines.skip=TRUE, sep = "\n", skip = 1)
     manifest <- gsub("Package: ", "", x = manifest, fixed = TRUE)
-    if(!missing(n_pkgs)) {
+    if(is.finite(n_pkgs)) {
         manifest <- manifest[seq_len(n_pkgs)]
     }
     message("done")
@@ -141,12 +141,10 @@ processMostRecentCommit <- function(pkg_name, repo_dir) {
 }
 
 
-initialiseRepositories <- function(repo_dir) {
+initialiseRepositories <- function(repo_dir, n_pkgs) {
     
-    pkgs <- getManifest(n_pkgs = 25)
-    
-    commit_messages <- list()
-    
+    pkgs <- getManifest(n_pkgs = n_pkgs)
+
     for(pkg in pkgs) {
         printMessage(paste0("Package: ", pkg), 0)
         clonePackage(pkg, repo_dir = repo_dir)
