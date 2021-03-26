@@ -1,13 +1,26 @@
-FROM r-base:4.0.4
+FROM alpine:3.13.2
 LABEL maintainer "Mike Smith <mike.smith@embl.de>"
 
+ENV TZ="Europe/Berlin"
+
 ## install required system libraries
-RUN apt-get update -y && \
-    apt-get install -y libgit2-dev libssl-dev libxml2-dev libcurl4-openssl-dev && \
-    rm -rf /var/lib/apt/lists/*
+RUN apk --no-cache add \
+        gcc \
+        g++ \
+        make \
+        bash \
+        tzdata \
+        libgit2-dev \
+        curl-dev \
+        libxml2-dev \
+        openssl-dev \
+        R \
+        R-dev \
+        R-doc
 
 ## install required R packages
-RUN Rscript -e "install.packages(c('dplyr', 'lubridate', 'tidyRSS', 'gert', 'jsonlite'), quiet = TRUE)"
+RUN Rscript  -e "chooseCRANmirror(graphics = FALSE, ind = 1)" \
+             -e "install.packages(c('dplyr', 'tidyRSS', 'gert', 'jsonlite'), quiet = FALSE)"
 
 ADD *.R /root/
 
