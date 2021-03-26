@@ -1,3 +1,11 @@
+args <- commandArgs(trailingOnly=TRUE)
+
+if(length(args) >= 1 && args[1] == "clean") {
+    CLEAN <- TRUE
+} else {
+    CLEAN <- FALSE
+}
+
 REPO_DIR <- Sys.getenv("GIT_REPOS_DIR")
 if(!nzchar(REPO_DIR)) {
     stop("Repo directory not set\n",
@@ -6,13 +14,15 @@ if(!nzchar(REPO_DIR)) {
 
 source("git_update_functions.R")
 
-suppressPackageStartupMessages(library(lubridate))
 suppressPackageStartupMessages(library(dplyr))
 suppressPackageStartupMessages(library(tidyRSS))
 suppressPackageStartupMessages(library(gert))
 suppressPackageStartupMessages(library(jsonlite))
 
-if(length(list.files(REPO_DIR, "")) == 0) {
+existing_pkgs <- list.dirs(REPO_DIR, recursive = FALSE)
+
+if(length(existing_pkgs) == 0 || CLEAN) {
+    cleanDir(repo_dir = REPO_DIR)
     initialiseRepositories(repo_dir = REPO_DIR)
 } else {
     manifest <- getManifest()

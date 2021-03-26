@@ -2,6 +2,15 @@ printMessage <- function(msg, n, appendLF = TRUE) {
     message("[ ", Sys.time(), " ] ", rep(" ", n), msg, appendLF = appendLF)
 }
 
+cleanDir <- function(repo_dir) {
+    existing_pkgs <- list.dirs(repo_dir, recursive = FALSE)
+    if(length(existing_pkgs)) {
+        printMessage("Deleting existing packages... ", 0, appendLF = FALSE)
+        unlink(existing_pkgs, recursive = TRUE)
+        message("done")
+    }
+}
+
 getPackagesToUpdate <- function(manifest, n_minutes = 20) {
     
     feed <- suppressMessages(
@@ -9,7 +18,7 @@ getPackagesToUpdate <- function(manifest, n_minutes = 20) {
     )
     
     feed %>% 
-        filter(item_pub_date > (lubridate::now() - minutes(n_minutes)), item_title %in% manifest) %>% 
+        filter(item_pub_date > (Sys.time() - (60 *n_minutes)), item_title %in% manifest) %>% 
         magrittr::extract2("item_title") %>% 
         unique() 
 }
@@ -83,7 +92,7 @@ updateBranches <- function(pkg_name, repo_dir) {
     
     ## update any branch changed in the last 30 minutes    
     branches <- gert::git_branch_list(local = TRUE, repo = repo) %>%
-        filter(updated > (lubridate::now() - minutes(30)))
+        filter(updated > (Sys.time() - (60 * 30)))
     for(b in branches$name) {
         gert::git_branch_checkout(branch = b, repo = repo)
         gert::git_pull(repo = repo)
@@ -124,7 +133,7 @@ processMostRecentCommit <- function(pkg_name, repo_dir) {
     
     json_content <- c(
         paste0("<i class='fas fa-folder'></i>&nbsp;<a href='/", pkg_name, "'>", pkg_name, "</a>"),
-        paste0(with_tz(date, "UTC"), " UTC by ", author, " to ", branch, "&nbsp;<span class='subject'>", msg, "</span>")
+        paste0(format(date, tz = "UTC"), " UTC by ", author, " to ", branch, "&nbsp;<span class='subject'>", msg, "</span>")
     )
     return(json_content)
 }
