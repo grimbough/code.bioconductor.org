@@ -4,7 +4,7 @@ GOPATH=$HOME/go
 
 echo -n "creating Zoekt index... "
 
-INDEX_DIR="${ZOEKT_INDEX_DIR}"
+INDEX_DIR="${CONTAINER_ZOEKT_IDX_DIR}"
 REPOS="${GIT_REPOS_DIR}"
 
 for dir in "$REPOS"/*/     # list directories in the form "/tmp/dirname/"

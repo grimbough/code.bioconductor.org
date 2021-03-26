@@ -26,7 +26,7 @@ docker run -it --env GIT_REPOS_DIR=${CONTAINER_REPO_DIR} \
 Run the zoekt indexer.  This should be run after the git repositories have been updated.
 
 ```bash
-docker run -it --env ZOEKT_INDEX_DIR=${CONTAINER_ZOEKT_IDX_DIR} \
+docker run -it --env CONTAINER_ZOEKT_IDX_DIR=${CONTAINER_ZOEKT_IDX_DIR} \
   --env GIT_REPOS_DIR=${CONTAINER_REPO_DIR} \
   --mount type=bind,source=${LOCAL_REPO_DIR},target=${CONTAINER_REPO_DIR} \
   --mount type=bind,source=${LOCAL_ZOEKT_IDX_DIR},target=${CONTAINER_ZOEKT_IDX_DIR} \
