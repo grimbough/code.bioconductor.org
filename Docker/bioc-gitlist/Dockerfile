@@ -29,6 +29,8 @@ RUN ln -s /gitlist/build/p3x-gitlist /var/www/gitlist
 RUN mkdir -p /var/git
 
 ## configure apache2
+RUN sed -i 's=Listen 80=Listen 8080=g' /etc/apache2/ports.conf
+RUN sed -i 's=:80>=:8080>=g' /etc/apache2/sites-available/000-default.conf 
 RUN sed -i 's=/var/www/html=/var/www/gitlist/public=g' /etc/apache2/sites-available/000-default.conf 
 ADD gitlist.conf /etc/apache2/conf-available/
 RUN a2enconf gitlist
@@ -45,6 +47,6 @@ RUN chown -R www-data:www-data /var/www/gitlist
 RUN chown -R www-data:www-data /var/git
 RUN chown -R www-data:www-data /gitlist/build/p3x-gitlist/cache
 
-EXPOSE 80
+EXPOSE 8080
 
 CMD ["apachectl", "-D", "FOREGROUND"]
