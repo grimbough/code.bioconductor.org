@@ -179,7 +179,7 @@ updateRepositories <- function(repo_dir, manifest) {
     
     pkgs <- getPackagesToUpdate(manifest = manifest)
     if(length(pkgs) == 0) {
-        printMessage("None found", 2)
+        printMessage("No updates found", 2)
         return(FALSE)
     } else {
         for(pkg in pkgs) {

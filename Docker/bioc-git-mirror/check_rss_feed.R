@@ -1,13 +1,16 @@
 args <- commandArgs(trailingOnly=TRUE)
 
+## should the existing set of packages be deleted?
 if(length(args) >= 1 && ("--clean" %in% args)) {
     CLEAN <- TRUE
 } else {
     CLEAN <- FALSE
 }
 
-if(length(args) >= 1 && grepl("--npkgs=[0-9]*", args)) {
-    n_pkgs <- as.integer(gsub("--npkgs=([0-9]*)", "\\1", args))
+## process argument specifying number of packages to initialise with
+if(length(args) >= 1 && any(grepl("--npkgs=[0-9]*", args))) {
+    arg <- args[grepl("--npkgs=[0-9]*", args)]
+    n_pkgs <- as.integer(gsub("--npkgs=([0-9]*)", "\\1", arg))
 } else {
     n_pkgs <- Inf
 }
