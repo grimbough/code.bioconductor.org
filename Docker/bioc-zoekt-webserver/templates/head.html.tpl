@@ -39,6 +39,11 @@
   }
   :target { background-color: #ccf; }
   table tbody tr td { border: none !important; padding: 2px !important; }
+
+  .btn-primary {
+      background-color: #1a81c2;
+      border-color: #1a81c2;
+  }
 </style>
 </head>
   
