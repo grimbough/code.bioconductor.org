@@ -22,10 +22,13 @@ RUN apk --no-cache add \
 RUN Rscript  -e "chooseCRANmirror(graphics = FALSE, ind = 1)" \
              -e "install.packages(c('dplyr', 'tidyRSS', 'gert', 'jsonlite'), quiet = FALSE)"
 
-ADD *.R /root/
+ADD *.R /var/R/
 
 RUN mkdir /var/git
 
-WORKDIR /root
+RUN adduser --disabled-password --no-create-home --uid 82 www-data
+USER www-data
+
+WORKDIR /var/R
 
 ENTRYPOINT ["Rscript", "check_rss_feed.R"]

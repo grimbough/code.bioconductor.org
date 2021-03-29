@@ -43,10 +43,13 @@ ADD img /var/www/gitlist/public/img
 ADD json.html /var/www/gitlist/public/index.html
 RUN ln -s /var/git/packages.json /var/www/gitlist/public
 
+## map www-data to the same UID as Alpine uses
+RUN usermod -u 82 www-data && groupmod -g 82 www-data
+
 ## set permissions
 RUN chown -R www-data:www-data /var/www/gitlist
 RUN chown -R www-data:www-data /var/git
-RUN chown -R www-data:www-data /gitlist/build/p3x-gitlist/cache
+RUN chown -R www-data:www-data /gitlist/build/p3x-gitlist
 
 EXPOSE 8080
 
