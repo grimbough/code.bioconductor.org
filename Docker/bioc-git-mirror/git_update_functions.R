@@ -81,6 +81,8 @@ checkoutBranches <- function(pkg_name, repo_dir) {
                 gert::git_branch_checkout(branch = basename(b), repo = repo)
             )
         }
+        ## finsh with the master branch checkout
+        gert::git_branch_checkout(branch = "master", repo = repo)
         printMessage("done", 2)
     }
 }
