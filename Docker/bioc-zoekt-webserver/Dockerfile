@@ -13,6 +13,8 @@ RUN go get -u golang.org/x/sys/... \
 
 RUN go install github.com/google/zoekt/cmd/zoekt-webserver
 
+
+
 FROM alpine:3.13.2
 
 COPY --from=zoekt-webserver /root/go/bin/* /usr/local/bin/
@@ -24,5 +26,4 @@ ADD ./templates /var/templates
 
 EXPOSE 8080
 
-#ENTRYPOINT ["/home/www-data/go/bin/zoekt-webserver", "-listen", ":8080", "-index", "/var/zoekt", "-template_dir", "/var/templates"]
 ENTRYPOINT ["zoekt-webserver", "-listen", ":8080", "-index", "/var/zoekt", "-template_dir", "/var/templates"]
