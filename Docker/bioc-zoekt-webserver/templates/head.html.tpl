@@ -44,6 +44,11 @@
       background-color: #1a81c2;
       border-color: #1a81c2;
   }
+
+  .jumbotron {
+    padding-top: 35px;
+    padding-bottom: 35px;
+  }
 </style>
 </head>
   

@@ -40,7 +40,7 @@
       <tbody>
         {{range .Matches}}
         <tr>
-          <td style="background-color: rgba(26, 129, 194, 0.3);">
+          <td style="background-color: rgba(26, 129, 194, 0.1);">
             <pre class="inline-pre"><span class="noselect">{{if .URL}}<a href="{{.URL}}">{{end}}<u>{{.LineNum}}</u>{{if .URL}}</a>{{end}}: </span>{{range .Fragments}}{{LimitPre 100 .Pre}}<b>{{.Match}}</b>{{LimitPost 100 .Post}}{{end}}</pre>
           </td>
         </tr>

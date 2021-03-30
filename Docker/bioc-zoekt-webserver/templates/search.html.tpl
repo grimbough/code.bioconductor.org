@@ -1,11 +1,24 @@
 
 <html>
 {{template "head"}}
-<title>BioC Code Search</title>
+<title>Bioconductor Code Search</title>
 <body>
-  {{template "navbar" .Last}}
+
+  <div class="container-fluid">
+    <div class="row" style="padding: 10px;">
+    <div class="col-sm text-center">
+      <img src="https://www.bioconductor.org/images/logo/jpg/bioconductor_logo_rgb.jpg" style="height: 140px;">
+    </div>
+    </div>  
+  </div>
+
   <div class="jumbotron">
     <div class="container">
+      <div class="row">
+        <div class="col-md-12 text-center">
+          <h3>Search across all Bioconductor software packages</h3>
+        </div>
+      </div>
       {{template "searchbox" .Last}}
     </div>
   </div>
@@ -17,15 +30,15 @@
         <dl class="dl-horizontal">
           <dt><a href="search?q=needle">needle</a></dt><dd>search for "needle"</dd>
           <dt><a href="search?q=thread+or+needle">thread or needle</a></dt><dd>search for either "thread" or "needle"</dd>
-          <dt><a href="search?q=class+needle">class needle</a></span></dt><dd>search for files containing both "class" and "needle"</dd>
-          <dt><a href="search?q=class+Needle">class Needle</a></dt><dd>search for files containing both "class" (case insensitive) and "Needle" (case sensitive)</dd>
-          <dt><a href="search?q=class+Needle+case:yes">class Needle case:yes</a></dt><dd>search for files containing "class" and "Needle", both case sensitively</dd>
-          <dt><a href="search?q=%22class Needle%22">"class Needle"</a></dt><dd>search for files with the phrase "class Needle"</dd>
+          <dt><a href="search?q=class+matrix">class needle</a></span></dt><dd>search for files containing both "class" and "matrix"</dd>
+          <dt><a href="search?q=class+Matrix">class Matrix</a></dt><dd>search for files containing both "class" (case insensitive) and "Matrix" (case sensitive)</dd>
+          <dt><a href="search?q=class+Matrix+case:yes">class Matrix case:yes</a></dt><dd>search for files containing "class" and "Matrix", both case sensitively</dd>
+          <dt><a href="search?q=%22class Matrix%22">"class Matrix"</a></dt><dd>search for files with the phrase "class Matrix"</dd>
           <dt><a href="search?q=needle+-hay">needle -hay</a></dt><dd>search for files with the word "needle" but not the word "hay"</dd>
           <dt><a href="search?q=path+file:java">path file:java</a></dt><dd>search for the word "path" in files whose name contains "java"</dd>
           <dt><a href="search?q=needle+lang%3Apython&num=50">needle lang:python</a></dt><dd>search for "needle" in Python source code</dd>
           <dt><a href="search?q=f:%5C.R%24">f:\.R$</a></dt><dd>search for files whose name ends with ".R"</dd>
-          <dt><a href="search?q=path+-file:java">path -file:java</a></dt><dd>search for the word "path" excluding files whose name contains "java"</dd>
+          <dt><a href="search?q=path+-file:Rd">path -file:Rd</a></dt><dd>search for the word "path" excluding files whose name contains "Rd"</dd>
           <dt><a href="search?q=foo.*bar">foo.*bar</a></dt><dd>search for the regular expression "foo.*bar"</dd>
           <dt><a href="search?q=-%28Path File%29 Stream">-(Path File) Stream</a></dt><dd>search "Stream", but exclude files containing both "Path" and "File"</dd>
           <dt><a href="search?q=-Path%5c+file+Stream">-Path\ file Stream</a></dt><dd>search "Stream", but exclude files containing "Path File"</dd>
@@ -36,7 +49,7 @@
         </dl>
       </div>
       <div class="col-md-4">
-        <h3>To list repositories, try:</h3>
+        <h3>To list packages, try:</h3>
         <dl class="dl-horizontal">
           <dt><a href="search?q=r:Affy">r:Affy</a></dt><dd>list packages whose name contains "Affy".</dd>
           <dt><a href="search?q=r:Affy+-r:Data">r:Affy -r:Data</a></dt><dd>list packages whose name contains "Affy" but not "Data".</dd>

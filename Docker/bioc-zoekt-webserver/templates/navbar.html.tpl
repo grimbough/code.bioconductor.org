@@ -2,7 +2,9 @@
 <nav class="navbar navbar-default">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand" href="/">BioC Code Search</a>
+      <a class="navbar-brand" href="/" style="padding-top: 0; padding-bottom: 0;">
+        <img src="https://support.bioconductor.org/static/transparent-logo.png" style="height: 50px;"></img>
+      </a>
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false">
         <span class="sr-only">Toggle navigation</span>
         <span class="icon-bar"></span>
