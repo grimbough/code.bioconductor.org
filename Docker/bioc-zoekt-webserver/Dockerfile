@@ -1,8 +1,8 @@
-FROM alpine:3.13.2
+FROM alpine:3.13.2 AS zoekt-webserver
 LABEL maintainer "Mike Smith <mike.smith@embl.de>"
 
 # We need go, git, bash, and musl-dev for zoekt-git-index
-RUN apk add --no-cache go git bash
+RUN apk add --no-cache go git 
 
 RUN go get -u golang.org/x/sys/... \
     golang.org/x/sync/semaphore \
@@ -13,12 +13,16 @@ RUN go get -u golang.org/x/sys/... \
 
 RUN go install github.com/google/zoekt/cmd/zoekt-webserver
 
-RUN mkdir /var/zoekt
+FROM alpine:3.13.2
 
-WORKDIR /root
+COPY --from=zoekt-webserver /root/go/bin/* /usr/local/bin/
 
-ADD ./templates /root/templates
+RUN adduser --disabled-password --uid 82 www-data
+USER www-data
+
+ADD ./templates /var/templates
 
 EXPOSE 8080
 
-ENTRYPOINT ["/root/go/bin/zoekt-webserver", "-listen", ":8080", "-index", "/var/zoekt", "-template_dir", "/root/templates"]
+#ENTRYPOINT ["/home/www-data/go/bin/zoekt-webserver", "-listen", ":8080", "-index", "/var/zoekt", "-template_dir", "/var/templates"]
+ENTRYPOINT ["zoekt-webserver", "-listen", ":8080", "-index", "/var/zoekt", "-template_dir", "/var/templates"]
