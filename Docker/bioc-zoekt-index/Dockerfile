@@ -1,6 +1,8 @@
-FROM alpine:3.11 AS zoekt-index
+FROM alpine:3.13 AS zoekt-index
 
 RUN apk --no-cache add go git
+
+ENV CGO_ENABLED=0
 
 RUN go get -u golang.org/x/sys/... \
     golang.org/x/sync/semaphore \
@@ -13,7 +15,7 @@ RUN go install github.com/google/zoekt/cmd/zoekt-index
 
 
 
-FROM alpine:3.11
+FROM alpine:3.13
 LABEL maintainer "Mike Smith <mike.smith@embl.de>"
 
 COPY --from=zoekt-index /root/go/bin/* /usr/local/bin/
