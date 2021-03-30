@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 GOPATH=$HOME/go
 
@@ -11,7 +11,7 @@ for dir in "$REPOS"/*/     # list directories in the form "/tmp/dirname/"
 do
 	PACKAGE=${dir%*/}
 	echo "$PACKAGE"
-	$GOPATH/bin/zoekt-index -index "$INDEX_DIR" "$PACKAGE" 
+	zoekt-index -index "$INDEX_DIR" "$PACKAGE" 
 done
 
 echo "done"
