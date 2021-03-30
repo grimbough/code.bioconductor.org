@@ -15,20 +15,16 @@ RUN apk --no-cache add \
         libxml2-dev \
         openssl-dev \
         R \
-        R-dev \
-        R-doc
+        R-dev
 
 ## install required R packages
 RUN Rscript  -e "chooseCRANmirror(graphics = FALSE, ind = 1)" \
-             -e "install.packages(c('dplyr', 'tidyRSS', 'gert', 'jsonlite'), quiet = FALSE)"
-
-ADD *.R /var/R/
-
-RUN mkdir /var/git
+             -e "install.packages(c('dplyr', 'tidyRSS', 'gert', 'jsonlite'), quiet = TRUE)"
 
 RUN adduser --disabled-password --no-create-home --uid 82 www-data
 USER www-data
 
+ADD *.R /var/R/
 WORKDIR /var/R
 
 ENTRYPOINT ["Rscript", "check_rss_feed.R"]

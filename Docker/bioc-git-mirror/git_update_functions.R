@@ -11,7 +11,7 @@ cleanDir <- function(repo_dir) {
     }
 }
 
-getPackagesToUpdate <- function(manifest, n_minutes = 20) {
+getPackagesToUpdate <- function(manifest, n_minutes = 60) {
     
     feed <- suppressMessages(
         tidyfeed('https://bioconductor.org/developers/rss-feeds/gitlog.xml', 
@@ -20,7 +20,7 @@ getPackagesToUpdate <- function(manifest, n_minutes = 20) {
     )
     
     feed %>% 
-        filter(item_pub_date > (Sys.time() - (60 *n_minutes)), item_title %in% manifest) %>% 
+        filter(item_pub_date > (Sys.time() - (60 * n_minutes)), item_title %in% manifest) %>% 
         magrittr::extract2("item_title") %>% 
         unique() 
 }
@@ -96,7 +96,7 @@ updateBranches <- function(pkg_name, repo_dir) {
     
     ## update any branch changed in the last 30 minutes    
     branches <- gert::git_branch_list(local = TRUE, repo = repo) %>%
-        filter(updated > (Sys.time() - (60 * 30)))
+        filter(updated > (Sys.time() - (60 * 60)))
     for(b in branches$name) {
         gert::git_branch_checkout(branch = b, repo = repo)
         gert::git_pull(repo = repo)
