@@ -28,15 +28,16 @@
       <div class="col-md-8">
         <h3>Search examples:</h3>
         <dl class="dl-horizontal">
-          <dt><a href="search?q=needle">needle</a></dt><dd>search for "needle"</dd>
-          <dt><a href="search?q=thread+or+needle">thread or needle</a></dt><dd>search for either "thread" or "needle"</dd>
-          <dt><a href="search?q=class+matrix">class needle</a></span></dt><dd>search for files containing both "class" and "matrix"</dd>
+          <dt><a href="search?q=matrix">matrix</a></dt><dd>search for "matrix"</dd>
+          <dt><a href="search?q=matrix+or+array">matrix or array</a></dt><dd>search for either "matrix" or "array"</dd>
+          <dt><a href="search?q=class+matrix">class matrix</a></span></dt><dd>search for files containing both "class" and "matrix"</dd>
           <dt><a href="search?q=class+Matrix">class Matrix</a></dt><dd>search for files containing both "class" (case insensitive) and "Matrix" (case sensitive)</dd>
           <dt><a href="search?q=class+Matrix+case:yes">class Matrix case:yes</a></dt><dd>search for files containing "class" and "Matrix", both case sensitively</dd>
           <dt><a href="search?q=%22class Matrix%22">"class Matrix"</a></dt><dd>search for files with the phrase "class Matrix"</dd>
           <dt><a href="search?q=needle+-hay">needle -hay</a></dt><dd>search for files with the word "needle" but not the word "hay"</dd>
-          <dt><a href="search?q=path+file:java">path file:java</a></dt><dd>search for the word "path" in files whose name contains "java"</dd>
-          <dt><a href="search?q=needle+lang%3Apython&num=50">needle lang:python</a></dt><dd>search for "needle" in Python source code</dd>
+          <dt><a href="search?q=path+file:Rd">matrix file:Rd</a></dt><dd>search for the word "matrix" in files whose name contains "Rd"</dd>
+          <dt><a href="search?q=path+file:(R|r)$">matrix file:(R|r)$</a></dt><dd>search for the word "matrix" in files whose name ends with either "R" or "r"</dd>
+          <dt><a href="search?q=matrix+lang%3Ac&num=50">matrix lang:c</a></dt><dd>search for "matrix" in C source code</dd>
           <dt><a href="search?q=f:%5C.R%24">f:\.R$</a></dt><dd>search for files whose name ends with ".R"</dd>
           <dt><a href="search?q=path+-file:Rd">path -file:Rd</a></dt><dd>search for the word "path" excluding files whose name contains "Rd"</dd>
           <dt><a href="search?q=foo.*bar">foo.*bar</a></dt><dd>search for the regular expression "foo.*bar"</dd>
