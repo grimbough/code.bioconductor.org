@@ -15,6 +15,13 @@ if(length(args) >= 1 && any(grepl("--npkgs=[0-9]*", args))) {
     n_pkgs <- Inf
 }
 
+## process argument specifying number of packages to initialise with
+if(length(args) >= 1 && ("--all" %in% args)) {
+    UPDATE_ALL <- TRUE
+} else {
+    UPDATE_ALL <- FALSE
+}
+
 REPO_DIR <- Sys.getenv("GIT_REPOS_DIR")
 if(!nzchar(REPO_DIR)) {
     stop("Repo directory not set\n",
@@ -35,8 +42,19 @@ if(length(existing_pkgs) == 0 || CLEAN) {
     initialiseRepositories(repo_dir = REPO_DIR, n_pkgs = n_pkgs)
 } else {
     manifest <- getManifest(n_pkgs = Inf)
-    update <- updateRepositories(repo_dir = REPO_DIR, manifest = manifest)
+    update <- updateRepositories(repo_dir = REPO_DIR, manifest = manifest, 
+                                 update_all = UPDATE_ALL)
     if(update) {
         updateCommitMessages(repo_dir = REPO_DIR, manifest = manifest)
     }
 }
+
+## update the record of the last packages we updated
+printMessage("Writing last_hash.rds... ", 0, appendLF = FALSE)
+old_hash <- file.path(REPO_DIR, "last_hash.rds")
+tmp_hash <- file.path(REPO_DIR, "last_hash_tmp.rds")
+if(file.exists(old_hash) && file.exists(tmp_hash)) {
+    file.remove(old_hash)
+    file.rename(tmp_hash, old_hash)
+}
+message("done")

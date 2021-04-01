@@ -11,20 +11,49 @@ cleanDir <- function(repo_dir) {
     }
 }
 
-getPackagesToUpdate <- function(manifest, n_minutes = 60) {
+getRSSfeed <- function(devel = TRUE) {
+    url <- ifelse(devel,
+                  'https://bioconductor.org/developers/rss-feeds/gitlog.xml',
+                  'https://bioconductor.org/developers/rss-feeds/gitlog.release.xml')
     
     feed <- suppressMessages(
         tidyfeed('https://bioconductor.org/developers/rss-feeds/gitlog.xml', 
-                 parse_dates = FALSE) %>%
-            mutate(item_date = as.POSIXct(item_pub_date, format = "%F %T %z"))
+                 parse_dates = FALSE, list = TRUE) %>%
+            magrittr::extract2("entries")
     )
+    return(feed)
+}
+
+getPackagesToUpdate <- function(manifest, repo_dir) {
     
-    feed %>% 
-        filter(item_pub_date > (Sys.time() - (60 * n_minutes)), item_title %in% manifest) %>% 
+    feed_devel <- getRSSfeed(devel = TRUE)
+    feed_release <- getRSSfeed(devel = FALSE)
+    
+    hash_file <- file.path(repo_dir, "last_hash.rds")
+    if(file.exists(hash_file)) {
+        last_hash <- readRDS(hash_file)
+        idx_devel <- which(feed_devel$item_guid == last_hash$devel)-1
+        idx_release <- which(feed_release$item_guid == last_hash$release)-1
+    } else {
+        printMessage("Last hash not found", 2)
+        last_hash <- NULL
+        idx_devel <- idx_release <- 10
+    }
+    
+    saveRDS(list(devel = feed_devel$item_guid[1], release = feed_release$item_guid[1]),
+            file = file.path(repo_dir, "last_hash_tmp.rds"))
+    
+    bind_rows(
+        slice(feed_devel, seq_len(idx_devel)),
+        slice(feed_release, seq_len(idx_release))
+    ) %>%
         magrittr::extract2("item_title") %>% 
         unique() 
 }
 
+## Get a vector containing the names of all packages currently part of 
+## Bioconductor.  This differs from the complete list of repositories hosted
+## on the git server.
 getManifest <- function(repo_dir = tempdir(), n_pkgs) {
     printMessage("Aquiring list of packages... ", 0, appendLF = FALSE)
     output_dir <- file.path(repo_dir, "manifest")
@@ -81,7 +110,7 @@ checkoutBranches <- function(pkg_name, repo_dir) {
                 gert::git_branch_checkout(branch = basename(b), repo = repo)
             )
         }
-        ## finsh with the master branch checkout
+        ## finish with the master branch checkout
         gert::git_branch_checkout(branch = "master", repo = repo)
         printMessage("done", 2)
     }
@@ -94,14 +123,17 @@ updateBranches <- function(pkg_name, repo_dir) {
     
     printMessage("Updating branches... ", 2, appendLF = FALSE)
     
-    ## update any branch changed in the last 30 minutes    
-    branches <- gert::git_branch_list(local = TRUE, repo = repo) %>%
-        filter(updated > (Sys.time() - (60 * 60)))
+    gert::git_fetch(repo = repo_dir, verbose = FALSE)
+    ## update the two most recent branches - should be devel and current release
+    branches <- gert::git_branch_list(local = FALSE, repo = repo) %>%
+        arrange(desc(updated)) %>%
+        slice(1:2)
     for(b in branches$name) {
-        gert::git_branch_checkout(branch = b, repo = repo)
-        gert::git_pull(repo = repo)
+        printMessage(basename(b), 4)
+        gert::git_branch_checkout(branch = basename(b), repo = repo)
+        gert::git_pull(repo = repo, verbose = FALSE)
     }
-    ## finsh with the master branch checkout
+    ## finish with the master branch checkout
     gert::git_branch_checkout(branch = "master", repo = repo)
     message("done")
 }
@@ -175,11 +207,17 @@ updateCommitMessages <- function(repo_dir, manifest) {
 }
 
 
-updateRepositories <- function(repo_dir, manifest) {
+updateRepositories <- function(repo_dir, manifest, update_all = FALSE) {
     
     printMessage("Updating repositories", 0)
     
-    pkgs <- getPackagesToUpdate(manifest = manifest)
+    if(update_all) {
+        pkgs <- manifest
+    } else {
+        pkgs <- getPackagesToUpdate(manifest = manifest, repo_dir = repo_dir)
+        printMessage(paste("Updating:", paste(pkgs, collapse = ", ")), 2)
+    }
+    
     if(length(pkgs) == 0) {
         printMessage("No updates found", 2)
         return(FALSE)
