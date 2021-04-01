@@ -53,8 +53,11 @@ if(length(existing_pkgs) == 0 || CLEAN) {
 printMessage("Writing last_hash.rds... ", 0, appendLF = FALSE)
 old_hash <- file.path(REPO_DIR, "last_hash.rds")
 tmp_hash <- file.path(REPO_DIR, "last_hash_tmp.rds")
-if(file.exists(old_hash) && file.exists(tmp_hash)) {
-    file.remove(old_hash)
-    file.rename(tmp_hash, old_hash)
+
+if(file.exists(tmp_hash)) {
+    if(file.exists(old_hash)) {
+        file.remove(old_hash)
+    }
+    invisible(file.rename(from = tmp_hash, to = old_hash))
 }
 message("done")

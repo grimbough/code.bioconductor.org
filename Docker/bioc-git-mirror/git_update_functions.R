@@ -47,6 +47,7 @@ getPackagesToUpdate <- function(manifest, repo_dir) {
         slice(feed_devel, seq_len(idx_devel)),
         slice(feed_release, seq_len(idx_release))
     ) %>%
+        filter(item_title %in% manifest) %>%
         magrittr::extract2("item_title") %>% 
         unique() 
 }
@@ -121,17 +122,20 @@ updateBranches <- function(pkg_name, repo_dir) {
     repo <- file.path(repo_dir, pkg_name)
     repo <- gsub("//", "/", repo)
     
-    printMessage("Updating branches... ", 2, appendLF = FALSE)
+    printMessage("Updating branches... ", 2, appendLF = TRUE)
     
-    gert::git_fetch(repo = repo_dir, verbose = FALSE)
+    gert::git_fetch(repo = repo, verbose = FALSE)
     ## update the two most recent branches - should be devel and current release
     branches <- gert::git_branch_list(local = FALSE, repo = repo) %>%
+        filter(grepl("(RELEASE_[1-9]_[1-9]{1,3}$|master)", name)) %>%
         arrange(desc(updated)) %>%
         slice(1:2)
     for(b in branches$name) {
         printMessage(basename(b), 4)
         gert::git_branch_checkout(branch = basename(b), repo = repo)
-        gert::git_pull(repo = repo, verbose = FALSE)
+        suppressMessages(
+            gert::git_pull(repo = repo, verbose = FALSE)
+        )
     }
     ## finish with the master branch checkout
     gert::git_branch_checkout(branch = "master", repo = repo)
@@ -215,13 +219,14 @@ updateRepositories <- function(repo_dir, manifest, update_all = FALSE) {
         pkgs <- manifest
     } else {
         pkgs <- getPackagesToUpdate(manifest = manifest, repo_dir = repo_dir)
-        printMessage(paste("Updating:", paste(pkgs, collapse = ", ")), 2)
     }
     
     if(length(pkgs) == 0) {
         printMessage("No updates found", 2)
         return(FALSE)
     } else {
+        extra <- ifelse(length(pkgs) > 10, paste("+", length(pkgs) - 10, "more"), "")
+        printMessage(paste("Updating:", paste(c(head(pkgs, 10), extra), collapse = ", ")), 2)
         for(pkg in pkgs) {
             printMessage(paste0("Package: ", pkg), 0)
             repo <- file.path(repo_dir, pkg)
