@@ -14,9 +14,9 @@ RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
 RUN apt-get -y install nodejs
 RUN node -v 
 
-## download and build gitlist 
-ADD https://api.github.com/repos/grimbough/gitlist/git/refs/heads/master version.json
-RUN git clone https://github.com/grimbough/gitlist.git 
+## download and build p3x-gitlist 
+ADD https://api.github.com/repos/grimbough/p3x-gitlist/git/refs/heads/master version.json
+RUN git clone https://github.com/grimbough/p3x-gitlist.git 
 
 WORKDIR ./gitlist
 RUN ./scripts/build.sh
