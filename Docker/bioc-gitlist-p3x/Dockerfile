@@ -1,17 +1,25 @@
-FROM alpine:3.13.2 AS builder
+FROM ubuntu:20.04 AS builder
 LABEL maintainer "Mike Smith <mike.smith@embl.de>"
 
+ENV COMPOSER_PROCESS_TIMEOUT=3600
+ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ="Europe/Berlin"
 
-RUN apk --no-cache add \
-        curl 
+RUN apt-get -y update && \
+    apt-get -y install apt-utils git curl composer && \
+    rm -rf /var/lib/apt/lists/*
 
-RUN curl -L --output - https://github.com/klaussilveira/gitlist/releases/download/1.0.2/gitlist-1.0.2.tar.gz | tar xzf -
+# node
+RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
+RUN apt-get -y install nodejs
+RUN node -v 
 
-WORKDIR /gitlist
+## download and build p3x-gitlist 
+ADD https://api.github.com/repos/grimbough/p3x-gitlist/git/refs/heads/master version.json
+RUN git clone https://github.com/grimbough/p3x-gitlist.git 
 
-COPY config.ini /gitlist/config.ini
-COPY json.html /gitlist/index.html
+WORKDIR ./gitlist
+RUN ./scripts/build.sh
 
 
 
@@ -36,22 +44,20 @@ RUN sed -i 's/;daemonize = yes/daemonize = no/g' /etc/php/7.4/fpm/php-fpm.conf
 ## configure apache2
 RUN sed -i 's=Listen 80=Listen 8080=g' /etc/apache2/ports.conf
 RUN sed -i 's=:80>=:8080>=g' /etc/apache2/sites-available/000-default.conf 
-RUN sed -i 's=/var/www/html=/var/www/gitlist=g' /etc/apache2/sites-available/000-default.conf 
+RUN sed -i 's=/var/www/html=/var/www/gitlist/public=g' /etc/apache2/sites-available/000-default.conf 
 ADD gitlist.conf /etc/apache2/conf-available/
 RUN a2enconf gitlist
 RUN a2enconf php7.4-fpm
 RUN a2enmod rewrite
 
-COPY --from=builder /gitlist /var/www/gitlist
-COPY bioconductor /var/www/gitlist/themes/bioconductor
-RUN mkdir /var/www/gitlist/cache
+COPY --from=builder /gitlist/build/p3x-gitlist /var/www/gitlist
 
 ## custom home page
-#ADD css /var/www/gitlist/public/css
-#ADD img /var/www/gitlist/public/img
-#ADD json.html /var/www/gitlist/public/index.html
+ADD css /var/www/gitlist/public/css
+ADD img /var/www/gitlist/public/img
+ADD json.html /var/www/gitlist/public/index.html
 
-RUN ln -s /var/git/packages.json /var/www/gitlist/
+RUN ln -s /var/git/packages.json /var/www/gitlist/public
 
 ## map www-data to the same UID as Alpine uses
 ## then set permissions
