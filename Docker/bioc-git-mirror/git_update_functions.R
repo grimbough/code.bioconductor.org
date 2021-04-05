@@ -172,7 +172,7 @@ processMostRecentCommit <- function(pkg_name, repo_dir) {
     }
     
     json_content <- c(
-        paste0("<i class='fas fa-folder'></i>&nbsp;<a href='/", pkg_name, "'>", pkg_name, "</a>"),
+        paste0("<i class='fas fa-folder'></i>&nbsp;<a href='/browse/", pkg_name, "'>", pkg_name, "</a>"),
         paste0(format(date, tz = "UTC"), " UTC by ", author, " to ", branch, "&nbsp;<span class='subject'>", msg, "</span>")
     )
     return(json_content)
