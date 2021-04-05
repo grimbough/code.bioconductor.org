@@ -1,72 +1,84 @@
 <html>
-<head>
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
-    <link rel="stylesheet" type="text/css" href="css/styles.css">
-    <link rel="stylesheet" type="text/css" href="css/gitlist.css">
-    <link rel="stylesheet" href="prod/css/bootstrap-cosmo.0cf7cbc8e28e21ebb7b687db4984ee5884fa7da9bfba54b3cbaf730328d069ba.css" id="bootstrap-theme">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
-    
-</head>
+    <head>
+        <meta charset="UTF-8" />
+        <title>GitList</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
+		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
+        <link rel="stylesheet" type="text/css" href="themes/bioconductor/css/style.css">
+        <link rel="stylesheet" type="text/css" href="themes/bioconductor/css/fontawesome.css">
+        <link rel="stylesheet" type="text/css" href="themes/bioconductor/css/gitgraph.css">
+        <link rel="shortcut icon" type="image/png" href="themes/bioconductor/img/favicon.png" />
+        <!--[if lt IE 9]>
+        <script type="application/javascript" src="/themes/bioconductor/js/html5.js"></script>
+        <![endif]-->
+		<script type="application/javascript" src="themes/bioconductor/js/jquery.js"></script>
+        <script type="application/javascript" src="themes/bioconductor/js/raphael.js"></script>
+        <script type="application/javascript" src="themes/bioconductor/js/bootstrap.js"></script>
+        <script type="application/javascript" src="themes/bioconductor/js/codemirror.js"></script>
+        <script type="application/javascript" src="themes/bioconductor/js/showdown.js"></script>
+        <script type="application/javascript" src="themes/bioconductor/js/table.js"></script>
+        <script type="application/javascript" src="themes/bioconductor/js/main.js"></script>
+        <script type="application/javascript" src="themes/bioconductor/js/networkGraph.js"></script>
+        <script type="application/javascript" src="themes/bioconductor/js/gitgraph.js"></script>
+        <script type="application/javascript" src="themes/bioconductor/js/draw.js"></script>    
+		<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
+    </head>
 <body>
 
-<div class="navbar navbar-default navbar-fixed-top" id="p3x-gitlist-navigation" role="navigation">
+<div class="navbar navbar-default navbar-static-top" role="navigation">
     <div class="container">
-        <div class="navbar-header p3x-gitlist-navbar-header">
-            <button type="button" id="p3x-gitlist-navigation-menu-button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                 <span class="sr-only">Toggle navigation</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-
-            <a href="/">
-                <img src="img/gitlist.svg" class="hidden-xs" id="p3x-gitlist-navigation-brand-icon">
-                <img src="img/gitlist.svg" class="visible-xs p3x-gitlist-navigation-brand-icon-small" id="p3x-gitlist-navigation-brand-icon" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Bioconductor Git Browser">
-            </a>
-            <a class="navbar-brand hidden-xs" href="/">
-                Bioconductor Git Browser
-            </a>
-
+            <a class="navbar-brand" href="/">Bioconductor Git Browser</a>
         </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="http://gitlist.org/">About</a></li>
+                <li><a href="/refresh">Refresh</a></li>
+            </ul>
+        </div><!--/.nav-collapse -->
     </div>
 </div>
 
-<div class="p3x-gitlist-header-height"></div>
-
 <div class="container">
 
-<table id="example" class="display" style="width:100%">
-        <thead>
-            <tr>
-                <th>Package</th>
-                <th>Latest Commit</th>
-            </tr>
-        </thead>
-        <tfoot>
-            <tr>
-                <th>Package</th>
-                <th>Latest Commit</th>
-            </tr>
-        </tfoot>
-    </table>
+	<table id="example" class="display" style="width:100%">
+		    <thead>
+		        <tr>
+		            <th>Package</th>
+		            <th>Latest Commit</th>
+		        </tr>
+		    </thead>
+		    <tfoot>
+		        <tr>
+		            <th>Package</th>
+		            <th>Latest Commit</th>
+		        </tr>
+		    </tfoot>
+		</table>
 
-<script>
-$(document).ready( function () {
-    $('#example').DataTable( {
-    	"pageLength": 25,
-        "ajax": 'packages.json',
-        "order": [[ 1, "desc" ]]
-    });
-} );
-</script>
+	<script>
+	$(document).ready( function () {
+		$('#example').DataTable( {
+			"pageLength": 25,
+		    "ajax": 'packages.json',
+		    "order": [[ 1, "desc" ]]
+		});
+	} );
+	</script>
 
-<footer id="p3x-gitlist-footer" class="container">
-    <p>Powered by <a target="_blank" href="https://github.com/patrikx3/gitlist">P3X GitList</a></p>
-    <p>Hosted by the <a href="https://embl.org/">European Molecular Biology Laboratory </a><img src="img/embl-icon-16x16.png" style="vertical-align: text-top;height: 16px"></p>
-</footer>
+	<hr />
+	<footer>
+		<p>Powered by <a href="https://github.com/klaussilveira/gitlist">GitList 1.0.2</a></p>
+	</footer>
+</div>        
 
-</div>
 </body>
 </html>
+
