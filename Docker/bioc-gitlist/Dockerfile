@@ -4,8 +4,17 @@ LABEL maintainer "Mike Smith <mike.smith@embl.de>"
 ENV TZ="Europe/Berlin"
 
 RUN apk --no-cache add \
-        curl 
+        curl \
+        git \
+        nodejs-less
 
+COPY bioconductor /bioconductor
+WORKDIR /bioconductor/less
+RUN test -d "/bioconductor/less/bootstrap-less" && echo "HERE" || git clone https://github.com/distros/bootstrap-less
+WORKDIR /bioconductor
+RUN lessc less/style.less > css/style.css
+
+WORKDIR /
 RUN curl -L --output - https://github.com/klaussilveira/gitlist/releases/download/1.0.2/gitlist-1.0.2.tar.gz | tar xzf -
 
 WORKDIR /gitlist
@@ -41,7 +50,7 @@ RUN a2enconf php7.4-fpm
 RUN a2enmod rewrite
 
 COPY --from=builder /gitlist /var/www/html/browse
-COPY bioconductor /var/www/html/browse/themes/bioconductor
+COPY --from=builder /bioconductor /var/www/html/browse/themes/bioconductor
 RUN mkdir /var/www/html/browse/cache
 
 RUN ln -s /var/git/packages.json /var/www/html/browse/
