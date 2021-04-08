@@ -15,7 +15,13 @@ CONTAINER_REPO_DIR=/var/git
 CONTAINER_ZOEKT_IDX_DIR=/var/zoekt
 ```
 
-Initialise or update the collection of BioC pacage git repositories.  If `${LOCAL_REPO_DIR}` is empty it will clone all (currently a test of 25) repositories from the Bioconductor git server.  If `${LOCAL_REPO_DIR}` contains one or more directories it will only clone packages or update existing repositories that have changes in the last 20 minutes.
+Initialise or update the collection of BioC pacage git repositories.  If `${LOCAL_REPO_DIR}` is empty it will clone all repositories from the Bioconductor git server.  If `${LOCAL_REPO_DIR}` contains one or more directories it will only clone packages or update existing repositories that have change since the last update.  
+
+Can be passed the following arguments:
+
+  - `--all`     If `${LOCAL_REPO_DIR}` is no empty, this will try to update all existing packages and clone any not currently present.
+  - `--clean`   Delete everying found in `${LOCAL_REPO_DIR}` and re-download.
+  - `--npkgs=N` If `${LOCAL_REPO_DIR}` is empty, or `--clean` has been supplied, only download the first `N` packages found in the manifest.
 
 ```bash
 docker run -it --env GIT_REPOS_DIR=${CONTAINER_REPO_DIR} \
