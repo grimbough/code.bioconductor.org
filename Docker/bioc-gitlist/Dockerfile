@@ -8,19 +8,16 @@ RUN apk --no-cache add \
         git \
         nodejs-less
 
+WORKDIR /
+RUN curl -L --output - https://github.com/klaussilveira/gitlist/releases/download/1.0.2/gitlist-1.0.2.tar.gz | tar xzf -
+COPY config.ini /gitlist/config.ini
+COPY json.html /gitlist/index.html
+
 COPY bioconductor /bioconductor
 WORKDIR /bioconductor/less
 RUN test -d "/bioconductor/less/bootstrap-less" && echo "HERE" || git clone https://github.com/distros/bootstrap-less
 WORKDIR /bioconductor
 RUN lessc less/style.less > css/style.css
-
-WORKDIR /
-RUN curl -L --output - https://github.com/klaussilveira/gitlist/releases/download/1.0.2/gitlist-1.0.2.tar.gz | tar xzf -
-
-WORKDIR /gitlist
-
-COPY config.ini /gitlist/config.ini
-COPY json.html /gitlist/index.html
 
 
 FROM ubuntu:20.04 
