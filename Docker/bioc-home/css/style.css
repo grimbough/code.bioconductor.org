@@ -1,0 +1,52 @@
+
+body {
+  font-family: "Lato", Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  line-height: 1.42857143;
+  color: #333333;
+  background-color: #fff;
+}
+
+.navbar {
+  background-color: #1a81c2;
+}
+
+.btn-primary {
+  background-color: #1a81c2;
+}
+
+.navbar li a {
+  color: white;
+}
+
+.brand-square {
+  height: 40px;
+}
+
+.jumbotron {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.card {
+  margin-bottom: 1em;
+}
+
+.card-body img {
+  height: 150px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.main-logo {
+  max-height: 120px;
+  max-width: 100%;
+}
+
+.footer {
+  background-color: #e9ecef;
+  height: 50px;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
