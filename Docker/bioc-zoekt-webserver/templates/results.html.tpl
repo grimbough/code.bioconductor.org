@@ -10,7 +10,7 @@
 </script>
 <body id="results">
   {{template "navbar" .Last}}
-  <div class="container-fluid container-results">
+  <div class="container-fluid">
     <h5>
       {{if .Stats.Crashes}}<br><b>{{.Stats.Crashes}} shards crashed</b><br>{{end}}
       {{ $fileCount := len .FileMatches }}
@@ -50,7 +50,7 @@
     </table>
     {{end}}
 
-  <nav class="navbar navbar-default navbar-bottom">
+  <footer>
     <div class="container">
       {{template "footerBoilerplate"}}
       <p class="navbar-text navbar-right">
@@ -63,7 +63,7 @@
       {{.Stats.FilesSkipped}} docs and {{.Stats.ShardsSkipped}} shards skipped{{else}}.{{end}}
       </p>
     </div>
-  </nav>
+  </footer>
   </div>
   {{ template "jsdep"}}
 </body>
