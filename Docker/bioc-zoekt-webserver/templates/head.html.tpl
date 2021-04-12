@@ -74,6 +74,12 @@
       border-color: #1a81c2;
   }
 
+  .btn-success {
+    color: #fff;
+    background-color: #87b13f;
+    border-color: #87b13f;
+  }
+
   .jumbotron {
     padding-top: 35px;
     padding-bottom: 35px;
@@ -87,8 +93,22 @@
     color: white;
   }
 
+  .brand-square {
+    height: 40px;
+  }
+
   a {
     color: #1a81c2;
+  }
+
+  .footer {
+    background-color: #e9ecef;
+    bottom: 0;
+    width: 100%;
+  }
+
+  .result-table {
+    overflow-x: auto;
   }
 
 </style>
