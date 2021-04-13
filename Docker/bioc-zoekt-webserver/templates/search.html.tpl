@@ -8,9 +8,11 @@
     <div class="container">
       <div class="navbar-header">
         <a class="navbar-brand" href="/">
-          <img class="brand-square d-none d-lg-inline" src="https://www.huber.embl.de/users/msmith/bioc_code_search.png" alt="Bioconductor Code Logo" title="Bioconductor Code Tools">
-          <!--<img class="brand-square d-lg-none" src="https://www.huber.embl.de/users/msmith/bioc_code_search_square.png" alt="Bioconductor Code Logo" title="Bioconductor Code Tools">-->
+          <img class="brand-square" src="https://www.huber.embl.de/users/msmith/bioc_code_search_square.png" alt="Bioconductor Code Logo" title="Bioconductor Code Tools">
         </a>
+        <span class="navbar-brand navbar-brand-centre d-none d-sm-inline">
+          <img class="navbar-centre-img" src="https://www.huber.embl.de/users/msmith/bioc_code_search_nologo.png" alt="Bioconductor Code Logo" title="Bioconductor Code Tools">
+        </span>
       </div>
       <ul class="nav navbar-nav navbar-right">
         <li><a href="/about.html">About</a></li>

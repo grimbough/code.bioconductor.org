@@ -3,6 +3,7 @@
 {{template "head"}}
 <body id="results">
   {{template "navbar" .Last}}
+  <main role="main">
   <div class="container">
     <div><b>
       Found {{.Stats.Repos}} repositories ({{.Stats.Documents}} files, {{HumanUnit .Stats.ContentBytes}}b content)
@@ -32,6 +33,7 @@
      </tbody>
    </table>
  </div>
+</main>
 
  <footer class="footer">
   <div class="container">

@@ -96,6 +96,17 @@
     height: 40px;
   }
 
+  .navbar-centre-img {
+    height: 30px;
+    margin-top: 5px;
+  }
+
+  .navbar-brand-centre {
+    transform: translateX(-50%);
+    left: 50%;
+    position: absolute;
+  }
+
   a {
     color: #1a81c2;
   }
