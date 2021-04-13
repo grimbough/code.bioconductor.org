@@ -1,85 +1,88 @@
 <html>
-    <head>
-        <meta charset="UTF-8" />
-        <title>Bioconductor Code Tools</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
-		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
-        <link rel="stylesheet" type="text/css" href="themes/bioconductor/css/style.css">
-        <link rel="stylesheet" type="text/css" href="themes/bioconductor/css/fontawesome.css">
-        <link rel="stylesheet" type="text/css" href="themes/bioconductor/css/gitgraph.css">
-        <link rel="shortcut icon" type="image/png" href="themes/bioconductor/img/favicon.png" />
+<head>
+    <meta charset="UTF-8" />
+    <title>Bioconductor Code Tools</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="themes/bioconductor/css/style.css">
+    <link rel="stylesheet" type="text/css" href="themes/bioconductor/css/fontawesome.css">
+    <link rel="stylesheet" type="text/css" href="themes/bioconductor/css/gitgraph.css">
+    <link rel="shortcut icon" type="image/png" href="themes/bioconductor/img/favicon.png" />
         <!--[if lt IE 9]>
         <script type="application/javascript" src="/themes/bioconductor/js/html5.js"></script>
-        <![endif]-->
-		<script type="application/javascript" src="themes/bioconductor/js/jquery.js"></script>
-        <script type="application/javascript" src="themes/bioconductor/js/raphael.js"></script>
-        <script type="application/javascript" src="themes/bioconductor/js/bootstrap.js"></script>
-        <script type="application/javascript" src="themes/bioconductor/js/codemirror.js"></script>
-        <script type="application/javascript" src="themes/bioconductor/js/showdown.js"></script>
-        <script type="application/javascript" src="themes/bioconductor/js/table.js"></script>
-        <script type="application/javascript" src="themes/bioconductor/js/main.js"></script>
-        <script type="application/javascript" src="themes/bioconductor/js/networkGraph.js"></script>
-        <script type="application/javascript" src="themes/bioconductor/js/gitgraph.js"></script>
-        <script type="application/javascript" src="themes/bioconductor/js/draw.js"></script>    
-		<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
-    </head>
+    <![endif]-->
+    <script type="application/javascript" src="themes/bioconductor/js/jquery.js"></script>
+    <script type="application/javascript" src="themes/bioconductor/js/raphael.js"></script>
+    <script type="application/javascript" src="themes/bioconductor/js/bootstrap.js"></script>
+    <script type="application/javascript" src="themes/bioconductor/js/codemirror.js"></script>
+    <script type="application/javascript" src="themes/bioconductor/js/showdown.js"></script>
+    <script type="application/javascript" src="themes/bioconductor/js/table.js"></script>
+    <script type="application/javascript" src="themes/bioconductor/js/main.js"></script>
+    <script type="application/javascript" src="themes/bioconductor/js/networkGraph.js"></script>
+    <script type="application/javascript" src="themes/bioconductor/js/gitgraph.js"></script>
+    <script type="application/javascript" src="themes/bioconductor/js/draw.js"></script>    
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
+</head>
 <body>
 
-<div class="navbar navbar-default navbar-static-top" role="navigation">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="/">
-                <img src="themes/bioconductor/img/logoB-square-small.png" alt="Bioconductor Logo" title="Bioconductor Git Browser">
-            </a>
+    <div class="navbar navbar-default navbar-static-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">
+                    <img src="themes/bioconductor/img/bioc_code_browse.png" alt="Bioconductor Code Browse Logo" title="Bioconductor Git Browser">
+                </a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/">About</a></li>
+                </ul>
+            </div><!--/.nav-collapse -->
         </div>
-        <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="/">About</a></li>
-                <li><a href="/refresh">Refresh</a></li>
-            </ul>
-        </div><!--/.nav-collapse -->
+    </div>
+
+    <div class="container">
+
+    <table id="example" class="display" style="width:100%">
+        <thead>
+          <tr>
+              <th>Package</th>
+              <th>Latest Commit</th>
+          </tr>
+        </thead>
+        <tfoot>
+          <tr>
+              <th>Package</th>
+              <th>Latest Commit</th>
+          </tr>
+        </tfoot>
+    </table>
+
+    <script>
+        $(document).ready( function () {
+          $('#example').DataTable( {
+             "pageLength": 25,
+             "ajax": 'packages.json',
+             "order": [[ 1, "desc" ]]
+         });
+        } );
+    </script>
+    </div>
+
+<footer class="footer">
+    <div class="container">
+      <div class="row">
+        <p>Powered by <a href="https://github.com/klaussilveira/gitlist">GitList 1.0.2</a></p>
     </div>
 </div>
+</footer>
 
-<div class="container">
-
-	<table id="example" class="display" style="width:100%">
-		    <thead>
-		        <tr>
-		            <th>Package</th>
-		            <th>Latest Commit</th>
-		        </tr>
-		    </thead>
-		    <tfoot>
-		        <tr>
-		            <th>Package</th>
-		            <th>Latest Commit</th>
-		        </tr>
-		    </tfoot>
-		</table>
-
-	<script>
-	$(document).ready( function () {
-		$('#example').DataTable( {
-			"pageLength": 25,
-		    "ajax": 'packages.json',
-		    "order": [[ 1, "desc" ]]
-		});
-	} );
-	</script>
-
-	<hr />
-	<footer>
-		<p>Powered by <a href="https://github.com/klaussilveira/gitlist">GitList 1.0.2</a></p>
-	</footer>
-</div>        
 
 </body>
 </html>
