@@ -40,7 +40,6 @@
     background-color: #fff;
   }
 
-  #maxhits { width: 100px !important; }
   .label-dup {
     border-width: 1px !important;
     border-style: solid !important;
@@ -109,6 +108,10 @@
 
   .result-table {
     overflow-x: auto;
+  }
+
+  .result-table tr:nth-child(even) {
+    background-color: #f2f2f2;
   }
 
 </style>

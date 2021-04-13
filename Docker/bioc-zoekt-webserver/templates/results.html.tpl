@@ -22,39 +22,31 @@
         href="search?q={{.Last.Query}}&num={{More .Last.Num}}">show more</a>).
         {{else}}.{{end}}
       </h5>
-      {{range .FileMatches}}
+      {{range $FM := .FileMatches}}
       <div class="container-fluid result-table px-0">
       <table class="table table-hover table-condensed">
         <thead>
           <tr>
             <th>
-              <a href="https://code.bioconductor.org/browse/{{.Repo}}/blob/master/{{.FileName}}">
+              <a href="https://code.bioconductor.org/browse/{{$FM.Repo}}/blob/master/{{$FM.FileName}}">
               <!--{{if .URL}}<a name="{{.ResultID}}" class="result"></a><a href="{{.URL}}" >{{else}}<a name="{{.ResultID}}">{{end}}-->
                 <small>
-                {{.Repo}}:{{.FileName}}</a>:
-                <span style="font-weight: normal">[ {{if .Branches}}{{range .Branches}}<span class="label label-default">{{.}}</span>,{{end}}{{end}} ]</span>
-                {{if .Language}}<button
+                {{$FM.Repo}}:{{$FM.FileName}}</a>:
+                <span style="font-weight: normal">[ {{if $FM.Branches}}{{range $FM.Branches}}<span class="label label-default">{{.}}</span>,{{end}}{{end}} ]</span>
+                {{if $FM.Language}}<button
                 title="restrict search to files written in {{.Language}}"
-                onclick="zoektAddQ('lang:{{.Language}}')" class="label label-primary">language {{.Language}}</button></span>{{end}}
-                {{if .DuplicateID}}<a class="label label-dup" href="#{{.DuplicateID}}">Duplicate result</a>{{end}}
+                onclick="zoektAddQ('lang:{{.Language}}')" class="label label-primary">language {{$FM.Language}}</button></span>{{end}}
+                {{if $FM.DuplicateID}}<a class="label label-dup" href="#{{.DuplicateID}}">Duplicate result</a>{{end}}
               </small>
             </th>
           </tr>
         </thead>
-        {{if not .DuplicateID}}
+        {{if not $FM.DuplicateID}}
         <tbody>
-          {{range .Matches}}
+          {{range $M := $FM.Matches}}
           <tr>
-            <td style="background-color: rgba(26, 129, 194, 0.1);">
-              <pre class="inline-pre">
-                <span class="noselect">
-                  <!--{{if .URL}}<a href="{{.URL}}">{{end}}<u>{{.LineNum}}</u>{{if .URL}}</a>{{end}}: -->
-                  <a href="https://code.bioconductor.org/browse/{{.Repo}}/blob/master/{{.FileName}}#{{.LineNum}}">
-                    <u>{{.LineNum}}</u>
-                  </a>
-                </span>
-                {{range .Fragments}}{{LimitPre 100 .Pre}}<b>{{.Match}}</b>{{LimitPost 100 .Post}}{{end}}
-              </pre>
+            <td>
+              <pre class="inline-pre"><span class="noselect"><a href="https://code.bioconductor.org/browse/{{$FM.Repo}}/blob/master/{{$FM.FileName}}#L{{$M.LineNum}}"><u>{{$M.LineNum}}</u></a></span>: {{range .Fragments}}{{LimitPre 100 .Pre}}<b>{{.Match}}</b>{{LimitPost 100 .Post}}{{end}}</pre>
             </td>
           </tr>
           {{end}}

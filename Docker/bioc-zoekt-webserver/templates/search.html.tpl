@@ -8,7 +8,8 @@
     <div class="container">
       <div class="navbar-header">
         <a class="navbar-brand" href="/">
-          <img class="brand-square" src="https://www.huber.embl.de/users/msmith/bioconductor_code_square.png" alt="Bioconductor Code Logo" title="Bioconductor Code Tools">
+          <img class="brand-square d-none d-lg-inline" src="https://www.huber.embl.de/users/msmith/bioc_code_search.png" alt="Bioconductor Code Logo" title="Bioconductor Code Tools">
+          <!--<img class="brand-square d-lg-none" src="https://www.huber.embl.de/users/msmith/bioc_code_search_square.png" alt="Bioconductor Code Logo" title="Bioconductor Code Tools">-->
         </a>
       </div>
       <ul class="nav navbar-nav navbar-right">
@@ -23,7 +24,7 @@
       <div class="container">
         <div class="row">
           <div class="col-md-12 text-center">
-            <h3>Search across all Bioconductor software packages</h3>
+            <h3 class="mb-3">Search across all Bioconductor software packages</h3>
           </div>
         </div>
         {{template "searchbox" .Last}}
