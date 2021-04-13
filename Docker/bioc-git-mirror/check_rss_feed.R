@@ -42,10 +42,10 @@ if(length(existing_pkgs) == 0 || CLEAN) {
     initialiseRepositories(repo_dir = REPO_DIR, n_pkgs = n_pkgs)
 } else {
     manifest <- getManifest(n_pkgs = Inf)
-    update <- updateRepositories(repo_dir = REPO_DIR, manifest = manifest, 
+    updated_pkgs <- updateRepositories(repo_dir = REPO_DIR, manifest = manifest, 
                                  update_all = UPDATE_ALL)
-    if(update) {
-        updateCommitMessages(repo_dir = REPO_DIR, manifest = manifest)
+    if(!is.null(updated_pkgs)) {
+        updateCommitMessages(repo_dir = REPO_DIR, manifest = manifest, pkgs = updated_pkgs)
     }
 }
 

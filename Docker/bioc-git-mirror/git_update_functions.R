@@ -9,6 +9,13 @@ cleanDir <- function(repo_dir) {
         unlink(existing_pkgs, recursive = TRUE)
         message("done")
     }
+    
+    existing_files <- list.files(repo_dir, full.names = TRUE)
+    if(length(existing_files)) {
+        printMessage("Deleting existing files... ", 0, appendLF = FALSE)
+        file.remove(existing_files)
+        message("done")
+    }
 }
 
 getRSSfeed <- function(devel = TRUE) {
@@ -29,27 +36,31 @@ getPackagesToUpdate <- function(manifest, repo_dir) {
     feed_devel <- getRSSfeed(devel = TRUE)
     feed_release <- getRSSfeed(devel = FALSE)
     
+    saveRDS(list(devel = feed_devel$item_guid[1], release = feed_release$item_guid[1]),
+            file = file.path(repo_dir, "last_hash_tmp.rds"))
+    
     hash_file <- file.path(repo_dir, "last_hash.rds")
     if(file.exists(hash_file)) {
         last_hash <- readRDS(hash_file)
         idx_devel <- which(feed_devel$item_guid == last_hash$devel)-1
         idx_release <- which(feed_release$item_guid == last_hash$release)-1
-    } else {
+    } 
+    
+    ## it could be that we have missed 500+ commits
+    ## then update everything
+    if(!file.exists(hash_file) || length(idx_devel) == 0 || length(idx_release) == 0) {
         printMessage("Last hash not found", 2)
-        last_hash <- NULL
-        idx_devel <- idx_release <- 10
+        pkgs <- manifest
+    } else {
+        pkgs <- bind_rows(
+            slice(feed_devel, seq_len(idx_devel)),
+            slice(feed_release, seq_len(idx_release))
+        ) %>%
+            filter(item_title %in% manifest) %>%
+            magrittr::extract2("item_title") %>% 
+            unique() 
     }
-    
-    saveRDS(list(devel = feed_devel$item_guid[1], release = feed_release$item_guid[1]),
-            file = file.path(repo_dir, "last_hash_tmp.rds"))
-    
-    bind_rows(
-        slice(feed_devel, seq_len(idx_devel)),
-        slice(feed_release, seq_len(idx_release))
-    ) %>%
-        filter(item_title %in% manifest) %>%
-        magrittr::extract2("item_title") %>% 
-        unique() 
+    return(pkgs)
 }
 
 ## Get a vector containing the names of all packages currently part of 
@@ -181,8 +192,15 @@ processMostRecentCommit <- function(pkg_name, repo_dir) {
 
 initialiseRepositories <- function(repo_dir, n_pkgs) {
     
+    ## store the last git commits registered before we begin cloning
+    ## we'll use this to make sure we get all updates next time
+    feed_devel <- getRSSfeed(devel = TRUE)
+    feed_release <- getRSSfeed(devel = FALSE)
+    saveRDS(list(devel = feed_devel$item_guid[1], release = feed_release$item_guid[1]),
+            file = file.path(repo_dir, "last_hash_tmp.rds"))
+    
     pkgs <- getManifest(n_pkgs = n_pkgs)
-
+    
     for(pkg in pkgs) {
         printMessage(paste0("Package: ", pkg), 0)
         clonePackage(pkg, repo_dir = repo_dir)
@@ -192,17 +210,37 @@ initialiseRepositories <- function(repo_dir, n_pkgs) {
     updateCommitMessages(repo_dir = repo_dir, manifest = pkgs)
 }
 
-updateCommitMessages <- function(repo_dir, manifest) {
+updateCommitMessages <- function(repo_dir, manifest, pkgs) {
     
     printMessage("Writing packages.json... ", 0, appendLF = FALSE)
     
-    pkgs <- list.dirs(repo_dir, recursive = FALSE, full.names = FALSE)
+    json_file <- file.path(repo_dir, "packages.json")
+    rds_file <- file.path(repo_dir, "packages.rds")
+    merge <- TRUE
+    
+    ## if we don't specify a list of pkgs update all repos
+    if(missing(pkgs) || !file.exists(rds_file)) {
+        pkgs <- list.dirs(repo_dir, recursive = FALSE, full.names = FALSE)
+        merge <- FALSE
+    }
+    
     if(any(!pkgs %in% manifest)) {
         pkgs <- pkgs[pkgs %in% manifest]
     }
     
     commit_messages <- lapply(pkgs, processMostRecentCommit, repo_dir = repo_dir)
+    names(commit_messages) <- pkgs
     
+    ## combine out updated packages with the existing database
+    if(merge) {
+        old_commit_messages <- readRDS(rds_file)
+        for(i in names(pkgs)) {
+            old_commit_messages[[ i ]] <- commit_messages[[ i ]]
+        }
+        commit_messages <- old_commit_messages
+    }
+    
+    saveRDS(commit_messages, file = rds_file)
     ## munging to get json in the format for DataTable HTML
     json_pkg_list <- toJSON(list(data = do.call(rbind, commit_messages)), pretty = TRUE)
     writeLines(json_pkg_list, con = file.path(repo_dir, "packages.json"))
@@ -223,7 +261,7 @@ updateRepositories <- function(repo_dir, manifest, update_all = FALSE) {
     
     if(length(pkgs) == 0) {
         printMessage("No updates found", 2)
-        return(FALSE)
+        return(NULL)
     } else {
         extra <- ifelse(length(pkgs) > 10, paste("+", length(pkgs) - 10, "more"), "")
         printMessage(paste("Updating:", paste(c(head(pkgs, 10), extra), collapse = ", ")), 2)
@@ -239,6 +277,6 @@ updateRepositories <- function(repo_dir, manifest, update_all = FALSE) {
             
         }
         printMessage("Finished updating repositories", 0)
-        return(TRUE)
+        return(pkgs)
     }
 }
