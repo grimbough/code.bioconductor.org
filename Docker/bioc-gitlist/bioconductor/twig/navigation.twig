@@ -1,21 +1,12 @@
 <div class="navbar navbar-default navbar-static-top" role="navigation">
     <div class="container">
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
             <a class="navbar-brand" href="{{ path('homepage') }}">
-                <img src="{{ app.request.basepath }}/themes/bioconductor/img/logoB-square-small.png" alt="Bioconductor Logo" title="{{ title }}">
+                <img src="{{ app.request.basepath }}/themes/bioconductor/img/bioc_code_browse_square.png" alt="Bioconductor Logo" title="{{ title }}">
             </a>
         </div>
-        <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="">About</a></li>
-                <li><a href="{{ path('homepage') }}refresh">Refresh</a></li>
-            </ul>
-        </div><!--/.nav-collapse -->
+        <ul class="nav navbar-nav navbar-right">
+                <li><a href="/about.html"><i class="fa fa-info-circle"></i><span class="nav-text">About<span></a></li>
+        </ul>
     </div>
 </div>
