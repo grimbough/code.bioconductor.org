@@ -50,3 +50,9 @@ body {
   bottom: 0;
   width: 100%;
 }
+
+.logo {
+  max-height: 200px;
+  max-width: 100%;
+}
+

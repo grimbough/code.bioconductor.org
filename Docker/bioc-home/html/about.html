@@ -1,95 +1,93 @@
 <html>
-    <head>
-        <meta charset="UTF-8" />
-        <title>Bioconductor Code Tools</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <meta charset="UTF-8" />
+    <title>Bioconductor Code Tools</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-        <link rel="manifest" href="/site.webmanifest">
-        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#3792ad">
-        <meta name="msapplication-TileColor" content="#3792ad">
-        <meta name="theme-color" content="#ffffff">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#3792ad">
+    <meta name="msapplication-TileColor" content="#3792ad">
+    <meta name="theme-color" content="#ffffff">
 
-		<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
-		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
-        <link rel="stylesheet" type="text/css" href="themes/bioconductor/css/style.css">
-        <link rel="stylesheet" type="text/css" href="themes/bioconductor/css/fontawesome.css">
-        <link rel="stylesheet" type="text/css" href="themes/bioconductor/css/gitgraph.css">
-        <link rel="shortcut icon" type="image/png" href="themes/bioconductor/img/favicon.png" />
-        <!--[if lt IE 9]>
-        <script type="application/javascript" src="/themes/bioconductor/js/html5.js"></script>
-        <![endif]-->
-		<script type="application/javascript" src="themes/bioconductor/js/jquery.js"></script>
-        <script type="application/javascript" src="themes/bioconductor/js/raphael.js"></script>
-        <script type="application/javascript" src="themes/bioconductor/js/bootstrap.js"></script>
-        <script type="application/javascript" src="themes/bioconductor/js/codemirror.js"></script>
-        <script type="application/javascript" src="themes/bioconductor/js/showdown.js"></script>
-        <script type="application/javascript" src="themes/bioconductor/js/table.js"></script>
-        <script type="application/javascript" src="themes/bioconductor/js/main.js"></script>
-        <script type="application/javascript" src="themes/bioconductor/js/networkGraph.js"></script>
-        <script type="application/javascript" src="themes/bioconductor/js/gitgraph.js"></script>
-        <script type="application/javascript" src="themes/bioconductor/js/draw.js"></script>    
-		<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
-    </head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+
+    <!-- matomo used for visitor counting; required to justify de.NBI funding -->
+    <script type="text/javascript">
+        var _paq = window._paq = window._paq || [];
+        /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+        _paq.push(['trackPageView']);
+        _paq.push(['enableLinkTracking']);
+        (function() {
+            var u="https://tr-denbi.embl.de/heimdall/";
+            _paq.push(['setTrackerUrl', u+'p.php']);
+            _paq.push(['setSiteId', '37']);
+            var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+            g.type='text/javascript'; g.async=true; g.src=u+'p.js'; s.parentNode.insertBefore(g,s);
+        })(); 
+    </script>
+</head>
 <body>
 
-<div class="navbar navbar-default navbar-static-top" role="navigation">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="/">
-                <img src="themes/bioconductor/img/logoB-square-small.png" alt="Bioconductor Logo" title="Bioconductor Git Browser">
-            </a>
+    <nav class="navbar navbar-default navbar-static-top mb-3 py-0">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/">
+                    <img class="brand-square" src="images/bioconductor_code_square.png" alt="Bioconductor Code Logo" title="Bioconductor Code Tools">
+                </a>
+            </div>
         </div>
-        <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="/">About</a></li>
-                <li><a href="/refresh">Refresh</a></li>
+    </nav>
+
+    <main role="main">
+        <div class="container">
+            <h3>Updates</h3>
+            <p>
+            The central Biocondutor Git repository can be found at <a href="https://git.bioconductor.org">git.bioconductor.org</a>.  The files backing this this site are derived from a local mirror of the central repository.  Updates are synced to the mirror automatically every 30 minutes.  If you do not see code you recently commited to the main git repository, please wait at least 30 minutes before wondering why.
+            </p>
+
+            <h3>Technologies</h3>
+            <ul>
+                <li>The git browser is powered by <a href="https://gitlist.org/">GitList</a>.</li>
+                <li>The code search functionality is driven by <a href="https://github.com/google/zoekt/">Zoekt</a>.</li>
             </ul>
-        </div><!--/.nav-collapse -->
-    </div>
-</div>
+            <p>All resources used to create the Docker containers that power the web services and mirror updates can be found on <a href="https://github.com/grimbough/bioc-code-tools">GitHub</a>.</p>
 
-<div class="container">
+            <h3>Hosting</h3>
+            <div class="row">
+                <div class="col-12 col-sm-8">
+                    <p>The site is currently hosted on a Kubernetes instance supported by the IT Services Team at the European Molecular Biology Laboratory.</p>
+                </div>
+                <div class="col-12 col-sm-4">
+                    <img class="logo" src="images/embl_logo.png">
+                </div>
+            </div>
 
-	<table id="example" class="display" style="width:100%">
-		    <thead>
-		        <tr>
-		            <th>Package</th>
-		            <th>Latest Commit</th>
-		        </tr>
-		    </thead>
-		    <tfoot>
-		        <tr>
-		            <th>Package</th>
-		            <th>Latest Commit</th>
-		        </tr>
-		    </tfoot>
-		</table>
+            <h3>Funding</h3>
+            <div class="row">
+                <div class="col-12 col-sm-8">
+                    <p>Funding for the development and maintenance of this website was provided by the German Network for Bioinformatics Infrastructure (<a href="https://www.denbi.de">de.NBI</a>).</p>
+                </div>
+                <div class="col-12 col-sm-4">
+                    <img class="logo" src="images/denbi_logo.png">
+                </div>
+            </div>
+        </div>
+    </main>
 
-	<script>
-	$(document).ready( function () {
-		$('#example').DataTable( {
-			"pageLength": 25,
-		    "ajax": 'packages.json',
-		    "order": [[ 1, "desc" ]]
-		});
-	} );
-	</script>
-
-	<hr />
-	<footer>
-		<p>Powered by <a href="https://github.com/klaussilveira/gitlist">GitList 1.0.2</a></p>
-	</footer>
-</div>        
-
+    <footer class="footer">
+          <div class="container">
+            <span class="text-muted"></span>
+          </div>
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 </body>
 </html>
 
