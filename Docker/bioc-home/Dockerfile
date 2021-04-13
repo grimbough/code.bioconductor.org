@@ -14,5 +14,6 @@ RUN tar xzvf images/favicon.tar.gz
 COPY css css/
 
 COPY html/index.html .
+COPY html/about.html .
 
 CMD ["lighttpd", "-D", "-f", "/etc/lighttpd/lighttpd.conf"]
