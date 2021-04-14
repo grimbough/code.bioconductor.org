@@ -4,25 +4,26 @@
 <title>Bioconductor Code Search</title>
 <body>
 
-  <div class="navbar navbar-default navbar-static-top py-0" role="navigation">
+  <div class="navbar navbar-default navbar-static-top p-0" role="navigation">
     <div class="container">
-      <div class="navbar-header">
         <a class="navbar-brand" href="/">
           <img class="brand-square" src="https://www.huber.embl.de/users/msmith/bioc_code_search_square.png" alt="Bioconductor Code Logo" title="Bioconductor Code Tools">
         </a>
         <span class="navbar-brand navbar-brand-centre d-none d-sm-inline">
-          <img class="navbar-centre-img" src="https://www.huber.embl.de/users/msmith/bioc_code_search_nologo.png" alt="Bioconductor Code Logo" title="Bioconductor Code Tools">
+          <img class="navbar-centre-img" src="https://www.huber.embl.de/users/msmith/bioc_code_search_nologo.svg" alt="Bioconductor Code Logo" title="Bioconductor Code Tools">
         </span>
-      </div>
-      <ul class="nav navbar-nav navbar-right">
-        <li><a href="/about.html">About</a></li>
-      </ul>
+        <p class="navbar-text navbar-right m-0">
+            <a class="navbar-barlink" href="/about.html">
+                <span class="fas fa-info-circle"></span>
+                <span class="nav-text">&nbsp;About</span>
+            </a>
+        </p>
     </div>
   </div>
 
   <main role="main">
 
-    <div class="jumbotron">
+    <div class="jumbotron py-3">
       <div class="container">
         <div class="row">
           <div class="col-md-12 text-center">

@@ -14,6 +14,7 @@
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" />
 
     <!-- matomo used for visitor counting; required to justify de.NBI funding -->
     <script type="text/javascript">
@@ -98,13 +99,17 @@
 
   .navbar-centre-img {
     height: 30px;
-    margin-top: 5px;
+    margin-top: 7px;
   }
 
   .navbar-brand-centre {
     transform: translateX(-50%);
     left: 50%;
     position: absolute;
+  }
+
+  .navbar-right a {
+    color: #fff;
   }
 
   a {
