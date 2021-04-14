@@ -41,7 +41,7 @@ if(length(existing_pkgs) == 0 || CLEAN) {
     cleanDir(repo_dir = REPO_DIR)
     initialiseRepositories(repo_dir = REPO_DIR, n_pkgs = n_pkgs)
 } else {
-    manifest <- getManifest(n_pkgs = Inf)
+    manifest <- getManifest(n_pkgs = n_pkgs)
     updated_pkgs <- updateRepositories(repo_dir = REPO_DIR, manifest = manifest, 
                                  update_all = UPDATE_ALL)
     if(!is.null(updated_pkgs)) {

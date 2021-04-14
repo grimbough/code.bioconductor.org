@@ -150,7 +150,7 @@ updateBranches <- function(pkg_name, repo_dir) {
     }
     ## finish with the master branch checkout
     gert::git_branch_checkout(branch = "master", repo = repo)
-    message("done")
+    printMessage("done", 2)
 }
 
 processMostRecentCommit <- function(pkg_name, repo_dir) {
@@ -196,8 +196,11 @@ initialiseRepositories <- function(repo_dir, n_pkgs) {
     ## we'll use this to make sure we get all updates next time
     feed_devel <- getRSSfeed(devel = TRUE)
     feed_release <- getRSSfeed(devel = FALSE)
+    
+    rds_tmp_file <- file.path(repo_dir, "last_hash_tmp.rds")
+    if(file.exists(rds_tmp_file)) { file.remove(rds_tmp_file) }
     saveRDS(list(devel = feed_devel$item_guid[1], release = feed_release$item_guid[1]),
-            file = file.path(repo_dir, "last_hash_tmp.rds"))
+            file = rds_tmp_file)
     
     pkgs <- getManifest(n_pkgs = n_pkgs)
     
