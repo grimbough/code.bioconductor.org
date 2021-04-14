@@ -1,15 +1,16 @@
 <div class="navbar navbar-default navbar-static-top" role="navigation">
     <div class="container">
-        <div class="navbar-header">
             <a class="navbar-brand" href="{{ path('homepage') }}">
-                <img src="{{ app.request.basepath }}/themes/bioconductor/img/bioc_code_browse_square.png" alt="Bioconductor Logo" title="{{ title }}">
+                <img class="navbar-left-img" src="{{ app.request.basepath }}/themes/bioconductor/img/bioc_code_browse_square.svg" alt="Bioconductor Logo" title="{{ title }}">
             </a>
             <span class="navbar-brand navbar-brand-centre d-none d-sm-inline">
-                <img class="navbar-centre-img" src="https://www.huber.embl.de/users/msmith/bioc_code_browse_nologo.png" alt="Bioconductor Code Browse Large Logo" title="Bioconductor Code Tools">
+                <img class="navbar-centre-img" src="{{ app.request.basepath }}/themes/bioconductor/img/bioc_code_browse_nologo.svg" alt="Bioconductor Code Browse Large Logo" title="Bioconductor Code Tools">
             </span>
-        </div>
-        <ul class="nav navbar-nav navbar-right">
-                <li><a href="/about.html"><i class="fa fa-info-circle"></i><span class="nav-text">About<span></a></li>
-        </ul>
+            <p class="navbar-text navbar-right">
+                <a class="navbar-barlink" href="/about.html">
+                    <span class="fa fa-info-circle"></span>
+                    <span class="nav-text">&nbsp;About</span>
+                </a>
+            </p>
     </div>
 </div>

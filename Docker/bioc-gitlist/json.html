@@ -3,25 +3,16 @@
     <meta charset="UTF-8" />
     <title>Bioconductor Code Tools</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
     <link rel="stylesheet" type="text/css" href="themes/bioconductor/css/style.css">
-    <link rel="stylesheet" type="text/css" href="themes/bioconductor/css/fontawesome.css">
-    <link rel="stylesheet" type="text/css" href="themes/bioconductor/css/gitgraph.css">
     <link rel="shortcut icon" type="image/png" href="themes/bioconductor/img/favicon.png" />
         <!--[if lt IE 9]>
         <script type="application/javascript" src="/themes/bioconductor/js/html5.js"></script>
     <![endif]-->
     <script type="application/javascript" src="themes/bioconductor/js/jquery.js"></script>
-    <script type="application/javascript" src="themes/bioconductor/js/raphael.js"></script>
     <script type="application/javascript" src="themes/bioconductor/js/bootstrap.js"></script>
-    <script type="application/javascript" src="themes/bioconductor/js/codemirror.js"></script>
-    <script type="application/javascript" src="themes/bioconductor/js/showdown.js"></script>
-    <script type="application/javascript" src="themes/bioconductor/js/table.js"></script>
-    <script type="application/javascript" src="themes/bioconductor/js/main.js"></script>
-    <script type="application/javascript" src="themes/bioconductor/js/networkGraph.js"></script>
-    <script type="application/javascript" src="themes/bioconductor/js/gitgraph.js"></script>
-    <script type="application/javascript" src="themes/bioconductor/js/draw.js"></script>    
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
 </head>
 <body>
@@ -29,21 +20,19 @@
     <div class="navbar navbar-default navbar-static-top" role="navigation">
         <div class="container">
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="/">
-                    <img src="themes/bioconductor/img/bioc_code_browse.png" alt="Bioconductor Code Browse Logo" title="Bioconductor Git Browser">
+                <a class="navbar-brand" href="{{ path('homepage') }}">
+                    <img class="navbar-left-img" src="themes/bioconductor/img/bioc_code_browse_square.svg" alt="Bioconductor Logo">
                 </a>
+                <span class="navbar-brand navbar-brand-centre d-none d-sm-inline">
+                    <img class="navbar-centre-img" src="themes/bioconductor/img/bioc_code_browse_nologo.svg" alt="Bioconductor Code Browse Large Logo" title="Bioconductor Code Tools">
+                </span>
             </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a href="/">About</a></li>
-                </ul>
-            </div><!--/.nav-collapse -->
+            <p class="navbar-text navbar-right">
+                <a href="/about.html">
+                    <span class="fa fa-info-circle"></span>
+                    <span class="nav-text">&nbsp;About</span>
+                </a>
+            </p>
         </div>
     </div>
 
