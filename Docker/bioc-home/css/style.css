@@ -23,9 +23,19 @@ body {
   height: 40px;
 }
 
-.jumbotron {
-  padding-top: 2rem;
-  padding-bottom: 2rem;
+.navbar-brand-centre {
+  transform: translateX(-50%);
+  left: 50%;
+  position: absolute;
+}
+
+.navbar-centre-img {
+  height: 30px;
+  margin-top: 7px;
+}
+
+.navbar-right a {
+  color: #fff;
 }
 
 .card {
@@ -46,7 +56,6 @@ body {
 .footer {
   background-color: #e9ecef;
   height: 50px;
-  position: absolute;
   bottom: 0;
   width: 100%;
 }
