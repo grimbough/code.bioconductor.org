@@ -61,7 +61,8 @@ body {
 }
 
 .logo {
-  max-height: 200px;
+  max-height: 150px;
   max-width: 100%;
+  top-margin: -15%;
 }
 
