@@ -1,7 +1,7 @@
 <nav class="navbar navbar-default navbar-static-top mb-3 p-0">
   <div class="container">
-    <a class="navbar-brand" href="/">
-      <img class="brand-square" src="https://www.huber.embl.de/users/msmith/bioc_code_search_square.png" alt="Bioconductor Code Logo" title="Bioconductor Code Tools">
+    <a class="navbar-brand" href="/search/">
+      <img class="brand-square" src="/images/bioc_code_search_square.png" alt="Bioconductor Code Logo" title="Bioconductor Code Tools">
     </a>
     <div class="flex-grow-1 d-flex mw-100">
       <form class="form-inline flex-nowrap w-100 m-0 mx-lg-auto rounded p-1">

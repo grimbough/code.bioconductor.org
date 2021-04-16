@@ -126,7 +126,7 @@
     overflow-x: auto;
   }
 
-  .result-table tr:nth-child(even) {
+  .result-table tbody tr:nth-child(odd) {
     background-color: #f2f2f2;
   }
 

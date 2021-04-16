@@ -7,10 +7,10 @@
   <div class="navbar navbar-default navbar-static-top p-0" role="navigation">
     <div class="container">
         <a class="navbar-brand" href="/">
-          <img class="brand-square" src="https://www.huber.embl.de/users/msmith/bioc_code_search_square.png" alt="Bioconductor Code Logo" title="Bioconductor Code Tools">
+          <img class="brand-square" src="/images/bioc_code_search_square.png" alt="Bioconductor Code Logo" title="Bioconductor Code Tools">
         </a>
         <span class="navbar-brand navbar-brand-centre d-none d-sm-inline">
-          <img class="navbar-centre-img" src="https://www.huber.embl.de/users/msmith/bioc_code_search_nologo.svg" alt="Bioconductor Code Logo" title="Bioconductor Code Tools">
+          <img class="navbar-centre-img" src="/images/bioc_code_search_nologo.svg" alt="Bioconductor Code Logo" title="Bioconductor Code Tools">
         </span>
         <p class="navbar-text navbar-right m-0">
             <a class="navbar-barlink" href="/about.html">
