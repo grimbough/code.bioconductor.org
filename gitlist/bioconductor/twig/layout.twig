@@ -41,6 +41,14 @@
         <script type="application/javascript" src="{{ app.request.basepath }}/themes/{{ theme }}/js/networkGraph.js"></script>
         <script type="application/javascript" src="{{ app.request.basepath }}/themes/{{ theme }}/js/gitgraph.js"></script>
         <script type="application/javascript" src="{{ app.request.basepath }}/themes/{{ theme }}/js/draw.js"></script>
+        <!-- ensure we scroll to anchor -->
+        <script type="text/javascript">
+              var hashSplit = location.href.split('#');
+              var curHash= hashSplit[1];
+              if (typeof curHash !== 'undefined') {
+                window.location.hash = curHash;
+              }
+        </script>
         {% endblock %}
     </body>
 </html>
