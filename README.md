@@ -15,39 +15,32 @@ CONTAINER_REPO_DIR=/var/git
 CONTAINER_ZOEKT_IDX_DIR=/var/zoekt
 ```
 
-Initialise or update the collection of BioC pacage git repositories.  If `${LOCAL_REPO_DIR}` is empty it will clone all repositories from the Bioconductor git server.  If `${LOCAL_REPO_DIR}` contains one or more directories it will only clone packages or update existing repositories that have change since the last update.  
+Initialise or update the collection of BioC package git repositories.  If `${LOCAL_REPO_DIR}` is empty it will clone all repositories from the Bioconductor git server.  If `${LOCAL_REPO_DIR}` contains one or more directories it will only clone packages or update existing repositories that have change since the last update.  After packages have been cloned or updated it will create Zoekt index files for the affected repositories.
 
 Can be passed the following arguments:
 
-  - `--all`     If `${LOCAL_REPO_DIR}` is no empty, this will try to update all existing packages and clone any not currently present.
+  - `--all`     If `${LOCAL_REPO_DIR}` is not empty, this will try to update all existing packages and clone any not currently present.
   - `--clean`   Delete everying found in `${LOCAL_REPO_DIR}` and re-download.
   - `--npkgs=N` If `${LOCAL_REPO_DIR}` is empty, or `--clean` has been supplied, only download the first `N` packages found in the manifest.
 
 ```bash
-docker run -it --env GIT_REPOS_DIR=${CONTAINER_REPO_DIR} \
-  --mount type=bind,source=${LOCAL_REPO_DIR},target=${CONTAINER_REPO_DIR} \
-  grimbough/bioc-git-mirror
-```
-
-Run the zoekt indexer.  This should be run after the git repositories have been updated.
-
-```bash
-docker run -it --env CONTAINER_ZOEKT_IDX_DIR=${CONTAINER_ZOEKT_IDX_DIR} \
+docker run -it \
   --env GIT_REPOS_DIR=${CONTAINER_REPO_DIR} \
+  --env CONTAINER_ZOEKT_IDX_DIR=${CONTAINER_ZOEKT_IDX_DIR} \
   --mount type=bind,source=${LOCAL_REPO_DIR},target=${CONTAINER_REPO_DIR} \
   --mount type=bind,source=${LOCAL_ZOEKT_IDX_DIR},target=${CONTAINER_ZOEKT_IDX_DIR} \
-  grimbough/bioc-zoekt-index
+  grimbough/code.bioc-mirror-updater
 ```
 
 Launch the docker containers for the gitlist and zoekt webservers.  
 
 ```bash
-docker run -p 8888:6070 -d --name zoekt-webserver \
+docker run -p 8888:8080 -d --name zoekt-webserver \
   --mount type=bind,source=${LOCAL_REPO_DIR},target=${CONTAINER_REPO_DIR} \
   --mount type=bind,source=${LOCAL_ZOEKT_IDX_DIR},target=${CONTAINER_ZOEKT_IDX_DIR} \
-  grimbough/bioc-zoekt-webserver
+  grimbough/code.bioc-zoekt-webserver
 
-docker run -p 8889:80 -d --name gitlist-webserver \
+docker run -p 8889:8080 -d --name gitlist-webserver \
   --mount type=bind,source=${LOCAL_REPO_DIR},target=${CONTAINER_REPO_DIR} \
-  grimbough/bioc-gitlist
+  grimbough/code.bioc-gitlist
 ```
