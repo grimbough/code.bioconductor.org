@@ -58,6 +58,7 @@
           $('#example').DataTable( {
              "pageLength": 25,
              "ajax": 'packages.json',
+             "deferRender": true,
              "order": [[ 1, "desc" ]]
          });
         } );
