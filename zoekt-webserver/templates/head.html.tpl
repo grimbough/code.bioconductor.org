@@ -16,6 +16,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" />
 
+    <meta property="og:url" content="https://code.bioconductor.org/search">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Bioconductor Code: Search">
+    <meta property="og:description" content="Search source code across all Bioconductor packages">
+    <meta property="og:image" content="https://code.bioconductor.org/images/bioc_code_search_square_blue.png">
+
     <!-- matomo used for visitor counting; required to justify de.NBI funding -->
     <script type="text/javascript">
         var _paq = window._paq = window._paq || [];
