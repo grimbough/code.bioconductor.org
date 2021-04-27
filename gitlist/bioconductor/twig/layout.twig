@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
-        <title>Bioconductor Code Browser</title>
+        <title>Bioconductor Code: Browse</title>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link rel="stylesheet" type="text/css" href="{{ app.request.basepath }}/themes/{{ theme }}/css/style.css">
         <link rel="stylesheet" type="text/css" href="{{ app.request.basepath }}/themes/{{ theme }}/css/fontawesome.css">
@@ -14,15 +14,15 @@
         
         <meta property="og:url" content="https://code.bioconductor.org/browse/">
         <meta property="og:type" content="website">
-        <meta property="og:title" content="Bioconductor Code Browser">
-        <meta property="og:description" content="Browse the content of Biconductor software packages in the Bioconductor.">
+        <meta property="og:title" content="Bioconductor Code: Browse">
+        <meta property="og:description" content="Browse the content of Bioconductor software packages.">
         <meta property="og:image" content="https://code.bioconductor.org/images/bioc_code_browse_square_blue.png">
 
         <script type="text/javascript">
               var slashSplit = location.href.replace(/^(https?:|)\/\//,'').split('/');
               var package = slashSplit[2];
               if (typeof package !== 'undefined') {
-                document.title = "Bioconductor Code Browser: " + package;
+                document.title = "Bioconductor Code: " + package;
               }
         </script>
 
