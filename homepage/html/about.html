@@ -18,10 +18,11 @@
 
     <link rel="stylesheet" type="text/css" href="css/style.css">
 
+    <meta property="og:title" content="Bioconductor Code Explore" />
+
     <!-- matomo used for visitor counting; required to justify de.NBI funding -->
     <script type="text/javascript">
         var _paq = window._paq = window._paq || [];
-        /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
         _paq.push(['trackPageView']);
         _paq.push(['enableLinkTracking']);
         (function() {
@@ -54,6 +55,11 @@
 
 <main role="main">
     <div class="container pb-4">
+        <h3>Available packages</h3>
+        <p>
+            The tools available on this site only provide access to the code for packages that are currently part of Bioconductor. This means that are either in the current release branch, or have been accepted during this release cycle and are available from the devel version of Bioconductor.  If your package is currently under review, but has not yet been accepted, it will not appear here.  Likewise, deprecated packages from previous releases are also unavailable. It is also limited to "software" packages and doesn't provide access to "workflows", "books", "annotation", etc. This may change in the future.
+        </p>
+
         <h3>Update frequency</h3>
         <p>
             The central Biocondutor Git repository can be found at <a href="https://git.bioconductor.org">git.bioconductor.org</a>.  The files backing this this site are derived from a local mirror of the central repository.  Updates are synced to the mirror automatically every 30 minutes.  If you do not see code you recently commited to the main git repository, please wait at least 30 minutes before wondering why.
