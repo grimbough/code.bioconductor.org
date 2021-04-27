@@ -61,7 +61,7 @@ getPackagesToUpdate <- function(manifest, repo_dir) {
     changed_pkgs <- getChangedPackages(manifest, repo_dir)
     new_pkgs <- getNewPackages(manifest, repo_dir)
     
-    return(unique(new_pkgs, changed_pkgs))
+    return(unique(c(new_pkgs, changed_pkgs)))
 }
 
 
