@@ -21,8 +21,11 @@ if(length(args) >= 1 && any(grepl("--npkgs=[0-9]*", args))) {
     n_pkgs <- Inf
 }
 
-## process argument specifying number of packages to initialise with
-if(length(args) >= 1 && ("--all" %in% args)) {
+## --all means we should git pull and reindex all existing repos
+all_arg <- length(args) >= 1 && ("--all" %in% args)
+## Update everyting once a week.  Currently Tuesday 14:30
+special_time <- grepl(pattern = "2-14:3[0-9]", strftime(Sys.time(), format = "%w-%H:%M"))
+if(all_arg || special_time) {
     UPDATE_ALL <- TRUE
 } else {
     UPDATE_ALL <- FALSE
@@ -40,6 +43,7 @@ if(!nzchar(INDEX_DIR)) {
          "Please set the CONTAINER_ZOEKT_IDX_DIR environment variable.")
 }
 
+source("utils.R")
 source("git_update_functions.R")
 suppressPackageStartupMessages(library(dplyr))
 suppressPackageStartupMessages(library(tidyRSS))
@@ -51,7 +55,11 @@ suppressPackageStartupMessages(library(jsonlite))
 ##############################################
 manifest <- getManifest(n_pkgs = n_pkgs)
 existing_pkgs <- list.dirs(REPO_DIR, recursive = FALSE)
+removePackages(manifest, existing_pkgs, index_dir = INDEX_DIR)
 
+#########################################################
+## Is this starting afresh or updating existing mirror ##
+#########################################################
 if(length(existing_pkgs) == 0 || CLEAN) {
     cleanDir(repo_dir = REPO_DIR, index_dir = INDEX_DIR)
     createLockFile(repo_dir = REPO_DIR)

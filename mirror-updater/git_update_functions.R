@@ -1,45 +1,24 @@
-printMessage <- function(msg, n, appendLF = TRUE) {
-    message("[ ", Sys.time(), " ] ", rep(" ", n), msg, appendLF = appendLF)
+
+## Packages that aren't found in the manifest should be removed
+## Also make sure the zoekt index is deleted
+removePackages <- function(manifest, existing_pkgs, index_dir) {
+    printMessage("Checking for packages to remove... ", 0)
+    pkg_status <- basename(existing_pkgs) %in% manifest
+    if(any(!pkg_status)) {
+        pkgs_rm <- existing_pkgs[!pkg_status]
+        for(pkg in pkgs_rm) {
+            printMessage(basename(pkg), 2)
+            unlink(pkg, recursive = TRUE)
+            zoekt_indices <- file.path(index_dir, paste0(basename(pkg), "*", ".zoekt"))
+            unlink(zoekt_indices, recursive = FALSE, expand = TRUE)
+        }
+    } else {
+        printMessage("None found", 2)
+    }
+    printMessage("done", 0)
 }
 
-cleanDir <- function(repo_dir, index_dir) {
-    existing_pkgs <- list.dirs(repo_dir, recursive = FALSE)
-    if(length(existing_pkgs)) {
-        printMessage("Deleting existing packages... ", 0, appendLF = FALSE)
-        unlink(existing_pkgs, recursive = TRUE)
-        message("done")
-    }
-    
-    existing_files <- list.files(repo_dir, full.names = TRUE)
-    if(length(existing_files)) {
-        printMessage("Deleting existing files... ", 0, appendLF = FALSE)
-        file.remove(existing_files)
-        message("done")
-    }
-    
-    index_files <- list.files(index_dir, full.names = TRUE)
-    if(length(index_files)) {
-        printMessage("Deleting index files... ", 0, appendLF = FALSE)
-        file.remove(index_files)
-        message("done")
-    }
-}
-
-getRSSfeed <- function(devel = TRUE) {
-    url <- ifelse(devel,
-                  'https://bioconductor.org/developers/rss-feeds/gitlog.xml',
-                  'https://bioconductor.org/developers/rss-feeds/gitlog.release.xml')
-    
-    feed <- suppressMessages(
-        tidyfeed('https://bioconductor.org/developers/rss-feeds/gitlog.xml', 
-                 parse_dates = FALSE, list = TRUE) %>%
-            magrittr::extract2("entries")
-    )
-    return(feed)
-}
-
-getPackagesToUpdate <- function(manifest, repo_dir) {
-    
+getChangedPackages <- function(manifest, repo_dir) {
     feed_devel <- getRSSfeed(devel = TRUE)
     feed_release <- getRSSfeed(devel = FALSE)
     
@@ -70,27 +49,22 @@ getPackagesToUpdate <- function(manifest, repo_dir) {
     return(pkgs)
 }
 
-## Get a vector containing the names of all packages currently part of 
-## Bioconductor.  This differs from the complete list of repositories hosted
-## on the git server.
-getManifest <- function(repo_dir = tempdir(), n_pkgs) {
-    printMessage("Aquiring list of packages... ", 0, appendLF = FALSE)
-    output_dir <- file.path(repo_dir, "manifest")
-    if(!dir.exists(output_dir)) {
-        gert::git_clone("https://git.bioconductor.org/admin/manifest", 
-                        path = file.path(repo_dir, "manifest"),
-                        verbose = FALSE)
-    }
-    manifest <- scan(file.path(repo_dir, "manifest", "software.txt"), 
-                     what = character(), quiet = TRUE,
-                     blank.lines.skip=TRUE, sep = "\n", skip = 1)
-    manifest <- gsub("Package: ", "", x = manifest, fixed = TRUE)
-    if(is.finite(n_pkgs)) {
-        manifest <- manifest[seq_len(n_pkgs)]
-    }
-    message("done")
-    return(manifest)
+getNewPackages <- function(manifest, repo_dir) {
+    manifest[!(manifest %in% list.dirs(repo_dir, full.names = FALSE))]
 }
+
+## Packages to update should either be those with more recent commits
+## than the last one we can identify OR new packages in the manifest we
+## don't currently have.
+getPackagesToUpdate <- function(manifest, repo_dir) {
+    
+    changed_pkgs <- getChangedPackages(manifest, repo_dir)
+    new_pkgs <- getNewPackages(manifest, repo_dir)
+    
+    return(unique(new_pkgs, changed_pkgs))
+}
+
+
 
 clonePackage <- function(pkg_name, repo_dir) {
     
@@ -306,40 +280,3 @@ updateRepositories <- function(repo_dir, manifest, update_all = FALSE) {
     }
 }
 
-## Around release time updates may take longer than the time between cron jobs
-## Detect if a lock file from a running process exists and exit if so.
-## Lock files older than 24 hours are ignored and deleted.
-createLockFile <- function(repo_dir) {
-    lock_file <- file.path(repo_dir, "lock")
-    if(file.exists(lock_file)) {
-        if(difftime(Sys.time(), file.mtime(lock_file), units = "hours") < 24) {
-            printMessage("Lock file found. Exiting", n = 0)
-            quit(save = "no")
-        } else {
-            printMessage("Removing stale lock file.", n = 0)
-            file.remove(lock_file)
-        }
-    }
-    file.create(lock_file)
-}
-
-cleanUp <- function(repo_dir) {
-    
-    old_hash <- file.path(REPO_DIR, "last_hash.rds")
-    tmp_hash <- file.path(REPO_DIR, "last_hash_tmp.rds")
-    lock_file <- file.path(REPO_DIR, "lock")
-    
-    ## update the record of the last packages we updated
-    printMessage("Writing last_hash.rds... ", 0, appendLF = FALSE)
-    if(file.exists(tmp_hash)) {
-        if(file.exists(old_hash)) {
-            file.remove(old_hash)
-        }
-        invisible(file.rename(from = tmp_hash, to = old_hash))
-    }
-    message("done")
-    
-    printMessage("Removing lock file... ", 0, appendLF = FALSE)
-    file.remove(lock_file)
-    message("done")
-}
