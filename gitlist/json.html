@@ -14,6 +14,22 @@
     <script type="application/javascript" src="themes/bioconductor/js/jquery.js"></script>
     <script type="application/javascript" src="themes/bioconductor/js/bootstrap.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
+    
+    <!-- matomo used for visitor counting; required to justify de.NBI funding -->
+    <script type="text/javascript">
+      var _paq = window._paq = window._paq || [];
+      /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+      _paq.push(['trackPageView']);
+      _paq.push(['enableLinkTracking']);
+      (function() {
+        var u="https://tr-denbi.embl.de/heimdall/";
+        _paq.push(['setTrackerUrl', u+'p.php']);
+        _paq.push(['setSiteId', '37']);
+        var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+        g.type='text/javascript'; g.async=true; g.src=u+'p.js'; s.parentNode.insertBefore(g,s);
+      })(); 
+    </script>
+  
 </head>
 <body>
 
@@ -21,10 +37,10 @@
         <div class="container">
             <div class="navbar-header">
                 <a class="navbar-brand" href="{{ path('homepage') }}">
-                    <img class="navbar-left-img" src="themes/bioconductor/img/bioc_code_browse_square.svg" alt="Bioconductor Logo">
+                    <img class="navbar-left-img" src="themes/bioconductor/img/bioc_code_browse_square.png" alt="Bioconductor Logo">
                 </a>
                 <span class="navbar-brand navbar-brand-centre d-none d-sm-inline">
-                    <img class="navbar-centre-img" src="themes/bioconductor/img/bioc_code_browse_nologo.svg" alt="Bioconductor Code Browse Large Logo" title="Bioconductor Code Tools">
+                    <img class="navbar-centre-img" src="themes/bioconductor/img/bioc_code_browse_nologo.png" alt="Bioconductor Code Browse Large Logo" title="Bioconductor Code Tools">
                 </span>
             </div>
             <p class="navbar-text navbar-right">
