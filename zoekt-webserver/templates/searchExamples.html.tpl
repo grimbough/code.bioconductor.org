@@ -15,14 +15,14 @@
 				<dd class="col-sm-9">search for files containing "class" and "Matrix", both case sensitively</dd>
 				<dt class="col-sm-3"><a href="search?q=%22class Matrix%22">"class Matrix"</a></dt>
 				<dd class="col-sm-9">search for files with the phrase "class Matrix"</dd>
-				<dt class="col-sm-3"><a href="search?q=needle+-hay">needle -hay</a></dt>
-				<dd class="col-sm-9">search for files with the word "needle" but not the word "hay"</dd>
+				<dt class="col-sm-3"><a href="search?q=DNAString+-RNAString">DNAString -RNAString</a></dt>
+				<dd class="col-sm-9">search for files with the word "DNAString" but not the word "RNAString"</dd>
 				<dt class="col-sm-3"><a href="search?q=path+file:Rd">matrix file:Rd</a></dt>
 				<dd class="col-sm-9">search for the word "matrix" in files whose name contains "Rd"</dd>
 				<dt class="col-sm-3"><a href="search?q=path+file:(R|r)$">matrix file:(R|r)$</a></dt>
 				<dd class="col-sm-9">search for the word "matrix" in files whose name ends with either "R" or "r"</dd>
-				<dt class="col-sm-3"><a href="search?q=matrix+lang%3Ac&num=50">matrix lang:c</a></dt>
-				<dd class="col-sm-9">search for "matrix" in C source code</dd>
+				<dt class="col-sm-3"><a href="search?q=SparseMatrix+lang%3Ac&num=50">SparseMatrix lang:c</a></dt>
+				<dd class="col-sm-9">search for "SparseMatrix" in C source code</dd>
 				<dt class="col-sm-3"><a href="search?q=f:%5C.R%24">f:\.R$</a></dt>
 				<dd class="col-sm-9">search for files whose name ends with ".R"</dd>
 				<dt class="col-sm-3"><a href="search?q=path+-file:Rd">path -file:Rd</a></dt>
@@ -43,10 +43,12 @@
 <div class="col-lg-5">
 	<h3>To list packages, try:</h3>
 	<dl class="row">
-		<dt class="col-sm-3"><a href="search?q=r:Affy">r:Affy</a></dt>
-		<dd class="col-sm-9">list packages whose name contains "Affy".</dd>
-		<dt class="col-sm-3"><a href="search?q=r:Affy+-r:Data">r:Affy&nbsp;&#8209;r:Data</a></dt>
-		<dd class="col-sm-9">list packages whose name contains "Affy" but not "Data".</dd>
+		<dt class="col-sm-3"><a href="search?q=r:seq">r:seq</a></dt>
+		<dd class="col-sm-9">list packages whose name contains "seq".</dd>
+		<dt class="col-sm-3"><a href="search?q=r:Seq">r:Seq</a></dt>
+		<dd class="col-sm-9">Reposity search is case sensitive. List packages whose name contains "Seq".</dd>
+		<dt class="col-sm-3"><a href="search?q=r:Seq+-r:RNA">r:Seq&nbsp;&#8209;r:RNA</a></dt>
+		<dd class="col-sm-9">list packages whose name contains "Seq" but not "RNA".</dd>
 	</dl>
 </div>
 </div>
