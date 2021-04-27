@@ -245,10 +245,10 @@ updateCommitMessages <- function(repo_dir, manifest, pkgs) {
     commit_messages <- sapply(pkgs, FUN = processMostRecentCommit, repo_dir = repo_dir, 
                               simplify = FALSE, USE.NAMES = TRUE)
 
-    ## combine out updated packages with the existing database
+    ## combine our updated packages with the existing database
     if(merge) {
         old_commit_messages <- readRDS(rds_file)
-        for(i in names(pkgs)) {
+        for(i in pkgs) {
             old_commit_messages[[ i ]] <- commit_messages[[ i ]]
         }
         commit_messages <- old_commit_messages
