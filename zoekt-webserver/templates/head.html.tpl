@@ -10,7 +10,7 @@
     <link rel="manifest" href="/site.webmanifest">
     <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#3792ad">
     <meta name="msapplication-TileColor" content="#3792ad">
-    <meta name="theme-color" content="#ffffff">
+    <meta name="theme-color" content="#1a81c2">
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
@@ -20,7 +20,13 @@
     <meta property="og:type" content="website">
     <meta property="og:title" content="Bioconductor Code: Search">
     <meta property="og:description" content="Search source code across all Bioconductor packages">
-    <meta property="og:image" content="https://code.bioconductor.org/images/bioc_code_search_square_blue.png">
+    <meta property="og:image" content="https://code.bioconductor.org/images/bioc_code_search_og.png">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Bioconductor Code: Search">
+    <meta name="twitter:site" content="@Bioconductor">
+    <meta name="twitter:image" content="https://code.bioconductor.org/images/bioc_code_search_square_blue.png">
+    <meta name="twitter:image:all" content="Logo for Bioconductor code search website.">
 
     <!-- matomo used for visitor counting; required to justify de.NBI funding -->
     <script type="text/javascript">
