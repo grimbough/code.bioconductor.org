@@ -23,8 +23,8 @@ if(length(args) >= 1 && any(grepl("--npkgs=[0-9]*", args))) {
 
 ## --all means we should git pull and reindex all existing repos
 all_arg <- length(args) >= 1 && ("--all" %in% args)
-## Update everyting once a week.  Currently Tuesday 14:30
-special_time <- grepl(pattern = "2-14:3[0-9]", strftime(Sys.time(), format = "%w-%H:%M"))
+## Update everything once a week.  Currently Wednesday 14:30
+special_time <- grepl(pattern = "3-14:3[0-9]", strftime(Sys.time(), format = "%w-%H:%M"))
 if(all_arg || special_time) {
     UPDATE_ALL <- TRUE
 } else {
@@ -74,8 +74,13 @@ if(length(existing_pkgs) == 0 || CLEAN) {
 ## If packages were changed, update the homepage json and the zoekt indices ##
 ##############################################################################
 if(!is.null(updated_pkgs)) {
-    updateCommitMessages(repo_dir = REPO_DIR, manifest = manifest, pkgs = updated_pkgs)
     updateZoektIndices(repo_dir = REPO_DIR, index_dir = INDEX_DIR, pkgs = updated_pkgs)
+    if(special_time) {
+        updateCommitMessages(repo_dir = REPO_DIR, manifest = manifest)
+    } else {
+        updateCommitMessages(repo_dir = REPO_DIR, manifest = manifest, pkgs = updated_pkgs)
+    }
+    
 }
 
 cleanUp(repo_dir = REPO_DIR)

@@ -188,7 +188,7 @@ initialiseRepositories <- function(repo_dir, manifest, n_pkgs) {
     if(file.exists(rds_tmp_file)) { file.remove(rds_tmp_file) }
     saveRDS(list(devel = feed_devel$item_guid[1], release = feed_release$item_guid[1]),
             file = rds_tmp_file)
-
+    
     for(pkg in manifest) {
         printMessage(paste0("Package: ", pkg), 0)
         clonePackage(pkg, repo_dir = repo_dir)
@@ -218,7 +218,7 @@ updateCommitMessages <- function(repo_dir, manifest, pkgs) {
     
     commit_messages <- sapply(pkgs, FUN = processMostRecentCommit, repo_dir = repo_dir, 
                               simplify = FALSE, USE.NAMES = TRUE)
-
+    
     ## combine our updated packages with the existing database
     if(merge) {
         old_commit_messages <- readRDS(rds_file)
@@ -267,11 +267,30 @@ updateRepositories <- function(repo_dir, manifest, update_all = FALSE) {
         for(pkg in pkgs) {
             printMessage(paste0("Package: ", pkg), 0)
             repo <- file.path(repo_dir, pkg)
+            
             if(!dir.exists(repo)) {
-                clonePackage(pkg, repo_dir = repo_dir)
-                checkoutBranches(pkg, repo_dir = repo_dir)
+                skip <- tryCatch( {
+                    clonePackage(pkg, repo_dir = repo_dir)
+                }, 
+                error = function(cond) { 
+                    message("Failed!")
+                    return(TRUE) 
+                })
+                if(isTRUE(skip)) { 
+                    pkgs <- setdiff(pkgs, pkg)
+                } else { 
+                    checkoutBranches(pkg, repo_dir = repo_dir) 
+                }
             } else {
-                updateBranches(pkg, repo_dir = repo_dir)
+                skip <- tryCatch( {
+                    updateBranches(pkg, repo_dir = repo_dir)
+                }, 
+                error = function(cond) { 
+                    printMessage("Failed!", 4)
+                    return(TRUE) 
+                })
+                if(isTRUE(skip)) { pkgs <- setdiff(pkgs, pkg) }
+                
             }
             
         }
