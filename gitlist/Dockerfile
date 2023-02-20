@@ -6,10 +6,11 @@ ENV TZ="Europe/Berlin"
 RUN apk --no-cache add \
         curl \
         git \
-        nodejs-less
+        nodejs-less \
+        unzip
 
 WORKDIR /
-RUN curl -L --output - https://github.com/klaussilveira/gitlist/releases/download/1.0.2/gitlist-1.0.2.tar.gz | tar xzf -
+RUN curl -L --output gitlist.zip https://github.com/klaussilveira/gitlist/releases/download/1.1.1/gitlist-1.1.1.zip && unzip gitlist.zip -d gitlist
 COPY config.ini /gitlist/config.ini
 COPY json.html /gitlist/index.html
 
