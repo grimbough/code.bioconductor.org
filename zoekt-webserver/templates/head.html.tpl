@@ -3,6 +3,10 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Search source code across all Bioconductor packages">
+    <meta name="keywords" content="Bioconductor, Code, Git, Search, R, Packages">
+    
+    <title>Bioconductor Code Search</title>
 
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">

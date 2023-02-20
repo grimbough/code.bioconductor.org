@@ -1,7 +1,6 @@
 
 <html>
 {{template "head"}}
-<title>Bioconductor Code Search</title>
 <body>
 
   <div class="navbar navbar-default navbar-static-top p-0" role="navigation">
