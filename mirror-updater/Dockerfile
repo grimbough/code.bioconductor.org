@@ -48,6 +48,9 @@ RUN Rscript  -e "chooseCRANmirror(graphics = FALSE, ind = 1)" \
              -e "install.packages(c('dplyr', 'tidyRSS', 'gert', 'jsonlite'), quiet = TRUE)"
 
 #RUN adduser --disabled-password --uid 82 www-data
+RUN set -x ; \
+  addgroup -g 82 -S www-data ; \
+  adduser -u 82 -D -S -G www-data www-data && exit 0 ; exit 1
 USER www-data
 
 COPY *.R /var/R/
