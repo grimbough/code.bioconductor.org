@@ -54,7 +54,7 @@ getNewPackages <- function(manifest, repo_dir) {
 }
 
 ## Packages to update should either be those with more recent commits
-## than the last one we can identify OR new packages in the manifest we
+## than the last one we can identify AND new packages in the manifest we
 ## don't currently have.
 getPackagesToUpdate <- function(manifest, repo_dir) {
     
@@ -94,7 +94,7 @@ checkoutBranches <- function(pkg_name, repo_dir) {
         
         ## only interested in RELEASE and master branches
         branches <- gert::git_branch_list(local = FALSE, repo = repo) %>%
-            filter(grepl("(RELEASE_[1-9]_[0-9]{1,2}$|master)", name)) %>%
+            filter(grepl("(RELEASE_[1-9]_[0-9]{1,2}$|master|devel)", name)) %>%
             arrange(desc(name))
         
         for(b in branches$name) {
@@ -103,8 +103,16 @@ checkoutBranches <- function(pkg_name, repo_dir) {
                 gert::git_branch_checkout(branch = basename(b), repo = repo)
             )
         }
-        ## finish with the master branch checkout
-        gert::git_branch_checkout(branch = "master", repo = repo)
+        ## finish with the devel/master branch checkout
+        if(any(grepl("devel", branches$name))) {
+          suppressMessages(
+            gert::git_branch_checkout(branch = "devel", repo = repo)
+          )
+        } else {
+          suppressMessages(
+            gert::git_branch_checkout(branch = "master", repo = repo)
+          )
+        }
         printMessage("done", 2)
     }
 }
@@ -117,11 +125,11 @@ updateBranches <- function(pkg_name, repo_dir) {
     printMessage("Updating branches... ", 2, appendLF = TRUE)
     
     gert::git_fetch(repo = repo, verbose = FALSE)
-    ## update the two most recent branches - should be devel and current release
+    ## update the three most recent branches - should be master, devel, and current release
     branches <- gert::git_branch_list(local = FALSE, repo = repo) %>%
-        filter(grepl("(RELEASE_[1-9]_[0-9]{1,2}$|master)", name)) %>%
+        filter(grepl("(RELEASE_[1-9]_[0-9]{1,2}$|master|devel)", name)) %>%
         arrange(desc(updated)) %>%
-        slice(1:2)
+        slice(1:3)
     for(b in branches$name) {
         printMessage(basename(b), 4)
         gert::git_branch_checkout(branch = basename(b), repo = repo)
@@ -129,8 +137,16 @@ updateBranches <- function(pkg_name, repo_dir) {
             gert::git_pull(repo = repo, verbose = FALSE)
         )
     }
-    ## finish with the master branch checkout
-    gert::git_branch_checkout(branch = "master", repo = repo)
+    ## finish with the devel/master branch checkout
+    if(any(grepl("devel", branches$name))) {
+        suppressMessages(
+            gert::git_branch_checkout(branch = "devel", repo = repo)
+        )
+    } else {
+        suppressMessages(
+            gert::git_branch_checkout(branch = "master", repo = repo)
+        )
+    }
     printMessage("done", 2)
 }
 
@@ -144,12 +160,21 @@ processMostRecentCommit <- function(pkg_name, repo_dir) {
     
     ## sort branches by commit time.  Sometimes RELEASE and master will be identical
     ## Sorting on branch isn't reliable, so we resolve this below
-    top2commits <- gert::git_branch_list(local = TRUE, repo = repo) %>% 
+    top3commits <- gert::git_branch_list(local = TRUE, repo = repo) %>% 
         arrange(desc(updated)) %>% 
-        slice(1:2)
+        slice(1:3)
+    
+    ## remove the master branch from this test if devel exists
+    if("devel" %in% top3commits$name) {
+        top2commits <- top3commits %>% filter(name != "master")
+        devel_branch <- "devel"
+    } else {
+        top2commits <- top3commits %>% slice(1:2)
+        devel_branch <- "master"
+    }
     
     if(identical(top2commits$updated[1], top2commits$updated[2])) {
-        most_recent_commit <- filter(top2commits, name == "master")
+        most_recent_commit <- filter(top2commits, name == devel_branch)
     } else {
         most_recent_commit <- slice(top2commits, 1)
     }
