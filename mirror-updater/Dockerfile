@@ -1,21 +1,14 @@
-FROM alpine:3.13.2 AS zoekt-index
+FROM alpine:3.17.2 AS zoekt-index
 
 RUN apk --no-cache add go git
 
 ENV CGO_ENABLED=0
 
-RUN go get -u golang.org/x/sys/... \
-    golang.org/x/sync/semaphore \
-    github.com/fsnotify/fsnotify \
-    go.uber.org/automaxprocs \
-    github.com/prometheus/client_golang/prometheus \
-    github.com/google/zoekt/
-
-RUN go install github.com/google/zoekt/cmd/zoekt-index
+RUN go install github.com/google/zoekt/cmd/zoekt-index@latest
 
 
 
-FROM alpine:3.13.2 AS ctags
+FROM alpine:3.17.2 AS ctags
 
 RUN apk --no-cache add wget
 
@@ -28,7 +21,7 @@ RUN wget https://storage.googleapis.com/zoekt-binaries/${CTAGS_BIN}.tar.gz && \
 
 
 
-FROM alpine:3.13.2
+FROM alpine:3.17.2
 LABEL maintainer "Mike Smith <mike.smith@embl.de>"
 
 COPY --from=ctags /ctags/* /usr/local/bin/
@@ -54,7 +47,7 @@ RUN apk --no-cache add \
 RUN Rscript  -e "chooseCRANmirror(graphics = FALSE, ind = 1)" \
              -e "install.packages(c('dplyr', 'tidyRSS', 'gert', 'jsonlite'), quiet = TRUE)"
 
-RUN adduser --disabled-password --uid 82 www-data
+#RUN adduser --disabled-password --uid 82 www-data
 USER www-data
 
 COPY *.R /var/R/

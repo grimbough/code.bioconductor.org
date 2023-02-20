@@ -1,4 +1,4 @@
-FROM alpine:3.13.2 AS builder
+FROM alpine:3.16.4 AS builder
 LABEL maintainer "Mike Smith <mike.smith@embl.de>"
 
 ENV TZ="Europe/Berlin"
@@ -20,7 +20,7 @@ WORKDIR /bioconductor
 RUN lessc less/style.less > css/style.css
 
 
-FROM ubuntu:20.04 
+FROM ubuntu:22.04 
 LABEL maintainer "Mike Smith <mike.smith@embl.de>"
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -31,18 +31,18 @@ RUN apt-get -y update && \
     rm -rf /var/lib/apt/lists/*
 
 ## configure php
-RUN echo "cgi.fix_pathinfo = 0;" >> /etc/php/7.4/fpm/php.ini && \
-    echo "max_input_vars = 10000;" >> /etc/php/7.4/fpm/php.ini && \
-    echo "max_execution_time = 10000;" >> /etc/php/7.4/fpm/php.ini && \
-    echo "date.timezone = Europe/Berlin;" >> /etc/php/7.4/fpm/php.ini
-RUN sed -i 's/;daemonize = yes/daemonize = no/g' /etc/php/7.4/fpm/php-fpm.conf
+RUN echo "cgi.fix_pathinfo = 0;" >> /etc/php/8.1/fpm/php.ini && \
+    echo "max_input_vars = 10000;" >> /etc/php/8.1/fpm/php.ini && \
+    echo "max_execution_time = 10000;" >> /etc/php/8.1/fpm/php.ini && \
+    echo "date.timezone = Europe/Berlin;" >> /etc/php/8.1/fpm/php.ini
+RUN sed -i 's/;daemonize = yes/daemonize = no/g' /etc/php/8.1/fpm/php-fpm.conf
 
 ## configure apache2
 RUN sed -i 's=Listen 80=Listen 8080=g' /etc/apache2/ports.conf
 RUN sed -i 's=:80>=:8080>=g' /etc/apache2/sites-available/000-default.conf 
 ADD gitlist.conf /etc/apache2/conf-available/
 RUN a2enconf gitlist && \
-    a2enconf php7.4-fpm && \
+    a2enconf php8.1-fpm && \
     a2enmod rewrite
 
 COPY --from=builder /gitlist /var/www/html/browse
