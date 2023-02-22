@@ -33,6 +33,7 @@ Can be passed the following arguments:
   - `--all`     If `${LOCAL_REPO_DIR}` is not empty, this will try to update all existing packages and clone any not currently present.
   - `--clean`   Delete everying found in `${LOCAL_REPO_DIR}` and re-download.
   - `--npkgs=N` If `${LOCAL_REPO_DIR}` is empty, or `--clean` has been supplied, only download the first `N` packages found in the manifest.
+  - `--extra_pkgs=` Provde a vector of specific package names to include in the checkout.  Some escaping of quotes is required e.g. `--extra_pkgs="c(\"rhdf5\", \"biomaRt\")"`.
 
 ```bash
 docker run -it \

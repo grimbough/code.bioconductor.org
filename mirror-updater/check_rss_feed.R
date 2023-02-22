@@ -21,6 +21,15 @@ if(length(args) >= 1 && any(grepl("--npkgs=[0-9]*", args))) {
     n_pkgs <- Inf
 }
 
+## process argument specifying specific packages to include
+if(length(args) >= 1 && any(grepl("--extra_pkgs=[[:alnum:]]*", args))) {
+    arg <- args[grepl("--extra_pkgs=[[:alnum:]]*", args)]
+    extra_pkgs <- gsub("--extra_pkgs=([[:alnum:]]*)", "\\1", arg)
+    extra_pkgs <- eval(parse(text = extra_pkgs))
+} else {
+    extra_pkgs <- NULL
+}
+
 ## --all means we should git pull and reindex all existing repos
 all_arg <- length(args) >= 1 && ("--all" %in% args)
 ## Update everything once a week.  Currently Wednesday 14:30
@@ -53,7 +62,7 @@ suppressPackageStartupMessages(library(jsonlite))
 ##############################################
 ## Find packages on server and local mirror ##
 ##############################################
-manifest <- getManifest(n_pkgs = n_pkgs)
+manifest <- getManifest(n_pkgs = n_pkgs, extra_pkgs = extra_pkgs)
 existing_pkgs <- list.dirs(REPO_DIR, recursive = FALSE)
 removePackages(manifest, existing_pkgs, index_dir = INDEX_DIR)
 

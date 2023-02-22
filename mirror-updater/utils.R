@@ -6,7 +6,7 @@ printMessage <- function(msg, n = 0, appendLF = TRUE) {
 ## Get a vector containing the names of all packages currently part of 
 ## Bioconductor.  This differs from the complete list of repositories hosted
 ## on the git server.
-getManifest <- function(repo_dir = tempdir(), n_pkgs) {
+getManifest <- function(repo_dir = tempdir(), n_pkgs, extra_pkgs = NULL) {
     printMessage("Aquiring list of packages... ", 0, appendLF = FALSE)
     output_dir <- file.path(repo_dir, "manifest")
     if(!dir.exists(output_dir)) {
@@ -18,6 +18,12 @@ getManifest <- function(repo_dir = tempdir(), n_pkgs) {
                      what = character(), quiet = TRUE,
                      blank.lines.skip=TRUE, sep = "\n", skip = 1)
     manifest <- gsub("Package: ", "", x = manifest, fixed = TRUE)
+    
+    if(!is.null(extra_pkgs)) {
+        extra_pkgs <- extra_pkgs[extra_pkgs %in% manifest]
+        manifest <- c(extra_pkgs, manifest)
+    }
+    
     if(is.finite(n_pkgs)) {
         manifest <- manifest[seq_len(n_pkgs)]
     }
