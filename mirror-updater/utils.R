@@ -49,8 +49,9 @@ getRSSfeed <- function(devel = TRUE) {
 createLockFile <- function(repo_dir) {
     lock_file <- file.path(repo_dir, "lock")
     if(file.exists(lock_file)) {
-        if(difftime(Sys.time(), file.mtime(lock_file), units = "hours") < 24) {
-            printMessage("Lock file found. Exiting", n = 0)
+        file_modified <- file.mtime(lock_file)
+        if(difftime(Sys.time(), file_modified, units = "hours") < 24) {
+            printMessage(paste0("Lock file found. Created at: ", file_modified, ". Exiting"), n = 0)
             quit(save = "no")
         } else {
             printMessage("Removing stale lock file.", n = 0)
