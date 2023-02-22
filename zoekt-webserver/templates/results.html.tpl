@@ -28,7 +28,7 @@
         <thead>
           <tr>
             <th>
-              <a href="https://code.bioconductor.org/browse/{{$FM.Repo}}/blob/master/{{$FM.FileName}}">
+              <a href="/browse/{{$FM.Repo}}/blob/master/{{$FM.FileName}}">
               <!--{{if .URL}}<a name="{{.ResultID}}" class="result"></a><a href="{{.URL}}" >{{else}}<a name="{{.ResultID}}">{{end}}-->
                 <small>
                 {{$FM.Repo}}:{{$FM.FileName}}</a>:
@@ -46,7 +46,7 @@
           {{range $M := $FM.Matches}}
           <tr>
             <td>
-              <pre class="inline-pre"><span class="noselect"><a href="https://code.bioconductor.org/browse/{{$FM.Repo}}/blob/master/{{$FM.FileName}}#L{{$M.LineNum}}"><u>{{$M.LineNum}}</u></a></span>: {{range .Fragments}}{{LimitPre 100 .Pre}}<b>{{.Match}}</b>{{LimitPost 100 .Post}}{{end}}</pre>
+              <pre class="inline-pre"><span class="noselect"><a href="/browse/{{$FM.Repo}}/blob/master/{{$FM.FileName}}#L{{$M.LineNum}}"><u>{{$M.LineNum}}</u></a></span>: {{range .Fragments}}{{LimitPre 100 .Pre}}<b>{{.Match}}</b>{{LimitPost 100 .Post}}{{end}}</pre>
             </td>
           </tr>
           {{end}}
