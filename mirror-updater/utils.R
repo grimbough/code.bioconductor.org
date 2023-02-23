@@ -45,12 +45,12 @@ getRSSfeed <- function(devel = TRUE) {
 
 ## Around release time updates may take longer than the time between cron jobs
 ## Detect if a lock file from a running process exists and exit if so.
-## Lock files older than 24 hours are ignored and deleted.
+## Lock files older than 18 hours are ignored and deleted.
 createLockFile <- function(repo_dir) {
     lock_file <- file.path(repo_dir, "lock")
     if(file.exists(lock_file)) {
         file_modified <- file.mtime(lock_file)
-        if(difftime(Sys.time(), file_modified, units = "hours") < 24) {
+        if(difftime(Sys.time(), file_modified, units = "hours") < 18) {
             printMessage(paste0("Lock file found. Created at: ", file_modified, ". Exiting"), n = 0)
             quit(save = "no")
         } else {

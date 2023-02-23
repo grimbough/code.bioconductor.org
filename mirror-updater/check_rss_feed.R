@@ -74,6 +74,9 @@ if(length(existing_pkgs) == 0 || CLEAN) {
     createLockFile(repo_dir = REPO_DIR)
     updated_pkgs <- initialiseRepositories(repo_dir = REPO_DIR, manifest = manifest)
 } else {
+    ## Uncomment these lines to force deletion of the lock file
+    #lock_file <- file.path(REPO_DIR, "lock")
+    #if(file.exists(lock_file)) { file.remove(lock_file) }
     createLockFile(repo_dir = REPO_DIR)
     updated_pkgs <- updateRepositories(repo_dir = REPO_DIR, manifest = manifest, 
                                  update_all = UPDATE_ALL)
