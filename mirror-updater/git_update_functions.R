@@ -92,9 +92,9 @@ checkoutBranches <- function(pkg_name, repo_dir) {
     } else {
         printMessage("Checking out branches... ", 2)
         
-        ## only interested in RELEASE and master branches
+        ## only interested in RELEASE and devel branches
         branches <- gert::git_branch_list(local = FALSE, repo = repo) %>%
-            filter(grepl("(RELEASE_[1-9]_[0-9]{1,2}$|master|devel)", name)) %>%
+            filter(grepl("(RELEASE_[1-9]_[0-9]{1,2}$|devel)", name)) %>%
             arrange(desc(name))
         
         for(b in branches$name) {
@@ -125,11 +125,11 @@ updateBranches <- function(pkg_name, repo_dir) {
     printMessage("Updating branches... ", 2, appendLF = TRUE)
     
     gert::git_fetch(repo = repo, verbose = FALSE)
-    ## update the three most recent branches - should be master, devel, and current release
+    ## update the two most recent branches - should be devel and current release
     branches <- gert::git_branch_list(local = FALSE, repo = repo) %>%
-        filter(grepl("(RELEASE_[1-9]_[0-9]{1,2}$|master|devel)", name)) %>%
+        filter(grepl("(RELEASE_[1-9]_[0-9]{1,2}$|devel)", name)) %>%
         arrange(desc(updated)) %>%
-        slice(1:3)
+        slice(1:2)
     for(b in branches$name) {
         printMessage(basename(b), 4)
         gert::git_branch_checkout(branch = basename(b), repo = repo)
