@@ -10,7 +10,7 @@
     <div class="repository">
         <div class="repository-header">
             <span class="fa fa-folder-open"></span>  <a href="{{ path('repository', {repo: repository.name}) }}">{{ repository.name }}</a>
-            <a href="{{ path('rss', {repo: repository.name, branch: 'master'}) }}"><span class="fa fa-rss rss-icon pull-right"></span></a>
+            <a href="{{ path('rss', {repo: repository.name, branch: 'devel'}) }}"><span class="fa fa-rss rss-icon pull-right"></span></a>
         </div>
         <div class="repository-body">
             {% if repository.description %}

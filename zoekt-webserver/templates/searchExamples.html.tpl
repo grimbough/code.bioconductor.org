@@ -36,8 +36,6 @@
 				<!--<dt class="col-sm-3"><a href="search?q=sym:data">sym:data</a></span></dt><dd class="col-sm-9">search for symbol definitions containing "data"</dd>-->
 				<dt class="col-sm-3"><a href="search?q=close+r:hdf5">close r:hdf5</a></dt>
 				<dd class="col-sm-9">search for "close" in repositories whose name contains "hdf5"</dd>
-<!--<dt class="col-sm-3"><a href="search?q=phone+b:master">phone b:master</a></dt><dd class="col-sm-9">for Git repos, find "phone" in files in branches whose name contains "master".</dd>
-	<dt class="col-sm-3"><a href="search?q=phone+b:HEAD">phone b:HEAD</a></dt><dd class="col-sm-9">for Git repos, find "phone" in the default ('HEAD') branch.</dd>-->
 </dl>
 </div>
 <div class="col-lg-5">
