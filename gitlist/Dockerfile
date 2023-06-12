@@ -51,7 +51,8 @@ COPY --from=builder /gitlist /var/www/html/browse
 COPY --from=builder /bioconductor /var/www/html/browse/themes/bioconductor
 RUN mkdir /var/www/html/browse/cache
 
-RUN ln -s /var/git/packages.json /var/www/html/browse/
+RUN ln -s /var/git/packages.json /var/www/html/browse/ && \
+    ln -s /var/git/status.log /var/www/html/browse/
 
 ## map www-data to the same UID as Alpine uses
 ## then set permissions

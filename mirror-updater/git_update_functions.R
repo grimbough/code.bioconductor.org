@@ -75,11 +75,11 @@ clonePackage <- function(pkg_name, repo_dir) {
     if(!dir.exists(out_path)) {
         printMessage("Cloning repository... ", 2, appendLF = FALSE)
         gert::git_clone(paste0("https://git.bioconductor.org/packages/", pkg_name), 
-                        path = file.path(repo_dir, pkg_name),
+                        path = out_path,
                         verbose = FALSE)
-        message("done")
+        printMessage("  done", 0, timestamp = FALSE)
     } else {
-        message("  Directory already exists")
+        printMessage("  Directory already exists", 0, timestamp = FALSE)
     }
 }
 
@@ -103,16 +103,10 @@ checkoutBranches <- function(pkg_name, repo_dir) {
                 gert::git_branch_checkout(branch = basename(b), repo = repo)
             )
         }
-        ## finish with the devel/master branch checkout
-        if(any(grepl("devel", branches$name))) {
-          suppressMessages(
-            gert::git_branch_checkout(branch = "devel", repo = repo)
-          )
-        } else {
-          suppressMessages(
-            gert::git_branch_checkout(branch = "master", repo = repo)
-          )
-        }
+        ## finish with the devel branch checkout
+        suppressMessages(
+          gert::git_branch_checkout(branch = "devel", repo = repo)
+        )
         printMessage("done", 2)
     }
 }
@@ -137,16 +131,11 @@ updateBranches <- function(pkg_name, repo_dir) {
             gert::git_pull(repo = repo, verbose = FALSE)
         )
     }
-    ## finish with the devel/master branch checkout
-    if(any(grepl("devel", branches$name))) {
-        suppressMessages(
-            gert::git_branch_checkout(branch = "devel", repo = repo)
-        )
-    } else {
-        suppressMessages(
-            gert::git_branch_checkout(branch = "master", repo = repo)
-        )
-    }
+    ## finish with the devel branch checkout
+    suppressMessages(
+        gert::git_branch_checkout(branch = "devel", repo = repo)
+    )
+
     printMessage("done", 2)
 }
 
@@ -158,23 +147,15 @@ processMostRecentCommit <- function(pkg_name, repo_dir) {
         stop("directory doesn't exist")
     }
     
-    ## sort branches by commit time.  Sometimes RELEASE and master will be identical
+    ## sort branches by commit time.  Sometimes RELEASE and devel will be identical
     ## Sorting on branch isn't reliable, so we resolve this below
-    top3commits <- gert::git_branch_list(local = TRUE, repo = repo) %>% 
+    top2commits <- gert::git_branch_list(local = TRUE, repo = repo) %>% 
+        filter(grepl("(RELEASE_[1-9]_[0-9]{1,2}$|devel)", name)) %>%
         arrange(desc(updated)) %>% 
-        slice(1:3)
-    
-    ## remove the master branch from this test if devel exists
-    if("devel" %in% top3commits$name) {
-        top2commits <- top3commits %>% filter(name != "master")
-        devel_branch <- "devel"
-    } else {
-        top2commits <- top3commits %>% slice(1:2)
-        devel_branch <- "master"
-    }
+        slice(1:2)
     
     if(identical(top2commits$updated[1], top2commits$updated[2])) {
-        most_recent_commit <- filter(top2commits, name == devel_branch)
+        most_recent_commit <- filter(top2commits, name == "devel")
     } else {
         most_recent_commit <- slice(top2commits, 1)
     }
@@ -199,6 +180,19 @@ processMostRecentCommit <- function(pkg_name, repo_dir) {
         paste0(format(date, tz = "UTC"), " UTC by ", author, " to ", branch, "&nbsp;<span class='subject'>", msg, "</span>")
     )
     return(json_content)
+}
+
+## create a placeholder table when the site is being updated
+createUnderConstruction <- function(repo_dir) {
+    
+    json_content <- c(
+        "The code browser is undergoing maintenance",
+        "It will return soon"
+    )
+    
+    message <- toJSON(list(data = list(json_content)), pretty = TRUE)
+    
+    writeLines(message, con = file.path(repo_dir, "packages.json"))
 }
 
 
@@ -257,7 +251,7 @@ updateCommitMessages <- function(repo_dir, manifest, pkgs) {
     ## munging to get json in the format for DataTable HTML
     json_pkg_list <- toJSON(list(data = do.call(rbind, commit_messages)), pretty = TRUE)
     writeLines(json_pkg_list, con = file.path(repo_dir, "packages.json"))
-    message("done")
+    printMessage("  done", 0, timestamp = FALSE)
     
 }
 
@@ -298,7 +292,7 @@ updateRepositories <- function(repo_dir, manifest, update_all = FALSE) {
                     clonePackage(pkg, repo_dir = repo_dir)
                 }, 
                 error = function(cond) { 
-                    message("Failed!")
+                    printMessage("Failed to clone package!", 0, timestamp = FALSE )
                     return(TRUE) 
                 })
                 if(isTRUE(skip)) { 
@@ -311,7 +305,8 @@ updateRepositories <- function(repo_dir, manifest, update_all = FALSE) {
                     updateBranches(pkg, repo_dir = repo_dir)
                 }, 
                 error = function(cond) { 
-                    printMessage("Failed!", 4)
+                    printMessage(sprintf("Failed to update branches! Message: %s", cond), 
+                                 0, timestamp = TRUE)
                     return(TRUE) 
                 })
                 if(isTRUE(skip)) { pkgs <- setdiff(pkgs, pkg) }

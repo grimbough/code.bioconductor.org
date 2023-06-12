@@ -1,6 +1,16 @@
 ## Print log with date and message
-printMessage <- function(msg, n = 0, appendLF = TRUE) {
-    message("[ ", Sys.time(), " ] ", rep(" ", n), msg, appendLF = appendLF)
+printMessage <- function(msg, n = 0, appendLF = TRUE, timestamp = TRUE) {
+    
+    REPO_DIR <- Sys.getenv("GIT_REPOS_DIR")
+    log_file <- file.path(REPO_DIR, "status.log")
+    
+    text <- sprintf("%s%s%s%s", 
+                    if(timestamp) timestamp(prefix = "[ ", suffix = " ] ", quiet = TRUE) else "", 
+                    strrep(" ", n), 
+                    msg, 
+                    if(appendLF) "\n" else "")
+    message(text, appendLF = FALSE)
+    cat(text, file = log_file, append = TRUE)
 }
 
 ## Get a vector containing the names of all packages currently part of 
@@ -27,7 +37,7 @@ getManifest <- function(repo_dir = tempdir(), n_pkgs, extra_pkgs = NULL) {
     if(is.finite(n_pkgs)) {
         manifest <- manifest[seq_len(n_pkgs)]
     }
-    message("done")
+    printMessage("  done", 0, timestamp = FALSE)
     return(manifest)
 }
 
@@ -61,26 +71,32 @@ createLockFile <- function(repo_dir) {
     file.create(lock_file)
 }
 
-cleanDir <- function(repo_dir, index_dir) {
+cleanDir <- function(repo_dir, index_dir, exclude_log = TRUE) {
     existing_pkgs <- list.dirs(repo_dir, recursive = FALSE)
     if(length(existing_pkgs)) {
         printMessage("Deleting existing packages... ", 0, appendLF = FALSE)
         unlink(existing_pkgs, recursive = TRUE)
-        message("done")
+        printMessage("  done", 0, timestamp = FALSE)
     }
     
     existing_files <- list.files(repo_dir, full.names = TRUE)
+    
+    if(exclude_log) {
+        idx <- grep("status.log", existing_files)
+        if(length(idx) > 0) { existing_files <- existing_files[-idx] }
+    }
+    
     if(length(existing_files)) {
         printMessage("Deleting existing files... ", 0, appendLF = FALSE)
         file.remove(existing_files)
-        message("done")
+        printMessage("  done", 0, timestamp = FALSE)
     }
     
     index_files <- list.files(index_dir, full.names = TRUE)
     if(length(index_files)) {
         printMessage("Deleting index files... ", 0, appendLF = FALSE)
         file.remove(index_files)
-        message("done")
+        printMessage("  done", 0, timestamp = FALSE)
     }
 }
 
@@ -101,9 +117,9 @@ cleanUp <- function(repo_dir) {
         }
         invisible(file.rename(from = tmp_hash, to = old_hash))
     }
-    message("done")
+    printMessage("  done", 0, timestamp = FALSE)
     
     printMessage("Removing lock file... ", 0, appendLF = FALSE)
     file.remove(lock_file)
-    message("done")
+    printMessage("  done", 0, timestamp = FALSE)
 }

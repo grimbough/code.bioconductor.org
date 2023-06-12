@@ -1,7 +1,5 @@
 args <- commandArgs(trailingOnly=TRUE)
 
-
-
 #######################
 ## Argument handling ##
 #######################
@@ -12,6 +10,8 @@ if(length(args) >= 1 && ("--clean" %in% args)) {
 } else {
     CLEAN <- FALSE
 }
+
+#CLEAN <- TRUE
 
 ## process argument specifying number of packages to initialise with
 if(length(args) >= 1 && any(grepl("--npkgs=[0-9]*", args))) {
@@ -59,6 +59,15 @@ suppressPackageStartupMessages(library(tidyRSS))
 suppressPackageStartupMessages(library(gert))
 suppressPackageStartupMessages(library(jsonlite))
 
+#########################
+## Create new log file ##
+#########################
+lock_file <- file.path(REPO_DIR, "lock")
+log_file <- file.path(REPO_DIR, "status.log")
+if(file.exists(log_file) && !file.exists(lock_file)) { 
+    unlink(log_file) 
+}
+
 ##############################################
 ## Find packages on server and local mirror ##
 ##############################################
@@ -71,16 +80,21 @@ removePackages(manifest, existing_pkgs, index_dir = INDEX_DIR)
 #########################################################
 if(length(existing_pkgs) == 0 || CLEAN) {
     cleanDir(repo_dir = REPO_DIR, index_dir = INDEX_DIR)
+    createUnderConstruction(repo_dir = REPO_DIR)
     createLockFile(repo_dir = REPO_DIR)
     updated_pkgs <- initialiseRepositories(repo_dir = REPO_DIR, manifest = manifest)
 } else {
     ## Uncomment these lines to force deletion of the lock file
-    #lock_file <- file.path(REPO_DIR, "lock")
-    #if(file.exists(lock_file)) { file.remove(lock_file) }
+    # lock_file <- file.path(REPO_DIR, "lock")
+    # if(file.exists(lock_file)) { file.remove(lock_file) }
     #UPDATE_ALL <- TRUE
     createLockFile(repo_dir = REPO_DIR)
+    
+    #unlink(x = file.path(REPO_DIR, c("nnSVG", "scp")), recursive = TRUE)
+    
     updated_pkgs <- updateRepositories(repo_dir = REPO_DIR, manifest = manifest, 
-                                 update_all = UPDATE_ALL)
+                                           update_all = UPDATE_ALL)
+    
 }
 
 ##############################################################################
