@@ -1,4 +1,4 @@
-FROM alpine:3.17.2 AS zoekt-index
+FROM alpine:3.16.2 AS zoekt-index
 
 RUN apk --no-cache add go git
 
@@ -8,7 +8,7 @@ RUN go install github.com/google/zoekt/cmd/zoekt-index@latest
 
 
 
-FROM alpine:3.17.2 AS ctags
+FROM alpine:3.16.2 AS ctags
 
 RUN apk --no-cache add wget
 
@@ -21,7 +21,7 @@ RUN wget https://storage.googleapis.com/zoekt-binaries/${CTAGS_BIN}.tar.gz && \
 
 
 
-FROM alpine:3.17.2
+FROM alpine:3.16.2
 LABEL maintainer "Mike Smith <mike.smith@embl.de>"
 
 COPY --from=ctags /ctags/* /usr/local/bin/
