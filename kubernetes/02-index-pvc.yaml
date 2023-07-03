@@ -1,0 +1,14 @@
+apiVersion: v1 
+kind: PersistentVolumeClaim 
+metadata: 
+  namespace: bioc-code-tools
+  name: bioc-code-tools-index-pvc
+  #labels: 
+  #  app: jupyterhub-test
+spec: 
+  storageClassName: "basic-csi"
+  accessModes: 
+    - ReadWriteMany 
+  resources: 
+    requests: 
+      storage: 100Gi 

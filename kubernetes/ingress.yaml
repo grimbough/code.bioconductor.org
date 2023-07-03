@@ -1,0 +1,68 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: git-repo
+  namespace: bioc-code-tools
+spec:
+  ingressClassName: "traefik-ext"
+  rules:
+  - host: code.bioconductor.org
+    http:
+      paths:
+      - path: /browse
+        pathType: Prefix
+        backend:
+          service:
+            name: git-repo
+            port: 
+              name: http
+  tls:
+  - hosts:
+    - code.bioconductor.org
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: zoekt-search
+  namespace: bioc-code-tools
+  annotations:
+    traefik.ingress.kubernetes.io/router.middlewares: "global-stripprefix@file"
+spec:
+  ingressClassName: "traefik-ext"
+  rules:
+  - host: code.bioconductor.org
+    http:
+      paths:
+      - path: /search
+        pathType: Prefix
+        backend:
+          service:
+            name: zoekt-search
+            port: 
+              name: http
+  tls:
+  - hosts:
+    - code.bioconductor.org
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: code-home
+  namespace: bioc-code-tools
+spec:
+  ingressClassName: "traefik-ext"
+  rules:
+  - host: code.bioconductor.org
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: code-home
+            port: 
+              name: http
+  tls:
+  - hosts:
+    - code.bioconductor.org

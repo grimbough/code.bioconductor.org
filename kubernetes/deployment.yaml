@@ -1,0 +1,222 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: git-repo
+  namespace: bioc-code-tools
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: git-repo
+  replicas: 1
+  template:
+    spec:      
+      #affinity:
+      #  podAffinity:
+      #    requiredDuringSchedulingIgnoredDuringExecution:
+      #      - labelSelector:
+      #          matchLabels:
+      #            app: git-cron
+      #        topologyKey: "kubernetes.io/hostname"
+    metadata:
+      labels:
+        app: git-repo
+    spec:      
+      containers:
+        - name: git-repo
+          image: grimbough/code.bioc-gitlist:0.1.1
+          imagePullPolicy: "Always"
+          volumeMounts:
+            #- mountPath: "/var/git"
+            #  name: git-repo
+            - mountPath: "/var/git"
+              name: git-repo-iscsi
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          #livenessProbe:
+          #  failureThreshold: 6
+          #  httpGet:
+          #    path: /
+          #    port: http
+          #  initialDelaySeconds: 30
+          #  timeoutSeconds: 15
+          #readinessProbe:
+          #  httpGet:
+          #    path: /
+          #    port: http
+          #  initialDelaySeconds: 30
+          #  periodSeconds: 15
+          #  timeoutSeconds: 15
+          #env:
+          #- name : DB_USER
+          #  value: xwiki
+          #- name : DB_PASSWORD
+          #  value: bj%ksFh!gdb76Dhd
+          #- name : DB_HOST
+          #  value: itswiki-postgresql
+          #- name : JAVA_OPTS
+          #  value: "-Xmx5048m -Xms5048m"
+          #- name : CATALINA_OPTS
+          #  value: "-Xmx5048m -Xms5048m"
+          resources:
+            limits:
+              cpu: 4
+              memory: 6G
+            requests:
+              cpu: 700m
+              memory: 1G
+      volumes:
+        - name: git-repo-iscsi
+          persistentVolumeClaim:
+            claimName:  bioc-code-iscsi-pvc
+        #- name: git-repo
+        #  persistentVolumeClaim:
+        #    claimName:  bioc-code-tools-pvc
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zoekt-search
+  namespace: bioc-code-tools
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: zoekt-search
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: zoekt-search
+    spec:      
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app: git-repo
+              topologyKey: "kubernetes.io/hostname"
+      containers:
+        - name: zoekt-search
+          image: grimbough/code.bioc-zoekt-webserver:0.1.1
+          imagePullPolicy: "Always"
+          volumeMounts:
+            - mountPath: "/var/git"
+              name: git-repo
+            - mountPath: "/var/zoekt"
+              name: zoekt-search
+              readOnly: true
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          #livenessProbe:
+          #  failureThreshold: 6
+          #  httpGet:
+          #    host: git-repo
+          #    path: /
+          #    port: http
+          #  initialDelaySeconds: 30
+          #  timeoutSeconds: 15
+          #readinessProbe:
+          #  httpGet:
+          #    path: /
+          #    port: http
+          #  initialDelaySeconds: 30
+          #  periodSeconds: 15
+          #  timeoutSeconds: 15
+          #env:
+          #- name : DB_USER
+          #  value: xwiki
+          #- name : DB_PASSWORD
+          #  value: bj%ksFh!gdb76Dhd
+          #- name : DB_HOST
+          #  value: itswiki-postgresql
+          #- name : JAVA_OPTS
+          #  value: "-Xmx5048m -Xms5048m"
+          #- name : CATALINA_OPTS
+          #  value: "-Xmx5048m -Xms5048m"
+          resources:
+            limits:
+              cpu: 2
+              memory: 4G
+            requests:
+              cpu: 700m
+              memory: 1G
+      volumes:
+        - name: zoekt-search
+          persistentVolumeClaim:
+            readOnly: true
+            claimName:  bioc-code-tools-index-pvc
+        - name: git-repo
+          persistentVolumeClaim:
+            claimName:  bioc-code-iscsi-pvc
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: code-home
+  namespace: bioc-code-tools
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: code-home
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: code-home
+    spec:      
+      #affinity:
+      #  podAffinity:
+      #    requiredDuringSchedulingIgnoredDuringExecution:
+      #      - labelSelector:
+      #          matchLabels:
+      #            app: git-repo
+      #        topologyKey: "kubernetes.io/hostname"
+      containers:
+        - name: code-home
+          image: grimbough/code.bioc-home:0.1.1
+          imagePullPolicy: "Always"
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          #livenessProbe:
+          #  failureThreshold: 6
+          #  httpGet:
+          #    path: /
+          #    port: http
+          #  initialDelaySeconds: 30
+          #  timeoutSeconds: 15
+          #readinessProbe:
+          #  httpGet:
+          #    path: /
+          #    port: http
+          #  initialDelaySeconds: 30
+          #  periodSeconds: 15
+          #  timeoutSeconds: 15
+          #env:
+          #- name : DB_USER
+          #  value: xwiki
+          #- name : DB_PASSWORD
+          #  value: bj%ksFh!gdb76Dhd
+          #- name : DB_HOST
+          #  value: itswiki-postgresql
+          #- name : JAVA_OPTS
+          #  value: "-Xmx5048m -Xms5048m"
+          #- name : CATALINA_OPTS
+          #  value: "-Xmx5048m -Xms5048m"
+          resources:
+            limits:
+              cpu: 1
+              memory: 4G
+            requests:
+              cpu: 700m
+              memory: 1G

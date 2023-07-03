@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: task-pv-pod
+  namespace: bioc-code-tools
+spec:
+  volumes:
+    - name: content-itswiki-pvc
+      persistentVolumeClaim:
+        claimName: bioc-code-tools-index-pvc
+    - name: content-itswiki-pvc1
+      persistentVolumeClaim:
+        claimName: bioc-code-iscsi-pvc
+  containers:
+    - name: task-pv-container
+      image: nginx
+      env:
+      - name: CONTAINER_ZOEKT_IDX_DIR
+        value: "/var/zoekt"
+      - name: GIT_REPOS_DIR
+        value: "/var/git" 
+      ports:
+        - containerPort: 80
+          name: "http-server"
+      volumeMounts:
+        - mountPath: "/var/zoekt"
+          name: content-itswiki-pvc
+        - mountPath: "/var/git"
+          name: content-itswiki-pvc1
