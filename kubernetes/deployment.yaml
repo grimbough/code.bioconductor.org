@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: git-repo
-  namespace: bioc-code-tools
+  namespace: bioc-code-explorer
 spec:
   strategy:
     type: Recreate
@@ -63,11 +63,11 @@ spec:
           #  value: "-Xmx5048m -Xms5048m"
           resources:
             limits:
-              cpu: 4
-              memory: 6G
+              cpu: 1
+              memory: 4Gi
             requests:
               cpu: 700m
-              memory: 1G
+              memory: 1Gi
       volumes:
         - name: git-repo-iscsi
           persistentVolumeClaim:
@@ -80,7 +80,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: zoekt-search
-  namespace: bioc-code-tools
+  namespace: bioc-code-explorer
 spec:
   strategy:
     type: Recreate
@@ -142,11 +142,11 @@ spec:
           #  value: "-Xmx5048m -Xms5048m"
           resources:
             limits:
-              cpu: 2
-              memory: 4G
+              cpu: 1
+              memory: 3Gi
             requests:
               cpu: 700m
-              memory: 1G
+              memory: 1Gi
       volumes:
         - name: zoekt-search
           persistentVolumeClaim:
@@ -160,7 +160,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: code-home
-  namespace: bioc-code-tools
+  namespace: bioc-code-explorer
 spec:
   strategy:
     type: Recreate
@@ -216,7 +216,7 @@ spec:
           resources:
             limits:
               cpu: 1
-              memory: 4G
+              memory: 2Gi
             requests:
               cpu: 700m
-              memory: 1G
+              memory: 1Gi

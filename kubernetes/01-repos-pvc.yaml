@@ -1,12 +1,12 @@
 apiVersion: v1 
 kind: PersistentVolumeClaim 
 metadata: 
-  namespace: bioc-code-tools
+  namespace: bioc-code-explorer
   name: bioc-code-iscsi-pvc
 spec: 
   storageClassName: "basic-csi-iscsi"
   accessModes: 
-    - ReadWriteOnce 
+    - ReadWriteOnce
   resources: 
     requests: 
       storage: 300Gi 
