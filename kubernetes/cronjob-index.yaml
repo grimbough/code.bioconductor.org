@@ -4,7 +4,7 @@ metadata:
   name: index-git-repo
   namespace: bioc-code-explorer
 spec:
-  schedule: "*/60 * * * *"
+  schedule: "*/15 * * * *"
   jobTemplate:
     spec:
       ttlSecondsAfterFinished: 100
@@ -38,20 +38,20 @@ spec:
               name: git-index
             - mountPath: /var/git
               name: git-repos
-          initContainers:
-          - name: volume-mount-hack
-            resources:
-              limits:
-                cpu: 1
-                memory: 1Gi
-              requests:
-                cpu: 700m
-                memory: 800Mi
-            image: busybox
-            command: ["sh", "-c", "chown -R 82:82 /var/git /var/zoekt"]
-            volumeMounts:
-            - name: git-repos
-              mountPath: /var/git
+          # initContainers:
+          # - name: volume-mount-hack
+          #   resources:
+          #     limits:
+          #       cpu: 1
+          #       memory: 1Gi
+          #     requests:
+          #       cpu: 700m
+          #       memory: 800Mi
+          #   image: busybox
+          #   command: ["sh", "-c", "chown -R 82:82 /var/git /var/zoekt"]
+          #   volumeMounts:
+          #   - name: git-repos
+          #     mountPath: /var/git
           volumes:
           - name: git-index
             persistentVolumeClaim:
