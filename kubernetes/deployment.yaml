@@ -18,7 +18,7 @@ spec:
     spec:      
       containers:
         - name: git-repo
-          image: grimbough/code.bioc-gitlist:0.1.1
+          image: grimbough/code.bioc-gitlist:0.1.2
           imagePullPolicy: "Always"
           volumeMounts:
             - mountPath: "/var/git"
@@ -30,7 +30,7 @@ spec:
           resources:
             limits:
               cpu: 1
-              memory: 4Gi
+              memory: 3Gi
             requests:
               cpu: 700m
               memory: 1Gi
