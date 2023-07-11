@@ -45,7 +45,7 @@ RUN apk --no-cache add \
 
 ## install required R packages
 RUN Rscript  -e "chooseCRANmirror(graphics = FALSE, ind = 1)" \
-             -e "install.packages(c('dplyr', 'tidyRSS', 'gert', 'jsonlite'), quiet = TRUE)"
+             -e "install.packages(c('dplyr', 'tidyRSS', 'gert', 'jsonlite', 'lubridate'), quiet = TRUE)"
 
 #RUN adduser --disabled-password --uid 82 www-data
 RUN set -x ; \

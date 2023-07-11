@@ -110,6 +110,14 @@ if(!is.null(updated_pkgs)) {
     
 }
 
-cleanUp(repo_dir = REPO_DIR)
+####################################################
+## Once per day update the count table of commits ##
+####################################################
+suppressPackageStartupMessages(library(lubridate))
+if( (hour(now()) == 1) && (minute(now()) < 15) ) {
+    source("process_repos.R")
+}
 
+
+cleanUp(repo_dir = REPO_DIR)
 

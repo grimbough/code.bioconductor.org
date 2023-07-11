@@ -13,6 +13,7 @@ WORKDIR /
 RUN curl -L --output gitlist.zip https://github.com/klaussilveira/gitlist/releases/download/1.1.1/gitlist-1.1.1.zip && unzip gitlist.zip -d gitlist
 COPY config.ini /gitlist/config.ini
 COPY json.html /gitlist/index.html
+COPY stats.html /gitlist/stats.html
 COPY php/Repository.php /gitlist/src/Util/Repository.php
 
 COPY bioconductor /bioconductor
@@ -52,7 +53,8 @@ COPY --from=builder /bioconductor /var/www/html/browse/themes/bioconductor
 RUN mkdir /var/www/html/browse/cache
 
 RUN ln -s /var/git/packages.json /var/www/html/browse/ && \
-    ln -s /var/git/status.log /var/www/html/browse/
+    ln -s /var/git/status.log /var/www/html/browse/ && \
+    ln -s /var/git/commit_counts.json /var/www/html/browse/commit_counts.json
 
 ## map www-data to the same UID as Alpine uses
 ## then set permissions
