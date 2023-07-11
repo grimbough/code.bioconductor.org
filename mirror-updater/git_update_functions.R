@@ -283,8 +283,10 @@ updateRepositories <- function(repo_dir, manifest, update_all = FALSE) {
     } else {
         extra <- ifelse(length(pkgs) > 10, paste("+", length(pkgs) - 10, "more"), "")
         printMessage(paste("Updating:", paste(c(head(pkgs, 10), extra), collapse = ", ")), 2)
-        for(pkg in pkgs) {
-            printMessage(paste0("Package: ", pkg), 0)
+        skipped_pkgs <- NULL
+        for(i in seq_along(pkgs)) {
+            pkg <- pkgs[i]
+            printMessage(sprintf("Package: %s (%i of %i)", pkg, i, length(pkgs)), 0)
             repo <- file.path(repo_dir, pkg)
             
             if(!dir.exists(repo)) {
@@ -296,7 +298,7 @@ updateRepositories <- function(repo_dir, manifest, update_all = FALSE) {
                     return(TRUE) 
                 })
                 if(isTRUE(skip)) { 
-                    pkgs <- setdiff(pkgs, pkg)
+                    skipped_pkgs <- c(skipped_pkgs, pkg)
                 } else { 
                     checkoutBranches(pkg, repo_dir = repo_dir) 
                 }
@@ -309,11 +311,12 @@ updateRepositories <- function(repo_dir, manifest, update_all = FALSE) {
                                  0, timestamp = TRUE)
                     return(TRUE) 
                 })
-                if(isTRUE(skip)) { pkgs <- setdiff(pkgs, pkg) }
+                if(isTRUE(skip)) { skipped_pkgs <- c(skipped_pkgs, pkg) }
                 
             }
             
         }
+        pkgs <- setdiff(pkgs, skipped_pkgs)
         printMessage("Finished updating repositories", 0)
         return(pkgs)
     }
