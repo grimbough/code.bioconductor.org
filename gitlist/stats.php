@@ -69,6 +69,11 @@
 
     <div class="container">
 
+    <?php
+      echo "<p>Commit counts updated daily.<br/>Last update: ".date("F d Y H:i:s.", filemtime("commit_counts.json"))."</p>";
+    ?>
+
+
     <table id="commit_counts" class="display" style="width:100%">
         <thead>
           <tr>

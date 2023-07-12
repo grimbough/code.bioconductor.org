@@ -13,8 +13,9 @@ WORKDIR /
 RUN curl -L --output gitlist.zip https://github.com/klaussilveira/gitlist/releases/download/1.1.1/gitlist-1.1.1.zip && unzip gitlist.zip -d gitlist
 COPY config.ini /gitlist/config.ini
 COPY json.html /gitlist/index.html
-COPY stats.html /gitlist/stats.html
+COPY stats.php /gitlist/stats.php
 COPY php/Repository.php /gitlist/src/Util/Repository.php
+RUN sed -i '10 i     RewriteRule stats.html stats.php' /gitlist/.htaccess
 
 COPY bioconductor /bioconductor
 WORKDIR /bioconductor/less
