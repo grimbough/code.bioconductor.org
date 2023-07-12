@@ -114,7 +114,8 @@ if(!is.null(updated_pkgs)) {
 ## Once per day update the count table of commits ##
 ####################################################
 suppressPackageStartupMessages(library(lubridate))
-if( (hour(now()) == 1) && (minute(now()) < 15) ) {
+commit_count_time <- grepl(pattern = "01:0[0-9]", strftime(Sys.time(), format = "%H:%M"))
+if( commit_count_time ) {
     source("process_repos.R")
 }
 
