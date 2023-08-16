@@ -117,7 +117,7 @@ spec:
     spec:
       containers:
         - name: code-home
-          image: grimbough/code.bioc-home:0.1.1
+          image: grimbough/code.bioc-home:0.1.2
           imagePullPolicy: "Always"
           volumeMounts:
             - mountPath: "/var/shared"
