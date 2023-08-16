@@ -55,7 +55,8 @@ RUN mkdir /var/www/html/browse/cache
 
 RUN ln -s /var/git/packages.json /var/www/html/browse/ && \
     ln -s /var/git/status.log /var/www/html/browse/ && \
-    ln -s /var/git/commit_counts.json /var/www/html/browse/commit_counts.json
+    ln -s /var/git/commit_counts.json /var/www/html/browse/commit_counts.json && \
+    ln -s /var/git/all_commits.rds /var/www/html/browse/all_commits.rds
 
 ## map www-data to the same UID as Alpine uses
 ## then set permissions

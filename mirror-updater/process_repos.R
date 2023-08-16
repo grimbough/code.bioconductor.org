@@ -18,19 +18,24 @@ for(i in current_pkgs) {
         next;
     }
     all_commits[[ i ]] <- git_log(ref = "devel", repo = i, max = 10e7) |>
-        select("author", "time") |>
         mutate(repo = basename(i))
 }
 printMessage(" done", 0)
 
+saveRDS(bind_rows(all_commits), file = file.path(REPO_DIR, "all_commits.rds"))
+#system2("touch", args = "-hm /var/www/html/browse/all_commits.rds")
+
 printMessage("Writing commit table... ", 0, appendLF = FALSE)
 tmp <- lapply(all_commits, FUN = function(x) {
-    x |> group_by(repo) |>
-    summarise(all_time = n(),
-              last_year = length(which(time > (today() - years(1)))),
-              last_month = length(which(time > (today() - months(1)))),
+    x |> 
+        select("author", "time", "repo") |>
+        group_by(repo) |>
+        summarise(all_time = n(),
+                  last_year = length(which(time > (today() - years(1)))),
+                  last_month = length(which(time > (today() - months(1)))),
     ) |> unlist()
 })
 commit_counts_json <- toJSON(list(data = do.call(rbind, tmp)), pretty = TRUE)
 writeLines(commit_counts_json, con = file.path(REPO_DIR, "commit_counts.json"))
+
 printMessage(" done", 0, timestamp = FALSE)

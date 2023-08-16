@@ -70,7 +70,7 @@
     <div class="container">
 
     <?php
-      echo "<p>Commit counts updated daily.<br/>Last update: ".date("F d Y H:i:s.", filemtime("commit_counts.json"))."</p>";
+      echo "<p>Commit counts updated daily.<br/>Last update: ".date("F d Y H:i:s.", filemtime("/var/git/commit_counts.json"))."</p>";
     ?>
 
 
