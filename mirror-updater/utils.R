@@ -123,3 +123,15 @@ cleanUp <- function(repo_dir) {
     file.remove(lock_file)
     printMessage("  done", 0, timestamp = FALSE)
 }
+
+
+## Write a robots.txt file allowing access to the devel branch only
+write_robots_txt <- function(pkgs, output_file = "/var/shared/robots.txt") {
+
+    con = file(output_file, open = "wt")
+    on.exit(close(con))
+
+    writeLines("User-agent: *", con = con)
+    writeLines(paste0("Disallow: /browse/", pkgs, "/*"), con = con)
+
+}
