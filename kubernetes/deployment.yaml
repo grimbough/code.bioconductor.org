@@ -23,8 +23,6 @@ spec:
           volumeMounts:
             - mountPath: "/var/git"
               name: git-repo-iscsi
-            - mountPath: "/var/shared"
-              name: git-repo-shared-info
           ports:
             - name: http
               containerPort: 8080
@@ -40,9 +38,6 @@ spec:
         - name: git-repo-iscsi
           persistentVolumeClaim:
             claimName:  bioc-code-iscsi-pvc
-        - name: git-repo-shared-info
-          persistentVolumeClaim:
-            claimName:  bioc-code-tools-shared-info-pvc
 ---
 apiVersion: apps/v1
 kind: Deployment
