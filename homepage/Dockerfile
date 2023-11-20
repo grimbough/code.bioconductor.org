@@ -14,8 +14,8 @@ RUN tar xzvf images/favicon.tar.gz
 
 COPY css css/
 
-COPY html/*.html ./
+COPY html/* ./
 
-RUN ln -s /var/shared/robots.txt robots.txt
+RUN ln -s /var/shared/sitemap.txt sitemap.txt
 
 CMD ["lighttpd", "-D", "-f", "/etc/lighttpd/lighttpd.conf"]

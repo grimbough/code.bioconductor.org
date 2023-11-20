@@ -115,10 +115,10 @@ if(!is.null(updated_pkgs)) {
 ####################################################
 suppressPackageStartupMessages(library(lubridate))
 commit_count_time <- grepl(pattern = "01:0[0-9]", strftime(Sys.time(), format = "%H:%M"))
+#commit_count_time <- TRUE
 if( commit_count_time ) {
     source("process_repos.R")
 }
-
 
 cleanUp(repo_dir = REPO_DIR)
 

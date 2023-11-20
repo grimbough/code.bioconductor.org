@@ -132,6 +132,19 @@ write_robots_txt <- function(pkgs, output_file = "/var/shared/robots.txt") {
     on.exit(close(con))
 
     writeLines("User-agent: *", con = con)
-    writeLines(paste0("Disallow: /browse/", pkgs, "/*"), con = con)
+    writeLines(paste0("Disallow: /browse/", basename(pkgs), "/*"), con = con)
 
+}
+
+## Write a sitemap.txt providing links to the devel branch only
+write_sitemap <- function(pkgs, output_file = "/var/shared/sitemap.txt") {
+    
+    con = file(output_file, open = "wt")
+    on.exit(close(con))
+    
+    writeLines("https://code.bioconductor.org/index.html")
+    writeLines("https://code.bioconductor.org/about.html")
+    writeLines("https://code.bioconductor.org/search/")
+    writeLines("https://code.bioconductor.org/browse/")
+    writeLines(paste0("https://code.bioconductor.org/browse/", basename(pkgs), "/"), con = con)
 }
