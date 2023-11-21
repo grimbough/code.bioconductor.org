@@ -61,8 +61,10 @@ RUN ln -s /var/git/packages.json /var/www/html/browse/ && \
 ## map www-data to the same UID as Alpine uses
 ## then set permissions
 RUN usermod -u 82 www-data && groupmod -g 82 www-data && \
-    chown -R www-data:www-data /var/www/html
+    chown -R www-data:www-data /var/www/html /var/log/apache2 /var/run/apache2
 
 EXPOSE 8080
+
+USER www-data
 
 CMD ["apachectl", "-D", "FOREGROUND"]

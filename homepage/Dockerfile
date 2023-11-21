@@ -20,4 +20,8 @@ COPY html/* ./
 ## The actual file is created on a shared PVC by the git updater job
 RUN ln -s /var/shared/sitemap.txt sitemap.txt
 
+RUN touch /run/lighttpd.pid && chown -R 100:100 /run/lighttpd.pid
+
+USER lighttpd
+
 CMD ["lighttpd", "-D", "-f", "/etc/lighttpd/lighttpd.conf"]
