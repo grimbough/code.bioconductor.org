@@ -40,6 +40,15 @@ spec:
               name: git-repos
             - mountPath: /var/shared
               name: shared-info
+            securityContext:
+              runAsNonRoot: true
+              seccompProfile:
+                type: RuntimeDefault
+              runAsUser: 82
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop: 
+                - ALL
           volumes:
           - name: git-index
             persistentVolumeClaim:
