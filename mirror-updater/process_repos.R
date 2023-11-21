@@ -4,7 +4,7 @@ REPO_DIR <- Sys.getenv("GIT_REPOS_DIR")
 
 current_pkgs <- list.dirs(REPO_DIR, recursive = FALSE)
 
-printMessage("Writing robots.txt... ", 0, appendLF = FALSE)
+printMessage("Writing sitemap.txt... ", 0, appendLF = FALSE)
 write_sitemap(pkgs = current_pkgs)
 printMessage(" done", 0, timestamp = FALSE)
 
@@ -29,7 +29,6 @@ for(i in current_pkgs) {
 printMessage(" done", 0)
 
 saveRDS(bind_rows(all_commits), file = file.path(REPO_DIR, "all_commits.rds"))
-#system2("touch", args = "-hm /var/www/html/browse/all_commits.rds")
 
 printMessage("Writing commit table... ", 0, appendLF = FALSE)
 tmp <- lapply(all_commits, FUN = function(x) {

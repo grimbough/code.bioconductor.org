@@ -125,16 +125,16 @@ cleanUp <- function(repo_dir) {
 }
 
 
-## Write a robots.txt file allowing access to the devel branch only
-write_robots_txt <- function(pkgs, output_file = "/var/shared/robots.txt") {
-
-    con = file(output_file, open = "wt")
-    on.exit(close(con))
-
-    writeLines("User-agent: *", con = con)
-    writeLines(paste0("Disallow: /browse/", basename(pkgs), "/*"), con = con)
-
-}
+# ## Write a robots.txt file allowing access to the devel branch only
+# write_robots_txt <- function(pkgs, output_file = "/var/shared/robots.txt") {
+# 
+#     con = file(output_file, open = "wt")
+#     on.exit(close(con))
+# 
+#     writeLines("User-agent: *", con = con)
+#     writeLines(paste0("Disallow: /browse/", basename(pkgs), "/*"), con = con)
+# 
+# }
 
 ## Write a sitemap.txt providing links to the devel branch only
 write_sitemap <- function(pkgs, output_file = "/var/shared/sitemap.txt") {
