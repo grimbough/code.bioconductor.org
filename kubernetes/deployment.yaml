@@ -18,7 +18,7 @@ spec:
     spec:      
       containers:
         - name: git-repo
-          image: grimbough/code.bioc-gitlist:0.1.3
+          image: grimbough/code.bioc-gitlist:0.1.4
           imagePullPolicy: "Always"
           volumeMounts:
             - mountPath: "/var/git"
@@ -130,7 +130,7 @@ spec:
     spec:
       containers:
         - name: code-home
-          image: grimbough/code.bioc-home:0.1.3
+          image: grimbough/code.bioc-home:0.1.4
           imagePullPolicy: "Always"
           volumeMounts:
             - mountPath: "/var/shared"
