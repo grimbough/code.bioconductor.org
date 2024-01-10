@@ -47,7 +47,8 @@ RUN sed -i 's=:80>=:8080>=g' /etc/apache2/sites-available/000-default.conf
 ADD gitlist.conf /etc/apache2/conf-available/
 RUN a2enconf gitlist && \
     a2enconf php8.1-fpm && \
-    a2enmod rewrite
+    a2enmod rewrite && \
+    a2enmod remoteip
 
 COPY --from=builder /gitlist /var/www/html/browse
 COPY --from=builder /bioconductor /var/www/html/browse/themes/bioconductor
