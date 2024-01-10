@@ -8,6 +8,10 @@ printMessage("Writing sitemap.txt... ", 0, appendLF = FALSE)
 write_sitemap(pkgs = current_pkgs)
 printMessage(" done", 0, timestamp = FALSE)
 
+printMessage("Writing robots.txt... ", 0, appendLF = FALSE)
+write_robots_txt(pkgs = current_pkgs)
+printMessage(" done", 0, timestamp = FALSE)
+
 printMessage("Finding current disk usage... ", 0, appendLF = FALSE)
 du_in_KiB <- system2("du", args = sprintf("-s -k %s", REPO_DIR), stdout = TRUE) |>
     tail(1) |> 

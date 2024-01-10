@@ -126,15 +126,31 @@ cleanUp <- function(repo_dir) {
 
 
 # ## Write a robots.txt file allowing access to the devel branch only
-# write_robots_txt <- function(pkgs, output_file = "/var/shared/robots.txt") {
-# 
-#     con = file(output_file, open = "wt")
-#     on.exit(close(con))
-# 
-#     writeLines("User-agent: *", con = con)
-#     writeLines(paste0("Disallow: /browse/", basename(pkgs), "/*"), con = con)
-# 
-# }
+write_robots_txt <- function(pkgs, output_file = "/var/shared/robots.txt") {
+
+    con = file(output_file, open = "wt")
+    on.exit(close(con))
+    
+    excluded_bots <- c("Amazonbot", "BLEXBot", "TurnitinBot",
+                       "GPTBot")
+    
+    for(bot in excluded_bots) {
+        writeLines(paste0("User-agent: ", bot), con = con)
+        writeLines("Disallow: /\n", con = con)
+    }
+
+    writeLines("User-agent: *", con = con)
+    writeLines(paste0("Disallow: *commit"), con = con)
+    writeLines(paste0("Disallow: *treegraph"), con = con)
+    writeLines(paste0("Disallow: *stats/*"), con = con)
+    writeLines(paste0("Disallow: *network/*"), con = con)
+    writeLines(paste0("Disallow: *RELEASE_"), con = con)
+    writeLines(paste0("Disallow: *raw/"), con = con)
+    writeLines(paste0("Disallow: *logpatch/"), con = con)
+    
+    writeLines("\nSitemap: https://code.bioconductor.org/sitemap.txt", con = con)
+
+}
 
 ## Write a sitemap.txt providing links to the devel branch only
 write_sitemap <- function(pkgs, output_file = "/var/shared/sitemap.txt") {

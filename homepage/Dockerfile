@@ -19,6 +19,7 @@ COPY html/* ./
 ## This is just a symlink.  
 ## The actual file is created on a shared PVC by the git updater job
 RUN ln -s /var/shared/sitemap.txt sitemap.txt
+RUN ln -s /var/shared/robots.txt robots.txt
 
 RUN touch /run/lighttpd.pid && chown -R 100:100 /run/lighttpd.pid
 
