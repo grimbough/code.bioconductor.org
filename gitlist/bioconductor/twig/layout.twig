@@ -13,9 +13,17 @@
         <meta name="theme-color" content="#1a81c2">
 
         <meta name="keywords" content="bioconductor, source code, package, {{repo}}">
-        {% if branch != 'devel' %}
+{% if branch != 'devel' %}
         <meta name="robots" content="noindex">
-        {% endif %}
+{% endif %}
+
+{# Add a canoncial link to the root of each repository #}
+{% set test1 = '/' ~ repo ~ '/' %}
+{% set test2 = '/' ~ repo ~ '/devel/' %}
+{% set test3 = '/' ~ repo ~ '/tree/devel/' %}
+{% if app.request.pathinfo == test1 or app.request.pathinfo == test2 or app.request.pathinfo == test3 %}
+        <link rel="canonical" href="https://code.bioconductor.org/browse/{{ repo }}/">
+{% endif %}
 
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link rel="stylesheet" type="text/css" href="{{ app.request.basepath }}/themes/{{ theme }}/css/style.css">
