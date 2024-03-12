@@ -132,7 +132,8 @@ write_robots_txt <- function(pkgs, output_file = "/var/shared/robots.txt") {
     on.exit(close(con))
     
     excluded_bots <- c("Amazonbot", "BLEXBot", "TurnitinBot",
-                       "GPTBot")
+                       "GPTBot", "AhrefsBot", "PetalBot",
+                       "SemrushBot")
     
     for(bot in excluded_bots) {
         writeLines(paste0("User-agent: ", bot), con = con)
@@ -140,16 +141,23 @@ write_robots_txt <- function(pkgs, output_file = "/var/shared/robots.txt") {
     }
 
     writeLines("User-agent: *", con = con)
+    writeLines(paste0("Disallow: *tree/"), con = con)
+    writeLines(paste0("Disallow: *blob/"), con = con)
     writeLines(paste0("Disallow: *commit"), con = con)
     writeLines(paste0("Disallow: *treegraph"), con = con)
-    writeLines(paste0("Disallow: *stats/*"), con = con)
-    writeLines(paste0("Disallow: *network/*"), con = con)
+    writeLines(paste0("Disallow: *stats/"), con = con)
+    writeLines(paste0("Disallow: *network/"), con = con)
     writeLines(paste0("Disallow: *RELEASE_"), con = con)
     writeLines(paste0("Disallow: *raw/"), con = con)
     writeLines(paste0("Disallow: *logpatch/"), con = con)
+    writeLines(paste0("Disallow: *zipball/"), con = con)
+    writeLines(paste0("Disallow: *tarball/"), con = con)
+    writeLines(paste0("Disallow: *blame/"), con = con)
+    writeLines(paste0("Disallow: /browse/themes"), con = con)
+    
+    writeLines(paste0("Disallow: /search/search?q"), con = con)
     
     writeLines("\nSitemap: https://code.bioconductor.org/sitemap.txt", con = con)
-
 }
 
 ## Write a sitemap.txt providing links to the devel branch only
