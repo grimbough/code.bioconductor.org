@@ -19,7 +19,7 @@ spec:
   tls:
   - hosts:
     - code.bioconductor.org
-
+  - secretName: certs
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -44,6 +44,7 @@ spec:
   tls:
   - hosts:
     - code.bioconductor.org
+  - secretName: certs
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -66,3 +67,4 @@ spec:
   tls:
   - hosts:
     - code.bioconductor.org
+  - secretName: certs
