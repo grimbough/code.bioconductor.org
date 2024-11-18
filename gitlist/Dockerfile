@@ -31,7 +31,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ="Europe/Berlin"
 
 RUN apt-get -y update && \
-    apt-get -y install git php php-xml php-fpm nano && \
+    apt-get -y install git php php-xml php-fpm nano htop && \
     rm -rf /var/lib/apt/lists/*
 
 ## configure php
@@ -45,11 +45,12 @@ RUN sed -i 's/;daemonize = yes/daemonize = no/g' /etc/php/8.1/fpm/php-fpm.conf
 RUN sed -i 's=Listen 80=Listen 8080=g' /etc/apache2/ports.conf
 RUN sed -i 's=:80>=:8080>=g' /etc/apache2/sites-available/000-default.conf 
 ADD gitlist.conf remoteip.conf /etc/apache2/conf-available/
+ADD ipblacklist.conf /etc/apache2/
 RUN a2enconf gitlist && \
     a2enconf php8.1-fpm && \
     a2enmod rewrite && \
     a2enmod remoteip && \
-    a2enconf remoteip
+    a2enconf remoteip 
 
 COPY --from=builder /gitlist /var/www/html/browse
 COPY --from=builder /bioconductor /var/www/html/browse/themes/bioconductor
