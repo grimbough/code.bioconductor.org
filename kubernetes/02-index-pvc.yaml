@@ -3,8 +3,6 @@ kind: PersistentVolumeClaim
 metadata: 
   namespace: bioc-code-explorer
   name: bioc-code-tools-index-pvc
-  #labels: 
-  #  app: jupyterhub-test
 spec: 
   storageClassName: "basic-csi"
   accessModes: 

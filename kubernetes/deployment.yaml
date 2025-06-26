@@ -51,6 +51,63 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: git-repo-nginx
+  namespace: bioc-code-explorer
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: git-repo-nginx
+  replicas: 1
+  template:
+    spec:      
+    metadata:
+      labels:
+        app: git-repo-nginx
+    spec:
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app: git-repo
+              topologyKey: "kubernetes.io/hostname"   
+      containers:
+        - name: git-repo
+          image: grimbough/code.bioc-gitlist-nginx:0.0.1
+          imagePullPolicy: "Always"
+          volumeMounts:
+            - mountPath: "/var/git"
+              name: git-repo-iscsi
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 1
+              memory: 1Gi
+            requests:
+              cpu: 1000m
+              memory: 1Gi
+          securityContext:
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+            runAsUser: 101
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: 
+              - ALL
+      volumes:
+        - name: git-repo-iscsi
+          persistentVolumeClaim:
+            claimName:  bioc-code-iscsi-pvc
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
   name: zoekt-search
   namespace: bioc-code-explorer
 spec:

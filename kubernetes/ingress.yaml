@@ -16,6 +16,13 @@ spec:
             name: git-repo
             port: 
               name: http
+      - path: /browse-nginx
+        pathType: Prefix
+        backend:
+          service:
+            name: git-repo-nginx
+            port: 
+              name: http
   tls:
   - hosts:
     - code.bioconductor.org
