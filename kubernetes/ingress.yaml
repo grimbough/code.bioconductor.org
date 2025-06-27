@@ -2,76 +2,69 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: git-repo
-  namespace: bioc-code-explorer
+  namespace: bioc-nginx-test
 spec:
-  ingressClassName: "external-users"
+  ingressClassName: "internal-users"
   rules:
-  - host: code.bioconductor.org
-    http:
-      paths:
-      - path: /browse
-        pathType: Prefix
-        backend:
-          service:
-            name: git-repo
-            port: 
-              name: http
-      - path: /browse-nginx
-        pathType: Prefix
-        backend:
-          service:
-            name: git-repo-nginx
-            port: 
-              name: http
-  tls:
-  - hosts:
-    - code.bioconductor.org
-  - secretName: certs
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: zoekt-search
-  namespace: bioc-code-explorer
-  annotations:
-    traefik.ingress.kubernetes.io/router.middlewares: "global-stripprefix@file"
-spec:
-  ingressClassName: "external-users"
-  rules:
-  - host: code.bioconductor.org
-    http:
-      paths:
-      - path: /search
-        pathType: Prefix
-        backend:
-          service:
-            name: zoekt-search
-            port: 
-              name: http
-  tls:
-  - hosts:
-    - code.bioconductor.org
-  - secretName: certs
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: code-home
-  namespace: bioc-code-explorer
-spec:
-  ingressClassName: "external-users"
-  rules:
-  - host: code.bioconductor.org
+  - host: nginx.bioconductor.org
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: code-home
+            name: git-repo
             port: 
               name: http
   tls:
   - hosts:
-    - code.bioconductor.org
+    - nginx.bioconductor.org
   - secretName: certs
+---
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: zoekt-search
+#   namespace: bioc-code-explorer
+#   annotations:
+#     traefik.ingress.kubernetes.io/router.middlewares: "global-stripprefix@file"
+# spec:
+#   ingressClassName: "external-users"
+#   rules:
+#   - host: code.bioconductor.org
+#     http:
+#       paths:
+#       - path: /search
+#         pathType: Prefix
+#         backend:
+#           service:
+#             name: zoekt-search
+#             port: 
+#               name: http
+#   tls:
+#   - hosts:
+#     - code.bioconductor.org
+#   - secretName: certs
+# ---
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: code-home
+#   namespace: bioc-code-explorer
+# spec:
+#   ingressClassName: "external-users"
+#   rules:
+#   - host: code.bioconductor.org
+#     http:
+#       paths:
+#       - path: /
+#         pathType: Prefix
+#         backend:
+#           service:
+#             name: code-home
+#             port: 
+#               name: http
+#   tls:
+#   - hosts:
+#     - code.bioconductor.org
+#   - secretName: certs

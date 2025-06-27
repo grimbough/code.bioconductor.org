@@ -1,30 +1,25 @@
-FROM alpine:3.16.2 AS zoekt-index
+FROM alpine:3.21 AS zoekt-index
 
 RUN apk --no-cache add go git
 
 ENV CGO_ENABLED=0
 
-RUN go install github.com/google/zoekt/cmd/zoekt-index@latest
+RUN go install github.com/sourcegraph/zoekt/cmd/zoekt-index@latest
 
 
-
-FROM alpine:3.16.2 AS ctags
+FROM alpine:3.21 AS ctags
 
 RUN apk --no-cache add wget
 
-ENV CTAGS_BIN ctags-2020-08-26T1308-c9ebd839
-
-RUN wget https://storage.googleapis.com/zoekt-binaries/${CTAGS_BIN}.tar.gz && \
-    tar -xvzf ${CTAGS_BIN}.tar.gz && \
-    mv ${CTAGS_BIN} ctags && \
-    chmod +rx ctags/*
+RUN wget https://raw.githubusercontent.com/sourcegraph/zoekt/refs/heads/main/install-ctags-alpine.sh && \
+    chmod +x install-ctags-alpine.sh && \
+    ./install-ctags-alpine.sh
 
 
-
-FROM alpine:3.16.2
+FROM alpine:3.21
 LABEL maintainer "Mike Smith <mike.smith@embl.de>"
 
-COPY --from=ctags /ctags/* /usr/local/bin/
+COPY --from=ctags /tmp/ctags-*/* /usr/local/bin/
 COPY --from=zoekt-index /root/go/bin/* /usr/local/bin/
 
 ENV TZ="Europe/Berlin"
@@ -49,11 +44,11 @@ RUN Rscript  -e "chooseCRANmirror(graphics = FALSE, ind = 1)" \
 
 #RUN adduser --disabled-password --uid 82 www-data
 RUN set -x ; \
-  addgroup -g 82 -S www-data ; \
-  adduser -u 82 -D -S -G www-data www-data && exit 0 ; exit 1
+  addgroup -g 101 -S nginx ; \
+  adduser -u 101 -D -S -G nginx nginx && exit 0 ; exit 1
 USER www-data
 
 COPY *.R /var/R/
 WORKDIR /var/R
 
-ENTRYPOINT ["Rscript", "check_rss_feed.R"]
+ENTRYPOINT ["Rscript", "check_rss_feed.R", "--npkgs=15"]

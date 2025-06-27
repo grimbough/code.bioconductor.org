@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: git-repo
-  namespace: bioc-code-explorer
+  namespace: bioc-nginx-test
 spec:
   strategy:
     type: Recreate
@@ -15,67 +15,10 @@ spec:
     metadata:
       labels:
         app: git-repo
-    spec:      
-      containers:
-        - name: git-repo
-          image: grimbough/code.bioc-gitlist:0.1.4
-          imagePullPolicy: "Always"
-          volumeMounts:
-            - mountPath: "/var/git"
-              name: git-repo-iscsi
-          ports:
-            - name: http
-              containerPort: 8080
-              protocol: TCP
-          resources:
-            limits:
-              cpu: 3
-              memory: 3Gi
-            requests:
-              cpu: 2000m
-              memory: 1Gi
-          securityContext:
-            runAsNonRoot: true
-            seccompProfile:
-              type: RuntimeDefault
-            runAsUser: 82
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop: 
-              - ALL
-      volumes:
-        - name: git-repo-iscsi
-          persistentVolumeClaim:
-            claimName:  bioc-code-iscsi-pvc
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: git-repo-nginx
-  namespace: bioc-code-explorer
-spec:
-  strategy:
-    type: Recreate
-  selector:
-    matchLabels:
-      app: git-repo-nginx
-  replicas: 1
-  template:
-    spec:      
-    metadata:
-      labels:
-        app: git-repo-nginx
     spec:
-      affinity:
-        podAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - labelSelector:
-                matchLabels:
-                  app: git-repo
-              topologyKey: "kubernetes.io/hostname"   
       containers:
         - name: git-repo
-          image: grimbough/code.bioc-gitlist-nginx:0.0.1
+          image: grimbough/code.bioc-nginx-gitlist:0.0.1
           imagePullPolicy: "Always"
           volumeMounts:
             - mountPath: "/var/git"
@@ -105,115 +48,115 @@ spec:
           persistentVolumeClaim:
             claimName:  bioc-code-iscsi-pvc
 ---
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: zoekt-search
-  namespace: bioc-code-explorer
-spec:
-  strategy:
-    type: Recreate
-  selector:
-    matchLabels:
-      app: zoekt-search
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        app: zoekt-search
-    spec:      
-      affinity:
-        podAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - labelSelector:
-                matchLabels:
-                  app: git-repo
-              topologyKey: "kubernetes.io/hostname"
-      containers:
-        - name: zoekt-search
-          image: grimbough/code.bioc-zoekt-webserver:0.1.1
-          imagePullPolicy: "Always"
-          volumeMounts:
-            - mountPath: "/var/git"
-              name: git-repo
-            - mountPath: "/var/zoekt"
-              name: zoekt-search
-              readOnly: true
-          ports:
-            - name: http
-              containerPort: 8080
-              protocol: TCP
-          resources:
-            limits:
-              cpu: 1
-              memory: 3Gi
-            requests:
-              cpu: 700m
-              memory: 1Gi
-          securityContext:
-            runAsNonRoot: true
-            seccompProfile:
-              type: RuntimeDefault
-            runAsUser: 82
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop: 
-              - ALL
-      volumes:
-        - name: zoekt-search
-          persistentVolumeClaim:
-            readOnly: true
-            claimName:  bioc-code-tools-index-pvc
-        - name: git-repo
-          persistentVolumeClaim:
-            claimName:  bioc-code-iscsi-pvc
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: code-home
-  namespace: bioc-code-explorer
-spec:
-  strategy:
-    type: Recreate
-  selector:
-    matchLabels:
-      app: code-home
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        app: code-home
-    spec:
-      containers:
-        - name: code-home
-          image: grimbough/code.bioc-home:0.1.4
-          imagePullPolicy: "Always"
-          volumeMounts:
-            - mountPath: "/var/shared"
-              name: git-repo-shared-info
-          ports:
-            - name: http
-              containerPort: 8080
-              protocol: TCP
-          resources:
-            limits:
-              cpu: 1
-              memory: 1Gi
-            requests:
-              cpu: 500m
-              memory: 256Mi
-          securityContext:
-            runAsNonRoot: true
-            seccompProfile:
-              type: RuntimeDefault
-            runAsUser: 100 #lighttpd uid
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop: 
-              - ALL
-      volumes:
-        - name: git-repo-shared-info
-          persistentVolumeClaim:
-            claimName:  bioc-code-tools-shared-info-pvc
-            readOnly: true
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: zoekt-search
+#   namespace: bioc-code-explorer
+# spec:
+#   strategy:
+#     type: Recreate
+#   selector:
+#     matchLabels:
+#       app: zoekt-search
+#   replicas: 1
+#   template:
+#     metadata:
+#       labels:
+#         app: zoekt-search
+#     spec:      
+#       affinity:
+#         podAffinity:
+#           requiredDuringSchedulingIgnoredDuringExecution:
+#             - labelSelector:
+#                 matchLabels:
+#                   app: git-repo
+#               topologyKey: "kubernetes.io/hostname"
+#       containers:
+#         - name: zoekt-search
+#           image: grimbough/code.bioc-zoekt-webserver:0.1.1
+#           imagePullPolicy: "Always"
+#           volumeMounts:
+#             - mountPath: "/var/git"
+#               name: git-repo
+#             - mountPath: "/var/zoekt"
+#               name: zoekt-search
+#               readOnly: true
+#           ports:
+#             - name: http
+#               containerPort: 8080
+#               protocol: TCP
+#           resources:
+#             limits:
+#               cpu: 1
+#               memory: 3Gi
+#             requests:
+#               cpu: 700m
+#               memory: 1Gi
+#           securityContext:
+#             runAsNonRoot: true
+#             seccompProfile:
+#               type: RuntimeDefault
+#             runAsUser: 82
+#             allowPrivilegeEscalation: false
+#             capabilities:
+#               drop: 
+#               - ALL
+#       volumes:
+#         - name: zoekt-search
+#           persistentVolumeClaim:
+#             readOnly: true
+#             claimName:  bioc-code-tools-index-pvc
+#         - name: git-repo
+#           persistentVolumeClaim:
+#             claimName:  bioc-code-iscsi-pvc
+# ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: code-home
+#   namespace: bioc-code-explorer
+# spec:
+#   strategy:
+#     type: Recreate
+#   selector:
+#     matchLabels:
+#       app: code-home
+#   replicas: 1
+#   template:
+#     metadata:
+#       labels:
+#         app: code-home
+#     spec:
+#       containers:
+#         - name: code-home
+#           image: grimbough/code.bioc-home:0.1.4
+#           imagePullPolicy: "Always"
+#           volumeMounts:
+#             - mountPath: "/var/shared"
+#               name: git-repo-shared-info
+#           ports:
+#             - name: http
+#               containerPort: 8080
+#               protocol: TCP
+#           resources:
+#             limits:
+#               cpu: 1
+#               memory: 1Gi
+#             requests:
+#               cpu: 500m
+#               memory: 256Mi
+#           securityContext:
+#             runAsNonRoot: true
+#             seccompProfile:
+#               type: RuntimeDefault
+#             runAsUser: 100 #lighttpd uid
+#             allowPrivilegeEscalation: false
+#             capabilities:
+#               drop: 
+#               - ALL
+#       volumes:
+#         - name: git-repo-shared-info
+#           persistentVolumeClaim:
+#             claimName:  bioc-code-tools-shared-info-pvc
+#             readOnly: true
