@@ -16,22 +16,6 @@ spec:
 # apiVersion: v1
 # kind: Service
 # metadata:
-#   name: code-home
-#   namespace: bioc-code-explorer
-# spec:
-#   type: ClusterIP
-#   ports:
-#     - name: http
-#       port: 8080
-#       targetPort: 8080
-#       protocol: TCP
-#   selector:
-#     app: code-home
-
-# ---
-# apiVersion: v1
-# kind: Service
-# metadata:
 #   name: zoekt-search
 #   namespace: bioc-code-explorer
 # spec:

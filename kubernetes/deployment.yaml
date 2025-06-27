@@ -16,13 +16,62 @@ spec:
       labels:
         app: git-repo
     spec:
+      initContainers:
+        - name: create-folder
+          image: grimbough/code.bioc-php-fpm:0.0.1
+          command: ['sh', '-c', 
+            'mkdir -p /var/www/html/cache && chmod -R 777 /var/www/html/cache']
+          resources:
+            limits:
+              cpu: 1
+              memory: 1Gi
+            requests:
+              cpu: 1000m
+              memory: 1Gi
+          volumeMounts:
+            - mountPath: "/var/www/html"
+              name: application
       containers:
-        - name: git-repo
-          image: grimbough/code.bioc-nginx-gitlist:0.0.1
+        - name: php-fpm
+          image: grimbough/code.bioc-php-fpm:0.0.1
           imagePullPolicy: "Always"
           volumeMounts:
             - mountPath: "/var/git"
               name: git-repo-iscsi
+            - mountPath: "/var/www/html"
+              name: application
+          ports:
+            - name: php-fpm
+              containerPort: 9000
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 1
+              memory: 1Gi
+            requests:
+              cpu: 1000m
+              memory: 1Gi
+          lifecycle:
+            postStart:
+              exec:
+                command: ["/bin/sh", "-c", "cp -r /application/. /var/www/html"]
+          # securityContext:
+          #   runAsNonRoot: true
+          #   seccompProfile:
+          #     type: RuntimeDefault
+          #   runAsUser: 101
+          #   allowPrivilegeEscalation: false
+          #   capabilities:
+          #     drop: 
+          #     - ALL
+        - name: nginx
+          image: grimbough/code.bioc-nginx:0.0.1
+          imagePullPolicy: "Always"
+          volumeMounts:
+            - mountPath: "/var/git"
+              name: git-repo-iscsi
+            - mountPath: "/var/www/html"
+              name: application
           ports:
             - name: http
               containerPort: 8080
@@ -47,6 +96,9 @@ spec:
         - name: git-repo-iscsi
           persistentVolumeClaim:
             claimName:  bioc-code-iscsi-pvc
+        - name: application
+          persistentVolumeClaim:
+            claimName:  application-pvc
 ---
 # apiVersion: apps/v1
 # kind: Deployment
