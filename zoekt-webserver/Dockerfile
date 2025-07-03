@@ -1,21 +1,21 @@
-FROM alpine:3.17.2 AS zoekt-webserver
+FROM alpine:3.21 AS zoekt-webserver
 LABEL maintainer "Mike Smith <mike.smith@embl.de>"
 
 # We need go, git, bash, and musl-dev for zoekt-git-index
 RUN apk add --no-cache go git 
 
-RUN go install github.com/google/zoekt/cmd/zoekt-webserver@latest
+RUN go install github.com/sourcegraph/zoekt/cmd/zoekt-webserver@latest
 
 
 
-FROM alpine:3.17.2
+FROM alpine:3.21
 
 COPY --from=zoekt-webserver /root/go/bin/* /usr/local/bin/
 
 RUN set -x ; \
-  addgroup -g 82 -S www-data ; \
-  adduser -u 82 -D -S -G www-data www-data && exit 0 ; exit 1
-USER www-data
+  addgroup -g 101 -S nginx ; \
+  adduser -u 101 -D -S -G nginx nginx && exit 0 ; exit 1
+USER nginx
 
 ADD ./templates /var/templates
 
