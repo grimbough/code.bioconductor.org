@@ -2,7 +2,7 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: index-git-repo
-  namespace: bioc-nginx-test
+  namespace: bioc-code-explorer
 spec:
   schedule: "*/15 * * * *"
   jobTemplate:
@@ -23,13 +23,13 @@ spec:
           - name: index-git-repo
             resources:
               limits:
-                cpu: 1
+                cpu: 1000m
                 memory: 2Gi
               requests:
                 cpu: 700m
                 memory: 1Gi
             imagePullPolicy: Always
-            image: grimbough/code.bioc-nginx-mirror-updater:0.0.1
+            image: grimbough/code.bioc-mirror-updater:0.1.5
             env:
             - name: CONTAINER_ZOEKT_IDX_DIR
               value: "/var/zoekt"
@@ -47,6 +47,7 @@ spec:
               seccompProfile:
                 type: RuntimeDefault
               runAsUser: 101
+              runAsGroup: 101
               allowPrivilegeEscalation: false
               capabilities:
                 drop: 

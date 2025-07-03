@@ -1,7 +1,7 @@
 apiVersion: v1 
 kind: PersistentVolumeClaim 
 metadata: 
-  namespace: bioc-nginx-test
+  namespace: bioc-code-explorer
   name: bioc-code-tools-shared-info-pvc
 spec: 
   storageClassName: "basic-csi"
@@ -9,12 +9,12 @@ spec:
     - ReadWriteMany 
   resources: 
     requests: 
-      storage: 1Gi 
+      storage: 5Gi 
 ---
 apiVersion: v1 
 kind: PersistentVolumeClaim 
 metadata: 
-  namespace: bioc-nginx-test
+  namespace: bioc-code-explorer
   name: application-pvc
 spec: 
   storageClassName: "basic-csi"
@@ -22,5 +22,17 @@ spec:
     - ReadWriteMany 
   resources: 
     requests: 
-      storage: 1Gi 
-
+      storage: 50Gi 
+---
+apiVersion: v1 
+kind: PersistentVolumeClaim 
+metadata: 
+  namespace: bioc-code-explorer
+  name: nginx-logs
+spec: 
+  storageClassName: "basic-csi"
+  accessModes: 
+    - ReadWriteMany 
+  resources: 
+    requests: 
+      storage: 10Gi 

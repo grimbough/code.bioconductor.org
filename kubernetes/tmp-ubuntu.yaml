@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ubuntu
+  namespace: bioc-code-explorer
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      io.kompose.service: dsw-ubuntu
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        io.kompose.service: dsw-ubuntu
+    spec:
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app: git-repo
+              topologyKey: "kubernetes.io/hostname"
+      containers:
+        - image: ubuntu:24.04
+          imagePullPolicy: "Always"
+          name: ubuntu
+          command: [ "sh", "-c", "--" ]
+          args: [ "while true; do sleep 30; done;" ]
+          volumeMounts:
+            - mountPath: "/var/git"
+              name: git-repo
+            - mountPath: "/var/log/nginx"
+              name: nginx-logs
+            - mountPath: "/var/shared"
+              name: shared
+            - mountPath: "/var/zoekt"
+              name: zoekt
+          resources:
+            limits:
+              cpu: 200m
+              memory: 512Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+      restartPolicy: Always
+      volumes:
+        - name: git-repo
+          persistentVolumeClaim:
+            claimName: bioc-code-iscsi-pvc
+        - name: nginx-logs
+          persistentVolumeClaim:
+            claimName:  nginx-logs
+        - name: shared
+          persistentVolumeClaim:
+            claimName:  bioc-code-tools-shared-info-pvc
+        - name: zoekt
+          persistentVolumeClaim:
+            claimName:  bioc-code-tools-index-pvc

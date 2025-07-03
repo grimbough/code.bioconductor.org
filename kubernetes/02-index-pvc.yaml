@@ -1,7 +1,7 @@
 apiVersion: v1 
 kind: PersistentVolumeClaim 
 metadata: 
-  namespace: bioc-nginx-test
+  namespace: bioc-code-explorer
   name: bioc-code-tools-index-pvc
 spec: 
   storageClassName: "basic-csi"
