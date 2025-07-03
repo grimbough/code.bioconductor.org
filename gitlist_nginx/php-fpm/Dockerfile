@@ -14,6 +14,9 @@ RUN curl -L --output gitlist.zip https://github.com/klaussilveira/gitlist/releas
 COPY config.ini /gitlist/config.ini
 COPY json.html /gitlist/index.html
 COPY Repository.php /gitlist/src/Util/Repository.php
+## this git command need to be modified as it no longer works with the version of git installed in the 
+## php container created below
+RUN sed -i 's=ls-tree -l -r --name-only=ls-tree -r --name-only=g' /gitlist/src/Git/Repository.php
 
 COPY bioconductor /bioconductor
 WORKDIR /bioconductor/less
@@ -64,13 +67,23 @@ ENV COMPOSER_ALLOW_SUPERUSER 1
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer --2
 
 COPY --from=builder /gitlist /application
-COPY --from=builder /bioconductor //application/themes/bioconductor
+COPY --from=builder /bioconductor /application/themes/bioconductor
 
 ENV PATH="/application/bin:/application/vendor/bin:${PATH}"
 
 WORKDIR "/application"
 
-CMD ["php-fpm", "--allow-to-run-as-root"]
+#CMD ["php-fpm", "--allow-to-run-as-root"]
 
 COPY php.ini /usr/local/etc/php/conf.d/99-overrides.ini
 COPY php-fpm.d/* /usr/local/etc/php-fpm.d/
+
+RUN addgroup -g 101 nginx && \
+    adduser -u 101 -G nginx -D nginx
+
+COPY init.sh /init.sh
+RUN chown nginx:nginx /init.sh && chmod +x /init.sh
+
+USER nginx
+
+CMD ["php-fpm", "-F"]
