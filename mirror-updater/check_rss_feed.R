@@ -34,11 +34,8 @@ if(length(args) >= 1 && any(grepl("--extra_pkgs=[[:alnum:]]*", args))) {
 all_arg <- length(args) >= 1 && ("--all" %in% args)
 ## Update everything once a week.  Currently Wednesday 14:30
 special_time <- grepl(pattern = "3-14:3[0-9]", strftime(Sys.time(), format = "%w-%H:%M"))
-if(all_arg || special_time) {
-    UPDATE_ALL <- TRUE
-} else {
-    UPDATE_ALL <- FALSE
-}
+# special_time <- TRUE
+UPDATE_ALL <- (all_arg || special_time)
 
 REPO_DIR <- Sys.getenv("GIT_REPOS_DIR")
 if(!nzchar(REPO_DIR)) {
@@ -64,8 +61,8 @@ suppressPackageStartupMessages(library(jsonlite))
 #########################
 lock_file <- file.path(REPO_DIR, "lock")
 log_file <- file.path(REPO_DIR, "status.log")
-if(file.exists(log_file) && !file.exists(lock_file)) { 
-    unlink(log_file) 
+if (file.exists(log_file) && !file.exists(lock_file)) {
+    unlink(log_file)
 }
 
 ##############################################
@@ -78,7 +75,7 @@ removePackages(manifest, existing_pkgs, index_dir = INDEX_DIR)
 #########################################################
 ## Is this starting afresh or updating existing mirror ##
 #########################################################
-if(length(existing_pkgs) == 0 || CLEAN) {
+if (length(existing_pkgs) == 0 || CLEAN) {
     cleanDir(repo_dir = REPO_DIR, index_dir = INDEX_DIR)
     createUnderConstruction(repo_dir = REPO_DIR)
     createLockFile(repo_dir = REPO_DIR)
@@ -89,12 +86,11 @@ if(length(existing_pkgs) == 0 || CLEAN) {
     # if(file.exists(lock_file)) { file.remove(lock_file) }
     #UPDATE_ALL <- TRUE
     createLockFile(repo_dir = REPO_DIR)
-    
+
     #unlink(x = file.path(REPO_DIR, c("nnSVG", "scp")), recursive = TRUE)
-    
-    updated_pkgs <- updateRepositories(repo_dir = REPO_DIR, manifest = manifest, 
-                                           update_all = UPDATE_ALL)
-    
+    updated_pkgs <- updateRepositories(repo_dir = REPO_DIR, manifest = manifest,
+                                       update_all = UPDATE_ALL)
+
 }
 
 ##############################################################################
@@ -107,7 +103,6 @@ if(!is.null(updated_pkgs)) {
     } else {
         updateCommitMessages(repo_dir = REPO_DIR, manifest = manifest, pkgs = updated_pkgs)
     }
-    
 }
 
 ####################################################

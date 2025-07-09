@@ -42,13 +42,13 @@ RUN apk --no-cache add \
 RUN Rscript  -e "chooseCRANmirror(graphics = FALSE, ind = 1)" \
              -e "install.packages(c('dplyr', 'tidyRSS', 'gert', 'jsonlite', 'lubridate'), quiet = TRUE)"
 
-#RUN adduser --disabled-password --uid 82 www-data
 RUN set -x ; \
   addgroup -g 101 -S nginx ; \
   adduser -u 101 -D -S -G nginx nginx && exit 0 ; exit 1
-USER www-data
+USER nginx
 
 COPY *.R /var/R/
 WORKDIR /var/R
 
-ENTRYPOINT ["Rscript", "check_rss_feed.R", "--npkgs=15"]
+#ENTRYPOINT ["Rscript", "check_rss_feed.R", "--npkgs=15"]
+ENTRYPOINT ["Rscript", "check_rss_feed.R"]
