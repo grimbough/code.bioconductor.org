@@ -1,4 +1,3 @@
-#FROM nginx:stable-alpine
 FROM nginxinc/nginx-unprivileged:alpine3.21-perl 
 LABEL maintainer "Mike Smith <mike.smith@embl.de>"
 ENV TZ="Europe/Berlin"
