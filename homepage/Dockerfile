@@ -4,7 +4,6 @@ RUN apk update \
     && apk add lighttpd bash \
     && rm -rf /var/cache/apk/*
 
-#RUN sed -i 's/# server.port          = 81/server.port = 8080/g' /etc/lighttpd/lighttpd.conf
 COPY lighttpd.conf /etc/lighttpd/lighttpd.conf
 
 RUN mkdir -p /var/www/localhost/htdocs /var/shared

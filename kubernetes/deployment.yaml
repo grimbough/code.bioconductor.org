@@ -16,13 +16,13 @@ spec:
         app: git-repo
     spec:
       securityContext:
+        runAsUser: 101
         fsGroup: 101      
       initContainers:
         - name: create-folder
           image: grimbough/code.bioc-php-fpm:0.0.2
+          imagePullPolicy: "Always"
           command: ['sh', '-c', '/init.sh']
-          # command: [ "sh", "-c", "--" ]
-          # args: [ "while true; do sleep 30; done;" ]
           resources:
             limits:
               cpu: 1000m
@@ -33,11 +33,12 @@ spec:
           volumeMounts:
             - mountPath: "/var/www/html"
               name: application
+            - mountPath: "/var/log/nginx"
+              name: nginx-logs
           securityContext:
             runAsNonRoot: true
             seccompProfile:
               type: RuntimeDefault
-            runAsUser: 101
             allowPrivilegeEscalation: false
             capabilities:
               drop: 
@@ -66,13 +67,12 @@ spec:
             runAsNonRoot: true
             seccompProfile:
               type: RuntimeDefault
-            runAsUser: 101
             allowPrivilegeEscalation: false
             capabilities:
               drop: 
               - ALL
         - name: nginx
-          image: grimbough/code.bioc-nginx:0.0.1
+          image: grimbough/code.bioc-nginx:0.0.2
           imagePullPolicy: "Always"
           volumeMounts:
             - mountPath: "/var/git"
@@ -83,6 +83,9 @@ spec:
               name: nginx-logs
             - mountPath: "/var/shared"
               name: git-repo-shared-info
+            - mountPath: /etc/nginx/auth
+              name: auth-volume
+              readOnly: true
           ports:
             - name: http
               containerPort: 8080
@@ -98,11 +101,34 @@ spec:
             runAsNonRoot: true
             seccompProfile:
               type: RuntimeDefault
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: 
+              - ALL
+        - name: goaccess
+          image: grimbough/code.bioc-goaccess:0.0.1
+          imagePullPolicy: "Always"
+          volumeMounts:
+            - mountPath: "/var/log/nginx"
+              name: nginx-logs
+            - mountPath: "/var/www/html"
+              name: application
+          securityContext:
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
             runAsUser: 101
             allowPrivilegeEscalation: false
             capabilities:
               drop: 
               - ALL
+          resources:
+            limits:
+              cpu: 500m
+              memory: 1024Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi
       volumes:
         - name: git-repo-iscsi
           persistentVolumeClaim:
@@ -116,6 +142,12 @@ spec:
         - name: git-repo-shared-info
           persistentVolumeClaim:
             claimName:  bioc-code-tools-shared-info-pvc
+        - name: auth-volume
+          secret:
+            secretName: nginx-auth-secret
+            items:
+              - key: nginx.htpasswd
+                path: .htpasswd
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -199,7 +231,7 @@ spec:
     spec:
       containers:
         - name: code-home
-          image: grimbough/code.bioc-home:0.1.4
+          image: grimbough/code.bioc-home:0.1.5
           imagePullPolicy: "Always"
           volumeMounts:
             - mountPath: "/var/shared"

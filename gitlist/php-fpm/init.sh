@@ -1,6 +1,6 @@
 rm -Rf /var/www/html/*
-cp -r /application/. /var/www/html/browse
-mkdir -p /var/www/html/browse/cache
+mkdir -p /var/www/html/browse/cache /var/www/html/logs /var/log/nginx/goaccess
+cp -r /application/* /var/www/html/browse/
 
 ## create symlinks that will be found by the webserver
 ln -s /var/git/packages.json /var/www/html/browse/ 

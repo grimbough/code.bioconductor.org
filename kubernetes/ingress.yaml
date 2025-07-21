@@ -23,6 +23,13 @@ spec:
             name: git-repo
             port: 
               name: http
+      - path: /logs
+        pathType: Prefix
+        backend:
+          service:
+            name: git-repo
+            port: 
+              name: http
   tls:
   - hosts:
     - code.bioconductor.org

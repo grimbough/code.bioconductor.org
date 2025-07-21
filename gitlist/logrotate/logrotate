@@ -1,0 +1,8 @@
+/var/log/nginx/*.log {
+  daily
+  missingok
+  rotate 90
+  dateext
+  notifempty
+  create 640 nginx nginx
+}
