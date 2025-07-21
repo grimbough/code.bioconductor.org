@@ -185,14 +185,14 @@ processMostRecentCommit <- function(pkg_name, repo_dir) {
 
 ## create a placeholder table when the site is being updated
 createUnderConstruction <- function(repo_dir) {
-    
+
     json_content <- c(
         "The code browser is undergoing maintenance",
         "It will return soon"
     )
-    
+
     message <- toJSON(list(data = list(json_content)), pretty = TRUE)
-    
+
     writeLines(message, con = file.path(repo_dir, "packages.json"))
 }
 
