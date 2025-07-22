@@ -151,13 +151,14 @@ cleanUp <- function(repo_dir) {
 # ## Write a robots.txt file allowing access to the devel branch only
 write_robots_txt <- function(pkgs, output_file = "/var/shared/robots.txt") {
 
-    con = file(output_file, open = "wt")
+    con <- file(output_file, open = "wt")
     on.exit(close(con))
 
     excluded_bots <- c("Amazonbot", "BLEXBot", "TurnitinBot",
-                       "GPTBot", "AhrefsBot", "PetalBot",
+                       "GPTBot", "AhrefsBot", "PetalBot", "ClaudeBot",
                        "SemrushBot", "meta-externalagent", "SEOkicks",
-                       "AwarioRssBot", "AwarioSmartBot", "ImagesiftBot")
+                       "AwarioRssBot", "AwarioSmartBot", "ImagesiftBot",
+                       "AliyunSecBot", "Aliyun")
 
     for(bot in excluded_bots) {
         writeLines(paste0("User-agent: ", bot), con = con)
@@ -165,6 +166,9 @@ write_robots_txt <- function(pkgs, output_file = "/var/shared/robots.txt") {
     }
 
     writeLines("User-agent: *", con = con)
+
+    writeLines(paste0("Allow: /browse/*/"), con = con)
+    writeLines(paste0("Disallow: /browse/*/*/"), con = con)
     writeLines(paste0("Disallow: *tree/"), con = con)
     writeLines(paste0("Disallow: *blob/"), con = con)
     writeLines(paste0("Disallow: *commit"), con = con)

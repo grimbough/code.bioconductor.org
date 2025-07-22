@@ -34,7 +34,7 @@ if(length(args) >= 1 && any(grepl("--extra_pkgs=[[:alnum:]]*", args))) {
 all_arg <- length(args) >= 1 && ("--all" %in% args)
 ## Update everything once a week.  Currently Wednesday 14:30
 special_time <- grepl(pattern = "3-14:3[0-9]", strftime(Sys.time(), format = "%w-%H:%M"))
-# special_time <- TRUE
+#special_time <- TRUE
 UPDATE_ALL <- (all_arg || special_time)
 
 REPO_DIR <- Sys.getenv("GIT_REPOS_DIR")
