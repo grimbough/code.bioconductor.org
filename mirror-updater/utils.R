@@ -158,7 +158,7 @@ write_robots_txt <- function(pkgs, output_file = "/var/shared/robots.txt") {
                        "GPTBot", "AhrefsBot", "PetalBot", "ClaudeBot",
                        "SemrushBot", "meta-externalagent", "SEOkicks",
                        "AwarioRssBot", "AwarioSmartBot", "ImagesiftBot",
-                       "AliyunSecBot", "Aliyun")
+                       "AliyunSecBot", "Aliyun", "Bytespider")
 
     for(bot in excluded_bots) {
         writeLines(paste0("User-agent: ", bot), con = con)
