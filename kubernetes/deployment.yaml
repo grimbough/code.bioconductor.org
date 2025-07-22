@@ -229,13 +229,17 @@ spec:
       labels:
         app: code-home
     spec:
+      securityContext:
+        fsGroup: 101 
       containers:
         - name: code-home
-          image: grimbough/code.bioc-home:0.1.5
+          image: grimbough/code.bioc-home:0.2.0
           imagePullPolicy: "Always"
           volumeMounts:
             - mountPath: "/var/shared"
               name: git-repo-shared-info
+            - mountPath: "/var/log/nginx"
+              name: nginx-logs
           ports:
             - name: http
               containerPort: 8080
@@ -251,7 +255,8 @@ spec:
             runAsNonRoot: true
             seccompProfile:
               type: RuntimeDefault
-            runAsUser: 100 #lighttpd uid
+            runAsUser: 101
+            runAsGroup: 101
             allowPrivilegeEscalation: false
             capabilities:
               drop: 
@@ -261,3 +266,6 @@ spec:
           persistentVolumeClaim:
             claimName:  bioc-code-tools-shared-info-pvc
             readOnly: true
+        - name: nginx-logs
+          persistentVolumeClaim:
+            claimName:  nginx-logs
