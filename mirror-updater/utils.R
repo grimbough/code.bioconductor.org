@@ -169,10 +169,11 @@ write_robots_txt <- function(pkgs, output_file = "/var/shared/robots.txt") {
 
     writeLines(paste0("Allow: /browse/*/"), con = con)
     writeLines(paste0("Disallow: /browse/*/*/"), con = con)
+    writeLines(paste0("Disallow: /browse/*/treegraph"), con = con)
+    writeLines(paste0("Disallow: /browse/themes"), con = con)
     writeLines(paste0("Disallow: *tree/"), con = con)
     writeLines(paste0("Disallow: *blob/"), con = con)
     writeLines(paste0("Disallow: *commit"), con = con)
-    writeLines(paste0("Disallow: *treegraph"), con = con)
     writeLines(paste0("Disallow: *stats/"), con = con)
     writeLines(paste0("Disallow: *network/"), con = con)
     writeLines(paste0("Disallow: *RELEASE_"), con = con)
@@ -182,7 +183,6 @@ write_robots_txt <- function(pkgs, output_file = "/var/shared/robots.txt") {
     writeLines(paste0("Disallow: *tarball/"), con = con)
     writeLines(paste0("Disallow: *blame/"), con = con)
     writeLines(paste0("Disallow: *rss/"), con = con)
-    writeLines(paste0("Disallow: /browse/themes"), con = con)
 
     writeLines(paste0("Disallow: /search/search?q"), con = con)
 
@@ -192,7 +192,7 @@ write_robots_txt <- function(pkgs, output_file = "/var/shared/robots.txt") {
 ## Write a sitemap.txt providing links to the devel branch only
 write_sitemap <- function(pkgs, output_file = "/var/shared/sitemap.txt") {
 
-    con = file(output_file, open = "wt")
+    con <- file(output_file, open = "wt")
     on.exit(close(con))
 
     writeLines("https://code.bioconductor.org/index.html")
