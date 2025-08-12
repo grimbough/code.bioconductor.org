@@ -45,5 +45,5 @@ RUN addgroup -g 101 nginx && \
 USER nginx
 
 # Run the application
-ENTRYPOINT ["sh", "-c", "goaccess /var/log/nginx/access.log* --unknowns-as-crawlers --persist --restore --db-path=/var/log/nginx/goaccess --config-file=/opt/goaccess.conf"]
+ENTRYPOINT ["sh", "-c", "goaccess /var/log/nginx/access*.log* --unknowns-as-crawlers --persist --restore --db-path=/var/log/nginx/goaccess --config-file=/opt/goaccess.conf"]
 

@@ -50,6 +50,7 @@ spec:
           volumeMounts:
             - mountPath: "/var/git"
               name: git-repo-iscsi
+              readOnly: true
             - mountPath: "/var/www/html"
               name: application
           ports:
@@ -77,8 +78,10 @@ spec:
           volumeMounts:
             - mountPath: "/var/git"
               name: git-repo-iscsi
+              readOnly: true
             - mountPath: "/var/www/html"
               name: application
+              readOnly: true
             - mountPath: "/var/log/nginx"
               name: nginx-logs
             - mountPath: "/var/shared"
@@ -106,7 +109,7 @@ spec:
               drop: 
               - ALL
         - name: goaccess
-          image: grimbough/code.bioc-goaccess:0.0.1
+          image: grimbough/code.bioc-goaccess:0.0.2
           imagePullPolicy: "Always"
           volumeMounts:
             - mountPath: "/var/log/nginx"

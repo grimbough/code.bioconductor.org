@@ -29,6 +29,8 @@ spec:
                   POD=$(kubectl get pods -l app=git-repo -o jsonpath='{.items[0].metadata.name}')
                   kubectl exec $POD -c nginx -- kill -USR1 1
                   kubectl exec $POD -c goaccess -- kill -USR1 1
+                  POD2=$(kubectl get pods -l app=code-home -o jsonpath='{.items[0].metadata.name}')
+                  kubectl exec $POD2 -c code-home -- kill -USR1 1
               resources:
                 limits:
                   cpu: 100m
@@ -51,44 +53,3 @@ spec:
             - name: nginx-logs
               persistentVolumeClaim:
                 claimName:  nginx-logs
-# ---
-# apiVersion: apps/v1
-# kind: Deployment
-# metadata:
-#   name: nginx-logrotate-signal
-#   namespace: bioc-code-explorer
-# spec:
-#   strategy:
-#     type: Recreate
-#   selector:
-#     matchLabels:
-#       app: nginx-logrotate-signal
-#   replicas: 1
-#   template:
-#     metadata:
-#       labels:
-#         app: nginx-logrotate-signal
-#     spec:
-#       serviceAccountName: logrotate-signal-sa
-#       containers:
-#       - name: signal-nginx
-#         image: grimbough/code.bioc-logrotate:0.0.1
-#         # command: [ "sh", "-c", "--" ]
-#         # args: [ "while true; do sleep 30; done;" ]
-#         command:
-#           - /bin/sh
-#           - -c
-#           - |
-#             logrotate --verbose --debug --log=/var/log/nginx/access.log --state=/tmp/logroate_tmp /etc/logrotate.d/nginx
-#             sleep(1)
-#             POD=$(kubectl get pods -l app=git-repo -o jsonpath='{.items[0].metadata.name}')
-#             kubectl exec $POD -c nginx -- kill -USR1 1
-#             kubectl exec $POD -c goaccess -- kill -USR1 1
-#         resources:
-#           limits:
-#             cpu: 100m
-#             memory: 128Mi
-#           requests:
-#             cpu: 100m
-#             memory: 128Mi
-#       restartPolicy: Always
